@@ -1,0 +1,14 @@
+# Generatore di livelli
+generate_levels.py
+
+# File di sicurezza creati dal generatore
+*.bak
+
+# Cache di Python
+__pycache__/
+*.pyc
+
+# Sistema
+.DS_Store
+Thumbs.db
+
