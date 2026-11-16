@@ -29,6 +29,23 @@ let player = { x: 0, y: 0 };
 // Timer Variables
 let timerInterval = null;
 let timeLeft = 0;
+// ============================================================
+// REGOLE DEL TIMER: modifica solo questi valori
+// ============================================================
+const TIMER_FREE_LEVELS = 10;   // livelli 1..10: nessun limite di tempo
+const TIMER_BLOCK_SIZE = 30;    // ogni blocco di livelli ha lo stesso limite
+const TIMER_BASE_SECONDS = 30;  // limite del primo blocco a tempo (livelli 11..40)
+const TIMER_STEP_SECONDS = 30;  // aumento del limite per ogni blocco successivo
+
+// Restituisce il limite in secondi per un livello (indice 0-based), oppure null se senza limite.
+// Esempi con i valori attuali: 11-40 -> 30s, 41-70 -> 60s, 71-100 -> 90s, ...
+function timeLimitForIndex(index) {
+    if (index < TIMER_FREE_LEVELS) return null;
+    const levelNumber = index + 1;
+    const block = Math.floor((levelNumber - (TIMER_FREE_LEVELS + 1)) / TIMER_BLOCK_SIZE);
+    return TIMER_BASE_SECONDS + block * TIMER_STEP_SECONDS;
+}
+
 let timeLimit = 60; // secondi del livello corrente (impostato in setupTimer)
 
 // Lock controls during transitions/modals
@@ -150,13 +167,14 @@ function loadLevel(index) {
 function setupTimer(index) {
     clearInterval(timerInterval);
 
-    // Regole: livelli 1-10 a tempo illimitato, 11-30 con 30 secondi, 31-50 con 60 secondi
-    if (index < 10) {
+    const limit = timeLimitForIndex(index);
+
+    if (limit === null) {
         timerDisplay.innerText = "∞";
         timerDisplay.classList.remove('text-red-400');
         timerDisplay.classList.add('text-emerald-400');
     } else {
-        timeLimit = index < 30 ? 30 : 60;
+        timeLimit = limit;
         timeLeft = timeLimit;
         updateTimerUI();
 
@@ -356,7 +374,7 @@ function checkWinCondition() {
 
         // Piccolo delay per far vedere l'ultimo blocco posizionato
         setTimeout(() => {
-            showModal("Livello superato!", "Preparati per la prossima sfida.", () => {
+            showModal("Livello Superato!", "Ottimo lavoro! Preparati per la prossima sfida.", () => {
                 currentLevelIndex++;
                 loadLevel(currentLevelIndex);
             });

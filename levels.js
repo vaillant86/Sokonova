@@ -274,7 +274,18 @@ const levels = [
             "#  @ #   #",
             "##########"
         ],
-        // Livello 27 (minimo 18 spinte)
+        // Livello 27 (minimo 12 spinte)
+        [
+            "##########",
+            "#        #",
+            "# #      #",
+            "# #      #",
+            "# ## $   #",
+            "#$* $    #",
+            "#+*..    #",
+            "##########"
+        ],
+        // Livello 28 (minimo 18 spinte)
         [
             "##########",
             "#       .#",
@@ -285,7 +296,7 @@ const levels = [
             "#     @  #",
             "##########"
         ],
-        // Livello 28 (minimo 15 spinte)
+        // Livello 29 (minimo 15 spinte)
         [
             "########",
             "#   #  #",
@@ -295,7 +306,7 @@ const levels = [
             "#...   #",
             "########"
         ],
-        // Livello 29 (minimo 17 spinte)
+        // Livello 30 (minimo 17 spinte)
         [
             "##########",
             "#   #  @.#",
@@ -306,7 +317,7 @@ const levels = [
             "#   #    #",
             "##########"
         ],
-        // Livello 30 (minimo 18 spinte)
+        // Livello 31 (minimo 18 spinte)
         [
             "##########",
             "#...     #",
@@ -317,7 +328,7 @@ const levels = [
             "#  #     #",
             "##########"
         ],
-        // Livello 31 (minimo 16 spinte)
+        // Livello 32 (minimo 16 spinte)
         [
             "########",
             "#      #",
@@ -327,7 +338,7 @@ const levels = [
             "#.     #",
             "########"
         ],
-        // Livello 32 (minimo 13 spinte)
+        // Livello 33 (minimo 13 spinte)
         [
             "#########",
             "#   @   #",
@@ -337,7 +348,7 @@ const levels = [
             "#  ..   #",
             "#########"
         ],
-        // Livello 33 (minimo 13 spinte)
+        // Livello 34 (minimo 13 spinte)
         [
             "########",
             "##  @ ##",
@@ -347,7 +358,7 @@ const levels = [
             "# ...  #",
             "########"
         ],
-        // Livello 34 (minimo 18 spinte)
+        // Livello 35 (minimo 18 spinte)
         [
             "#########",
             "#.@     #",
@@ -357,7 +368,7 @@ const levels = [
             "#       #",
             "#########"
         ],
-        // Livello 35 (minimo 19 spinte)
+        // Livello 36 (minimo 19 spinte)
         [
             "#########",
             "#       #",
@@ -367,7 +378,7 @@ const levels = [
             "#.@     #",
             "#########"
         ],
-        // Livello 36 (minimo 15 spinte)
+        // Livello 37 (minimo 15 spinte)
         [
             "##########",
             "##    .. #",
@@ -378,7 +389,7 @@ const levels = [
             "#####   ##",
             "##########"
         ],
-        // Livello 37 (minimo 19 spinte)
+        // Livello 38 (minimo 19 spinte)
         [
             "##########",
             "#.*#     #",
@@ -389,7 +400,7 @@ const levels = [
             "#        #",
             "##########"
         ],
-        // Livello 38 (minimo 18 spinte)
+        // Livello 39 (minimo 18 spinte)
         [
             "##########",
             "#  #.    #",
@@ -400,7 +411,7 @@ const levels = [
             "#  #     #",
             "##########"
         ],
-        // Livello 39 (minimo 14 spinte)
+        // Livello 40 (minimo 14 spinte)
         [
             "##########",
             "##      ##",
@@ -411,7 +422,7 @@ const levels = [
             "#.*..  ###",
             "##########"
         ],
-        // Livello 40 (minimo 14 spinte)
+        // Livello 41 (minimo 14 spinte)
         [
             "##########",
             "#  #     #",
@@ -422,7 +433,7 @@ const levels = [
             "#      *+#",
             "##########"
         ],
-        // Livello 41 (minimo 15 spinte)
+        // Livello 42 (minimo 15 spinte)
         [
             "#########",
             "#   @   #",
@@ -432,7 +443,7 @@ const levels = [
             "####... #",
             "#########"
         ],
-        // Livello 42 (minimo 16 spinte)
+        // Livello 43 (minimo 16 spinte)
         [
             "##########",
             "#      . #",
@@ -443,7 +454,7 @@ const levels = [
             "#     @  #",
             "##########"
         ],
-        // Livello 43 (minimo 16 spinte)
+        // Livello 44 (minimo 16 spinte)
         [
             "#########",
             "#  #    #",
@@ -453,7 +464,7 @@ const levels = [
             "#  #    #",
             "#########"
         ],
-        // Livello 44 (minimo 14 spinte)
+        // Livello 45 (minimo 14 spinte)
         [
             "#########",
             "#       #",
@@ -464,7 +475,18 @@ const levels = [
             "# ..    #",
             "#########"
         ],
-        // Livello 45 (minimo 16 spinte)
+        // Livello 46 (minimo 16 spinte)
+        [
+            "##########",
+            "#   .#   #",
+            "#  *.#   #",
+            "#   .#   #",
+            "# $$.# $ #",
+            "# @# $   #",
+            "#        #",
+            "##########"
+        ],
+        // Livello 47 (minimo 16 spinte)
         [
             "#########",
             "##      #",
@@ -475,7 +497,7 @@ const levels = [
             "#########",
             "#########"
         ],
-        // Livello 46 (minimo 16 spinte)
+        // Livello 48 (minimo 16 spinte)
         [
             "##########",
             "#        #",
@@ -486,7 +508,7 @@ const levels = [
             "#        #",
             "##########"
         ],
-        // Livello 47 (minimo 21 spinte)
+        // Livello 49 (minimo 21 spinte)
         [
             "##########",
             "#    ... #",
@@ -497,7 +519,7 @@ const levels = [
             "#        #",
             "##########"
         ],
-        // Livello 48 (minimo 14 spinte)
+        // Livello 50 (minimo 14 spinte)
         [
             "#########",
             "#       #",
@@ -507,7 +529,7 @@ const levels = [
             "#     ..#",
             "#########"
         ],
-        // Livello 49 (minimo 16 spinte)
+        // Livello 51 (minimo 16 spinte)
         [
             "##########",
             "##      ##",
@@ -518,7 +540,7 @@ const levels = [
             "##########",
             "##########"
         ],
-        // Livello 50 (minimo 22 spinte)
+        // Livello 52 (minimo 22 spinte)
         [
             "##########",
             "#...     #",
@@ -529,7 +551,7 @@ const levels = [
             "#        #",
             "##########"
         ],
-        // Livello 51 (minimo 15 spinte)
+        // Livello 53 (minimo 15 spinte)
         [
             "##########",
             "#        #",
@@ -540,7 +562,7 @@ const levels = [
             "#  ...   #",
             "##########"
         ],
-        // Livello 52 (minimo 19 spinte)
+        // Livello 54 (minimo 19 spinte)
         [
             "##########",
             "#        #",
@@ -551,7 +573,7 @@ const levels = [
             "##########",
             "##########"
         ],
-        // Livello 53 (minimo 16 spinte)
+        // Livello 55 (minimo 16 spinte)
         [
             "##########",
             "#        #",
@@ -562,7 +584,7 @@ const levels = [
             "#.*@#    #",
             "##########"
         ],
-        // Livello 54 (minimo 18 spinte)
+        // Livello 56 (minimo 18 spinte)
         [
             "##########",
             "#        #",
@@ -573,7 +595,7 @@ const levels = [
             "#        #",
             "##########"
         ],
-        // Livello 55 (minimo 18 spinte)
+        // Livello 57 (minimo 18 spinte)
         [
             "#########",
             "#       #",
@@ -583,7 +605,7 @@ const levels = [
             "#   ....#",
             "#########"
         ],
-        // Livello 56 (minimo 17 spinte)
+        // Livello 58 (minimo 17 spinte)
         [
             "##########",
             "#  #     #",
@@ -594,7 +616,7 @@ const levels = [
             "#   .*+. #",
             "##########"
         ],
-        // Livello 57 (minimo 19 spinte)
+        // Livello 59 (minimo 19 spinte)
         [
             "#########",
             "#    #  #",
@@ -604,7 +626,7 @@ const levels = [
             "#    # .#",
             "#########"
         ],
-        // Livello 58 (minimo 14 spinte)
+        // Livello 60 (minimo 14 spinte)
         [
             "##########",
             "# @     ##",
@@ -615,7 +637,7 @@ const levels = [
             "###...####",
             "##########"
         ],
-        // Livello 59 (minimo 18 spinte)
+        // Livello 61 (minimo 18 spinte)
         [
             "#########",
             "#  @    #",
@@ -625,7 +647,7 @@ const levels = [
             "#    ...#",
             "#########"
         ],
-        // Livello 60 (minimo 17 spinte)
+        // Livello 62 (minimo 17 spinte)
         [
             "##########",
             "#        #",
@@ -636,7 +658,7 @@ const levels = [
             "#    ....#",
             "##########"
         ],
-        // Livello 61 (minimo 20 spinte)
+        // Livello 63 (minimo 20 spinte)
         [
             "##########",
             "#     #  #",
@@ -647,7 +669,7 @@ const levels = [
             "#.... #  #",
             "##########"
         ],
-        // Livello 62 (minimo 16 spinte)
+        // Livello 64 (minimo 16 spinte)
         [
             "##########",
             "#        #",
@@ -658,7 +680,29 @@ const levels = [
             "#  ##....#",
             "##########"
         ],
-        // Livello 63 (minimo 16 spinte)
+        // Livello 65 (minimo 19 spinte)
+        [
+            "##########",
+            "#####    #",
+            "##### $$ #",
+            "##@$     #",
+            "## $   $ #",
+            "##   .. ##",
+            "####... ##",
+            "##########"
+        ],
+        // Livello 66 (minimo 17 spinte)
+        [
+            "##########",
+            "#        #",
+            "#    # $ #",
+            "# $ ##   #",
+            "#   $@$  #",
+            "#   ##   #",
+            "# .*...  #",
+            "##########"
+        ],
+        // Livello 67 (minimo 16 spinte)
         [
             "##########",
             "#        #",
@@ -669,7 +713,7 @@ const levels = [
             "# ...    #",
             "##########"
         ],
-        // Livello 64 (minimo 21 spinte)
+        // Livello 68 (minimo 21 spinte)
         [
             "#########",
             "#  #    #",
@@ -680,7 +724,7 @@ const levels = [
             "#  #..  #",
             "#########"
         ],
-        // Livello 65 (minimo 25 spinte)
+        // Livello 69 (minimo 25 spinte)
         [
             "##########",
             "#        #",
@@ -691,7 +735,7 @@ const levels = [
             "#..  # @ #",
             "##########"
         ],
-        // Livello 66 (minimo 26 spinte)
+        // Livello 70 (minimo 26 spinte)
         [
             "##########",
             "#  #     #",
@@ -702,7 +746,7 @@ const levels = [
             "#  #..   #",
             "##########"
         ],
-        // Livello 67 (minimo 17 spinte)
+        // Livello 71 (minimo 17 spinte)
         [
             "##########",
             "#        #",
@@ -713,7 +757,7 @@ const levels = [
             "#     ...#",
             "##########"
         ],
-        // Livello 68 (minimo 20 spinte)
+        // Livello 72 (minimo 20 spinte)
         [
             "##########",
             "#        #",
@@ -724,7 +768,7 @@ const levels = [
             "#    $ ..#",
             "##########"
         ],
-        // Livello 69 (minimo 22 spinte)
+        // Livello 73 (minimo 22 spinte)
         [
             "########",
             "#   # .#",
@@ -734,7 +778,7 @@ const levels = [
             "#  @   #",
             "########"
         ],
-        // Livello 70 (minimo 21 spinte)
+        // Livello 74 (minimo 21 spinte)
         [
             "##########",
             "##########",
@@ -743,6 +787,17 @@ const levels = [
             "##     ..#",
             "##    $..#",
             "##      .#",
+            "##########"
+        ],
+        // Livello 75 (minimo 37 spinte)
+        [
+            "##########",
+            "#      @ #",
+            "#  $$  $ #",
+            "# $      #",
+            "#   ###  #",
+            "# ##.. $ #",
+            "#  #...  #",
             "##########"
         ]
     // </LEVELS>
