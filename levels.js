@@ -8,7 +8,7 @@
 
 const levels = [
     // <LEVELS>
-        // Livello 1 (minimo 4 spinte)
+        // Level 1 (minimum 4 pushes)
         [
             "######",
             "#   .#",
@@ -16,7 +16,7 @@ const levels = [
             "# @  #",
             "######"
         ],
-        // Livello 2 (minimo 9 spinte)
+        // Level 2 (minimum 9 pushes)
         [
             "#########",
             "#  #    #",
@@ -26,7 +26,7 @@ const levels = [
             "#*+#    #",
             "#########"
         ],
-        // Livello 3 (minimo 12 spinte)
+        // Level 3 (minimum 12 pushes)
         [
             "#########",
             "#       #",
@@ -36,7 +36,7 @@ const levels = [
             "#+ $    #",
             "#########"
         ],
-        // Livello 4 (minimo 10 spinte)
+        // Level 4 (minimum 10 pushes)
         [
             "#########",
             "#  .*.* #",
@@ -46,7 +46,7 @@ const levels = [
             "#  #    #",
             "#########"
         ],
-        // Livello 5 (minimo 9 spinte)
+        // Level 5 (minimum 9 pushes)
         [
             "########",
             "##     #",
@@ -56,7 +56,7 @@ const levels = [
             "########",
             "########"
         ],
-        // Livello 6 (minimo 10 spinte)
+        // Level 6 (minimum 10 pushes)
         [
             "##########",
             "# $+*    #",
@@ -67,7 +67,7 @@ const levels = [
             "#        #",
             "##########"
         ],
-        // Livello 7 (minimo 10 spinte)
+        // Level 7 (minimum 10 pushes)
         [
             "##########",
             "##########",
@@ -78,7 +78,7 @@ const levels = [
             "#  @     #",
             "##########"
         ],
-        // Livello 8 (minimo 10 spinte)
+        // Level 8 (minimum 10 pushes)
         [
             "#########",
             "#     # #",
@@ -88,7 +88,7 @@ const levels = [
             "# @...  #",
             "#########"
         ],
-        // Livello 9 (minimo 12 spinte)
+        // Level 9 (minimum 12 pushes)
         [
             "########",
             "#  ..###",
@@ -98,7 +98,7 @@ const levels = [
             "##     #",
             "########"
         ],
-        // Livello 10 (minimo 10 spinte)
+        // Level 10 (minimum 10 pushes)
         [
             "#########",
             "##   @ ##",
@@ -108,7 +108,7 @@ const levels = [
             "## ..  ##",
             "#########"
         ],
-        // Livello 11 (minimo 12 spinte)
+        // Level 11 (minimum 12 pushes)
         [
             "########",
             "#      #",
@@ -118,7 +118,7 @@ const levels = [
             "#@$  ..#",
             "########"
         ],
-        // Livello 12 (minimo 15 spinte)
+        // Level 12 (minimum 15 pushes)
         [
             "#########",
             "#+*.    #",
@@ -129,7 +129,7 @@ const levels = [
             "#       #",
             "#########"
         ],
-        // Livello 13 (minimo 14 spinte)
+        // Level 13 (minimum 14 pushes)
         [
             "#########",
             "#########",
@@ -139,7 +139,7 @@ const levels = [
             "##    @ #",
             "#########"
         ],
-        // Livello 14 (minimo 15 spinte)
+        // Level 14 (minimum 15 pushes)
         [
             "#########",
             "#    # @#",
@@ -150,7 +150,7 @@ const levels = [
             "#    #*.#",
             "#########"
         ],
-        // Livello 15 (minimo 13 spinte)
+        // Level 15 (minimum 13 pushes)
         [
             "##########",
             "###      #",
@@ -161,7 +161,7 @@ const levels = [
             "####     #",
             "##########"
         ],
-        // Livello 16 (minimo 15 spinte)
+        // Level 16 (minimum 15 pushes)
         [
             "#########",
             "##...   #",
@@ -171,7 +171,7 @@ const levels = [
             "#   ##  #",
             "#########"
         ],
-        // Livello 17 (minimo 16 spinte)
+        // Level 17 (minimum 16 pushes)
         [
             "##########",
             "#        #",
@@ -182,7 +182,7 @@ const levels = [
             "#        #",
             "##########"
         ],
-        // Livello 18 (minimo 11 spinte)
+        // Level 18 (minimum 11 pushes)
         [
             "#########",
             "#       #",
@@ -192,7 +192,7 @@ const levels = [
             "#       #",
             "#########"
         ],
-        // Livello 19 (minimo 17 spinte)
+        // Level 19 (minimum 17 pushes)
         [
             "#########",
             "#########",
@@ -202,7 +202,7 @@ const levels = [
             "###     #",
             "#########"
         ],
-        // Livello 20 (minimo 14 spinte)
+        // Level 20 (minimum 14 pushes)
         [
             "########",
             "#.#    #",
@@ -211,7 +211,7 @@ const levels = [
             "#      #",
             "########"
         ],
-        // Livello 21 (minimo 14 spinte)
+        // Level 21 (minimum 14 pushes)
         [
             "#########",
             "#..     #",
@@ -221,7 +221,7 @@ const levels = [
             "#   #   #",
             "#########"
         ],
-        // Livello 22 (minimo 18 spinte)
+        // Level 22 (minimum 18 pushes)
         [
             "#########",
             "#.+ #   #",
@@ -231,7 +231,7 @@ const levels = [
             "#   #   #",
             "#########"
         ],
-        // Livello 23 (minimo 15 spinte)
+        // Level 23 (minimum 15 pushes)
         [
             "#########",
             "#  *.#  #",
@@ -242,7 +242,7 @@ const levels = [
             "#       #",
             "#########"
         ],
-        // Livello 24 (minimo 16 spinte)
+        // Level 24 (minimum 16 pushes)
         [
             "#########",
             "#      .#",
@@ -252,7 +252,7 @@ const levels = [
             "#       #",
             "#########"
         ],
-        // Livello 25 (minimo 12 spinte)
+        // Level 25 (minimum 12 pushes)
         [
             "##########",
             "#        #",
@@ -263,7 +263,7 @@ const levels = [
             "#   .    #",
             "##########"
         ],
-        // Livello 26 (minimo 15 spinte)
+        // Level 26 (minimum 15 pushes)
         [
             "##########",
             "#       .#",
@@ -274,7 +274,7 @@ const levels = [
             "#  @ #   #",
             "##########"
         ],
-        // Livello 27 (minimo 12 spinte)
+        // Level 27 (minimum 12 pushes)
         [
             "##########",
             "#        #",
@@ -285,7 +285,18 @@ const levels = [
             "#+*..    #",
             "##########"
         ],
-        // Livello 28 (minimo 18 spinte)
+        // Level 28 (minimum 15 pushes)
+        [
+            "##########",
+            "#....    #",
+            "#   .$ $ #",
+            "#  $ # @ #",
+            "# $ ## # #",
+            "# $    # #",
+            "#        #",
+            "##########"
+        ],
+        // Level 29 (minimum 18 pushes)
         [
             "##########",
             "#       .#",
@@ -296,7 +307,7 @@ const levels = [
             "#     @  #",
             "##########"
         ],
-        // Livello 29 (minimo 15 spinte)
+        // Level 30 (minimum 15 pushes)
         [
             "########",
             "#   #  #",
@@ -306,7 +317,7 @@ const levels = [
             "#...   #",
             "########"
         ],
-        // Livello 30 (minimo 17 spinte)
+        // Level 31 (minimum 17 pushes)
         [
             "##########",
             "#   #  @.#",
@@ -317,7 +328,7 @@ const levels = [
             "#   #    #",
             "##########"
         ],
-        // Livello 31 (minimo 18 spinte)
+        // Level 32 (minimum 18 pushes)
         [
             "##########",
             "#...     #",
@@ -328,7 +339,7 @@ const levels = [
             "#  #     #",
             "##########"
         ],
-        // Livello 32 (minimo 16 spinte)
+        // Level 33 (minimum 16 pushes)
         [
             "########",
             "#      #",
@@ -338,7 +349,18 @@ const levels = [
             "#.     #",
             "########"
         ],
-        // Livello 33 (minimo 13 spinte)
+        // Level 34 (minimum 18 pushes)
+        [
+            "##########",
+            "#  #     #",
+            "#     #  #",
+            "#  #     #",
+            "# $# $ *.#",
+            "# @# $ *.#",
+            "#  #    .#",
+            "##########"
+        ],
+        // Level 35 (minimum 13 pushes)
         [
             "#########",
             "#   @   #",
@@ -348,7 +370,7 @@ const levels = [
             "#  ..   #",
             "#########"
         ],
-        // Livello 34 (minimo 13 spinte)
+        // Level 36 (minimum 13 pushes)
         [
             "########",
             "##  @ ##",
@@ -358,7 +380,7 @@ const levels = [
             "# ...  #",
             "########"
         ],
-        // Livello 35 (minimo 18 spinte)
+        // Level 37 (minimum 18 pushes)
         [
             "#########",
             "#.@     #",
@@ -368,7 +390,7 @@ const levels = [
             "#       #",
             "#########"
         ],
-        // Livello 36 (minimo 19 spinte)
+        // Level 38 (minimum 19 pushes)
         [
             "#########",
             "#       #",
@@ -378,7 +400,7 @@ const levels = [
             "#.@     #",
             "#########"
         ],
-        // Livello 37 (minimo 15 spinte)
+        // Level 39 (minimum 15 pushes)
         [
             "##########",
             "##    .. #",
@@ -389,7 +411,7 @@ const levels = [
             "#####   ##",
             "##########"
         ],
-        // Livello 38 (minimo 19 spinte)
+        // Level 40 (minimum 19 pushes)
         [
             "##########",
             "#.*#     #",
@@ -400,7 +422,7 @@ const levels = [
             "#        #",
             "##########"
         ],
-        // Livello 39 (minimo 18 spinte)
+        // Level 41 (minimum 18 pushes)
         [
             "##########",
             "#  #.    #",
@@ -411,7 +433,7 @@ const levels = [
             "#  #     #",
             "##########"
         ],
-        // Livello 40 (minimo 14 spinte)
+        // Level 42 (minimum 14 pushes)
         [
             "##########",
             "##      ##",
@@ -422,7 +444,7 @@ const levels = [
             "#.*..  ###",
             "##########"
         ],
-        // Livello 41 (minimo 14 spinte)
+        // Level 43 (minimum 14 pushes)
         [
             "##########",
             "#  #     #",
@@ -433,7 +455,7 @@ const levels = [
             "#      *+#",
             "##########"
         ],
-        // Livello 42 (minimo 15 spinte)
+        // Level 44 (minimum 15 pushes)
         [
             "#########",
             "#   @   #",
@@ -443,7 +465,7 @@ const levels = [
             "####... #",
             "#########"
         ],
-        // Livello 43 (minimo 16 spinte)
+        // Level 45 (minimum 16 pushes)
         [
             "##########",
             "#      . #",
@@ -454,7 +476,18 @@ const levels = [
             "#     @  #",
             "##########"
         ],
-        // Livello 44 (minimo 16 spinte)
+        // Level 46 (minimum 15 pushes)
+        [
+            "##########",
+            "# @  #   #",
+            "# $$ #   #",
+            "# .$ #   #",
+            "# *  #   #",
+            "# .#  $  #",
+            "#..      #",
+            "##########"
+        ],
+        // Level 47 (minimum 16 pushes)
         [
             "#########",
             "#  #    #",
@@ -464,7 +497,7 @@ const levels = [
             "#  #    #",
             "#########"
         ],
-        // Livello 45 (minimo 14 spinte)
+        // Level 48 (minimum 14 pushes)
         [
             "#########",
             "#       #",
@@ -475,7 +508,18 @@ const levels = [
             "# ..    #",
             "#########"
         ],
-        // Livello 46 (minimo 16 spinte)
+        // Level 49 (minimum 13 pushes)
+        [
+            "##########",
+            "#  #...  #",
+            "# ##..$$ #",
+            "#   $    #",
+            "#  $@$   #",
+            "#  ##    #",
+            "#  #     #",
+            "##########"
+        ],
+        // Level 50 (minimum 16 pushes)
         [
             "##########",
             "#   .#   #",
@@ -486,7 +530,7 @@ const levels = [
             "#        #",
             "##########"
         ],
-        // Livello 47 (minimo 16 spinte)
+        // Level 51 (minimum 16 pushes)
         [
             "#########",
             "##      #",
@@ -497,7 +541,7 @@ const levels = [
             "#########",
             "#########"
         ],
-        // Livello 48 (minimo 16 spinte)
+        // Level 52 (minimum 16 pushes)
         [
             "##########",
             "#        #",
@@ -508,7 +552,7 @@ const levels = [
             "#        #",
             "##########"
         ],
-        // Livello 49 (minimo 21 spinte)
+        // Level 53 (minimum 21 pushes)
         [
             "##########",
             "#    ... #",
@@ -519,7 +563,7 @@ const levels = [
             "#        #",
             "##########"
         ],
-        // Livello 50 (minimo 14 spinte)
+        // Level 54 (minimum 14 pushes)
         [
             "#########",
             "#       #",
@@ -529,7 +573,7 @@ const levels = [
             "#     ..#",
             "#########"
         ],
-        // Livello 51 (minimo 16 spinte)
+        // Level 55 (minimum 16 pushes)
         [
             "##########",
             "##      ##",
@@ -540,7 +584,7 @@ const levels = [
             "##########",
             "##########"
         ],
-        // Livello 52 (minimo 22 spinte)
+        // Level 56 (minimum 22 pushes)
         [
             "##########",
             "#...     #",
@@ -551,7 +595,7 @@ const levels = [
             "#        #",
             "##########"
         ],
-        // Livello 53 (minimo 15 spinte)
+        // Level 57 (minimum 15 pushes)
         [
             "##########",
             "#        #",
@@ -562,7 +606,7 @@ const levels = [
             "#  ...   #",
             "##########"
         ],
-        // Livello 54 (minimo 19 spinte)
+        // Level 58 (minimum 19 pushes)
         [
             "##########",
             "#        #",
@@ -573,7 +617,7 @@ const levels = [
             "##########",
             "##########"
         ],
-        // Livello 55 (minimo 16 spinte)
+        // Level 59 (minimum 16 pushes)
         [
             "##########",
             "#        #",
@@ -584,7 +628,7 @@ const levels = [
             "#.*@#    #",
             "##########"
         ],
-        // Livello 56 (minimo 18 spinte)
+        // Level 60 (minimum 18 pushes)
         [
             "##########",
             "#        #",
@@ -595,7 +639,7 @@ const levels = [
             "#        #",
             "##########"
         ],
-        // Livello 57 (minimo 18 spinte)
+        // Level 61 (minimum 18 pushes)
         [
             "#########",
             "#       #",
@@ -605,7 +649,7 @@ const levels = [
             "#   ....#",
             "#########"
         ],
-        // Livello 58 (minimo 17 spinte)
+        // Level 62 (minimum 17 pushes)
         [
             "##########",
             "#  #     #",
@@ -616,7 +660,7 @@ const levels = [
             "#   .*+. #",
             "##########"
         ],
-        // Livello 59 (minimo 19 spinte)
+        // Level 63 (minimum 19 pushes)
         [
             "#########",
             "#    #  #",
@@ -626,7 +670,18 @@ const levels = [
             "#    # .#",
             "#########"
         ],
-        // Livello 60 (minimo 14 spinte)
+        // Level 64 (minimum 23 pushes)
+        [
+            "##########",
+            "#        #",
+            "#     $  #",
+            "# $@     #",
+            "#.# # $  #",
+            "#.### $  #",
+            "#...$    #",
+            "##########"
+        ],
+        // Level 65 (minimum 14 pushes)
         [
             "##########",
             "# @     ##",
@@ -637,7 +692,7 @@ const levels = [
             "###...####",
             "##########"
         ],
-        // Livello 61 (minimo 18 spinte)
+        // Level 66 (minimum 18 pushes)
         [
             "#########",
             "#  @    #",
@@ -647,7 +702,7 @@ const levels = [
             "#    ...#",
             "#########"
         ],
-        // Livello 62 (minimo 17 spinte)
+        // Level 67 (minimum 17 pushes)
         [
             "##########",
             "#        #",
@@ -658,7 +713,7 @@ const levels = [
             "#    ....#",
             "##########"
         ],
-        // Livello 63 (minimo 20 spinte)
+        // Level 68 (minimum 20 pushes)
         [
             "##########",
             "#     #  #",
@@ -669,7 +724,7 @@ const levels = [
             "#.... #  #",
             "##########"
         ],
-        // Livello 64 (minimo 16 spinte)
+        // Level 69 (minimum 16 pushes)
         [
             "##########",
             "#        #",
@@ -680,7 +735,7 @@ const levels = [
             "#  ##....#",
             "##########"
         ],
-        // Livello 65 (minimo 19 spinte)
+        // Level 70 (minimum 19 pushes)
         [
             "##########",
             "#####    #",
@@ -691,7 +746,7 @@ const levels = [
             "####... ##",
             "##########"
         ],
-        // Livello 66 (minimo 17 spinte)
+        // Level 71 (minimum 17 pushes)
         [
             "##########",
             "#        #",
@@ -702,7 +757,7 @@ const levels = [
             "# .*...  #",
             "##########"
         ],
-        // Livello 67 (minimo 16 spinte)
+        // Level 72 (minimum 16 pushes)
         [
             "##########",
             "#        #",
@@ -713,7 +768,7 @@ const levels = [
             "# ...    #",
             "##########"
         ],
-        // Livello 68 (minimo 21 spinte)
+        // Level 73 (minimum 21 pushes)
         [
             "#########",
             "#  #    #",
@@ -724,7 +779,7 @@ const levels = [
             "#  #..  #",
             "#########"
         ],
-        // Livello 69 (minimo 25 spinte)
+        // Level 74 (minimum 25 pushes)
         [
             "##########",
             "#        #",
@@ -735,7 +790,7 @@ const levels = [
             "#..  # @ #",
             "##########"
         ],
-        // Livello 70 (minimo 26 spinte)
+        // Level 75 (minimum 26 pushes)
         [
             "##########",
             "#  #     #",
@@ -746,7 +801,7 @@ const levels = [
             "#  #..   #",
             "##########"
         ],
-        // Livello 71 (minimo 17 spinte)
+        // Level 76 (minimum 17 pushes)
         [
             "##########",
             "#        #",
@@ -757,7 +812,7 @@ const levels = [
             "#     ...#",
             "##########"
         ],
-        // Livello 72 (minimo 20 spinte)
+        // Level 77 (minimum 20 pushes)
         [
             "##########",
             "#        #",
@@ -768,7 +823,7 @@ const levels = [
             "#    $ ..#",
             "##########"
         ],
-        // Livello 73 (minimo 22 spinte)
+        // Level 78 (minimum 22 pushes)
         [
             "########",
             "#   # .#",
@@ -778,7 +833,7 @@ const levels = [
             "#  @   #",
             "########"
         ],
-        // Livello 74 (minimo 21 spinte)
+        // Level 79 (minimum 21 pushes)
         [
             "##########",
             "##########",
@@ -789,7 +844,7 @@ const levels = [
             "##      .#",
             "##########"
         ],
-        // Livello 75 (minimo 37 spinte)
+        // Level 80 (minimum 37 pushes)
         [
             "##########",
             "#      @ #",

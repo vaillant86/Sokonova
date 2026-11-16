@@ -9,7 +9,10 @@ Sokoban-style puzzle game: push the boxes onto the targets, featuring levels of 
 
 The page detects the device and displays only the appropriate controls.
 
-Time limits: no limit for levels 1–10; from level 11 onwards, the time limit increases progressively with difficulty.
+## Features
+
+- **Time limits**: no limit for levels 1–10; from level 11 onwards, the time limit increases progressively with difficulty.
+- **Checkpoint codes**: every ten levels (from level 11 onwards), you receive a 5-letter code. Enter it on the start screen to pick up right where you left off.
 
 ## Structure
 

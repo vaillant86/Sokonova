@@ -1,25 +1,25 @@
 /**
  * STANDARD SOKOBAN ASCII:
- * '#' = Muro
- * '@' = Giocatore
- * '$' = Blocco
- * '.' = Destinazione (Target)
- * '*' = Blocco su Destinazione
- * '+' = Giocatore su Destinazione
- * ' ' = Vuoto
+ * '#' = Wall
+ * '@' = Player
+ * '$' = Box
+ * '.' = Target
+ * '*' = Box on Target
+ * '+' = Player on Target
+ * ' ' = Empty
  *
  */
 
-// I livelli sono definiti in levels.js, caricato prima di questo file.
+// Levels are defined in levels.js, loaded before this file.
 
 
 let currentLevelIndex = 0;
 
-// Sistema di avvio rapido tramite URL (?livello=N)
+// Quick start system via URL (?livello=N)
 const urlParams = new URLSearchParams(window.location.search);
 const livelloRichiesto = parseInt(urlParams.get('livello'));
 if (!isNaN(livelloRichiesto) && livelloRichiesto > 0 && livelloRichiesto <= levels.length) {
-    // Sottraiamo 1 perché l'array parte da 0
+    // Subtract 1 because the array is 0-indexed
     currentLevelIndex = livelloRichiesto - 1;
 }
 
@@ -29,16 +29,15 @@ let player = { x: 0, y: 0 };
 // Timer Variables
 let timerInterval = null;
 let timeLeft = 0;
-// ============================================================
-// REGOLE DEL TIMER: modifica solo questi valori
-// ============================================================
-const TIMER_FREE_LEVELS = 10;   // livelli 1..10: nessun limite di tempo
-const TIMER_BLOCK_SIZE = 30;    // ogni blocco di livelli ha lo stesso limite
-const TIMER_BASE_SECONDS = 30;  // limite del primo blocco a tempo (livelli 11..40)
-const TIMER_STEP_SECONDS = 30;  // aumento del limite per ogni blocco successivo
 
-// Restituisce il limite in secondi per un livello (indice 0-based), oppure null se senza limite.
-// Esempi con i valori attuali: 11-40 -> 30s, 41-70 -> 60s, 71-100 -> 90s, ...
+// Timer rules: modify only these values
+const TIMER_FREE_LEVELS = 10;   // levels 1..10: no time limit
+const TIMER_BLOCK_SIZE = 30;    // each block of levels shares the same time limit
+const TIMER_BASE_SECONDS = 30;  // time limit for the first timed block (levels 11..40)
+const TIMER_STEP_SECONDS = 30;  // time limit increase for each subsequent block
+
+// Returns the time limit in seconds for a level (0-based index), or null if untimed.
+// Examples with current values: 11-40 -> 30s, 41-70 -> 60s, 71-100 -> 90s, ...
 function timeLimitForIndex(index) {
     if (index < TIMER_FREE_LEVELS) return null;
     const levelNumber = index + 1;
@@ -46,7 +45,31 @@ function timeLimitForIndex(index) {
     return TIMER_BASE_SECONDS + block * TIMER_STEP_SECONDS;
 }
 
-let timeLimit = 60; // secondi del livello corrente (impostato in setupTimer)
+// Generates a deterministic 5-letter uppercase password for checkpoint levels (11, 21, 31, ...)
+function getLevelCode(levelNumber) {
+    if (levelNumber < 11 || (levelNumber - 1) % 10 !== 0) return null;
+    let seed = (levelNumber * 2654435761) >>> 0;
+    let code = '';
+    for (let i = 0; i < 5; i++) {
+        seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+        code += String.fromCharCode(65 + (seed % 26));
+    }
+    return code;
+}
+
+// Returns the 0-based level index matching the given 5-letter code, or -1 if invalid
+function findLevelIndexByCode(rawCode) {
+    const clean = rawCode.trim().toUpperCase();
+    if (clean.length !== 5) return -1;
+    for (let lvl = 11; lvl <= levels.length; lvl += 10) {
+        if (getLevelCode(lvl) === clean) {
+            return lvl - 1;
+        }
+    }
+    return -1;
+}
+
+let timeLimit = 60; // seconds for the current level (set in setupTimer)
 
 // Lock controls during transitions/modals
 let inputLocked = false;
@@ -56,6 +79,7 @@ let gameStarted = false;
 const boardEl = document.getElementById('game-board');
 const levelDisplay = document.getElementById('level-display');
 const timerDisplay = document.getElementById('timer-display');
+const codeBadge = document.getElementById('code-badge');
 
 // Modal Elements
 const modalOverlay = document.getElementById('modal-overlay');
@@ -65,8 +89,7 @@ const modalMessage = document.getElementById('modal-message');
 const modalBtn = document.getElementById('modal-btn');
 let modalCallback = null;
 
-// Rileva il tipo di dispositivo: 'touch' (telefono/tablet) oppure 'keyboard' (PC).
-// Per provare l'altra modalità: aggiungi ?controlli=touch o ?controlli=tastiera all'URL.
+// Detects the device type: 'touch' (phone/tablet) or 'keyboard' (PC).
 function detectInputMode() {
     const forced = (urlParams.get('controlli') || '').toLowerCase();
     if (forced === 'touch') return 'touch';
@@ -75,8 +98,8 @@ function detectInputMode() {
     const coarse = window.matchMedia('(pointer: coarse)').matches;
     const fine = window.matchMedia('(pointer: fine)').matches;
     const hasTouch = navigator.maxTouchPoints > 0;
-    // Dispositivo con puntatore grossolano (dito): modalità touch.
-    // Dispositivo con mouse o tastiera precisi: modalità tastiera.
+    // Device with a coarse pointer (finger): touch mode.
+    // Device with a precise mouse or keyboard: keyboard mode.
     return (coarse || (!fine && hasTouch)) ? 'touch' : 'keyboard';
 }
 
@@ -84,22 +107,54 @@ function setupInputMode() {
     document.body.dataset.mode = detectInputMode();
 }
 
-// Inizializza il gioco
+// Initialize the game
 function init() {
     setupInputMode();
 
+    const codeInput = document.getElementById('code-input');
+    const codeBtn = document.getElementById('code-btn');
+    const codeError = document.getElementById('code-error');
+
+    const submitCode = () => {
+        const targetIndex = findLevelIndexByCode(codeInput.value);
+        if (targetIndex === -1) {
+            codeError.innerText = 'Codice non valido';
+            codeInput.value = '';
+            return;
+        }
+        codeError.innerText = '';
+        currentLevelIndex = targetIndex;
+        startGame();
+    };
+
+    codeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        submitCode();
+    });
+
+    codeInput.addEventListener('keydown', (e) => {
+        e.stopPropagation();
+        codeError.innerText = '';
+        if (e.key === 'Enter') {
+            submitCode();
+        }
+    });
+
     window.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT') return;
         if (!gameStarted) startGame();
         else handleKeyDown(e);
     });
     window.addEventListener('touchstart', (e) => {
+        if (e.target.closest('#password-box')) return;
         if (!gameStarted) startGame();
     }, { passive: false });
 
     setupSwipeControls();
 
-    // Clic sulla schermata iniziale (utile su PC)
-    document.getElementById('start-overlay').addEventListener('click', () => {
+    // Click on the start screen (useful on PC)
+    document.getElementById('start-overlay').addEventListener('click', (e) => {
+        if (e.target.closest('#password-box')) return;
         if (!gameStarted) startGame();
     });
 
@@ -108,7 +163,7 @@ function init() {
         if (modalCallback) modalCallback();
     });
 
-    // Aspettiamo l'interazione dell'utente per avviare il primo livello
+    // Wait for user interaction to start the first level
 }
 
 function startGame() {
@@ -135,15 +190,15 @@ function loadLevel(index) {
     grid = [];
     inputLocked = false;
 
-    // Larghezza massima per il padding e per la CSS Grid
+    // Maximum width for padding and CSS Grid
     let maxWidth = 0;
     rawData.forEach(row => { if (row.length > maxWidth) maxWidth = row.length; });
 
-    // Costruisci la griglia di gioco e trova il giocatore
+    // Build the game grid and locate the player
     for (let y = 0; y < rawData.length; y++) {
         let rowArray = [];
         for (let x = 0; x < maxWidth; x++) {
-            let char = rawData[y][x] || ' '; // Pad con spazi vuoti
+            let char = rawData[y][x] || ' '; // Pad with empty spaces
             if (char === '@' || char === '+') {
                 player.x = x;
                 player.y = y;
@@ -153,12 +208,21 @@ function loadLevel(index) {
         grid.push(rowArray);
     }
 
-    // Imposta il CSS Grid in base alle dimensioni della mappa
+    // Set up CSS Grid based on map dimensions
     boardEl.style.gridTemplateColumns = `repeat(${maxWidth}, 1fr)`;
     boardEl.style.gridTemplateRows = `repeat(${grid.length}, 1fr)`;
 
-    // Aggiorna UI
-    levelDisplay.innerText = `Livello ${index + 1} / ${levels.length}`;
+    // Update UI
+    const levelNumber = index + 1;
+    levelDisplay.innerText = `Livello ${levelNumber} / ${levels.length}`;
+
+    const levelCode = getLevelCode(levelNumber);
+    if (levelCode) {
+        codeBadge.innerText = `Codice: ${levelCode}`;
+        codeBadge.classList.remove('hidden');
+    } else {
+        codeBadge.classList.add('hidden');
+    }
 
     setupTimer(index);
     render();
@@ -179,7 +243,7 @@ function setupTimer(index) {
         updateTimerUI();
 
         timerInterval = setInterval(() => {
-            if (inputLocked) return; // Non scalare il tempo se il gioco è in pausa/modal
+            if (inputLocked) return; // Do not decrease time while paused or in a modal
 
             timeLeft--;
             updateTimerUI();
@@ -200,7 +264,7 @@ function updateTimerUI() {
     const secs = timeLeft % 60;
     timerDisplay.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 
-    // Rosso nell'ultimo terzo del tempo disponibile
+    // Turn red during the last third of the available time
     if (timeLeft <= Math.ceil(timeLimit / 3)) {
         timerDisplay.classList.remove('text-emerald-400');
         timerDisplay.classList.add('text-red-400');
@@ -217,7 +281,7 @@ function render() {
             const char = grid[y][x];
             const cell = document.createElement('div');
 
-            // Classi base e logica di rendering visivo
+            // Base classes and visual rendering logic
             cell.className = 'cell';
 
             if (char === '#') cell.classList.add('wall');
@@ -248,18 +312,18 @@ function handleKeyDown(e) {
     }
 
     if (dx !== 0 || dy !== 0) {
-        e.preventDefault(); // Previene scroll
+        e.preventDefault(); // Prevent scrolling
         move(dx, dy);
     }
 }
 
-// Gestione swipe su Mobile
+// Mobile swipe handling
 function setupSwipeControls() {
     let touchStartX = 0;
     let touchStartY = 0;
-    const swipeThreshold = 30; // Minima distanza per considerare valida la swipe
+    const swipeThreshold = 30; // Minimum distance to register a valid swipe
 
-    // Previene pull-to-refresh e scroll nativo durante il gioco
+    // Prevent pull-to-refresh and native scrolling during gameplay
     window.addEventListener('touchmove', e => {
         if (gameStarted && !inputLocked) {
             e.preventDefault();
@@ -281,16 +345,16 @@ function setupSwipeControls() {
         let dy = touchEndY - touchStartY;
 
         if (Math.abs(dx) > Math.abs(dy)) {
-            // Movimento orizzontale
+            // Horizontal movement
             if (Math.abs(dx) > swipeThreshold) {
-                if (dx > 0) move(1, 0); // Destra
-                else move(-1, 0);       // Sinistra
+                if (dx > 0) move(1, 0); // Right
+                else move(-1, 0);       // Left
             }
         } else {
-            // Movimento verticale
+            // Vertical movement
             if (Math.abs(dy) > swipeThreshold) {
-                if (dy > 0) move(0, 1); // Giù
-                else move(0, -1);       // Su
+                if (dy > 0) move(0, 1); // Down
+                else move(0, -1);       // Up
             }
         }
     }, { passive: false });
@@ -300,30 +364,30 @@ function move(dx, dy) {
     let newX = player.x + dx;
     let newY = player.y + dy;
 
-    // Fuori dai bordi
+    // Out of bounds
     if (newY < 0 || newY >= grid.length || newX < 0 || newX >= grid[newY].length) return;
 
     let targetCell = grid[newY][newX];
 
-    // Muro
+    // Wall
     if (targetCell === '#') return;
 
-    // Cella vuota o destinazione pura -> muovi giocatore
+    // Empty cell or bare target -> move player
     if (targetCell === ' ' || targetCell === '.') {
         updateGrid(player.x, player.y, newX, newY, false);
         return;
     }
 
-    // C'è un blocco da spingere
+    // There is a box to push
     if (targetCell === '$' || targetCell === '*') {
         let beyondX = newX + dx;
         let beyondY = newY + dy;
 
-        // Controlla cosa c'è dietro il blocco
+        // Check what is behind the box
         if (beyondY >= 0 && beyondY < grid.length && beyondX >= 0 && beyondX < grid[beyondY].length) {
             let beyondCell = grid[beyondY][beyondX];
 
-            // Se dietro c'è spazio o un target, spingi
+            // If there is empty space or a target behind it, push
             if (beyondCell === ' ' || beyondCell === '.') {
                 updateGrid(player.x, player.y, newX, newY, true, beyondX, beyondY);
             }
@@ -332,19 +396,19 @@ function move(dx, dy) {
 }
 
 function updateGrid(px, py, nx, ny, pushedBox, bx, by) {
-    // Rimuovi il giocatore dalla vecchia posizione
+    // Remove player from the old position
     grid[py][px] = (grid[py][px] === '+') ? '.' : ' ';
 
     if (pushedBox) {
-        // Muovi il blocco nella nuova posizione
+        // Move the box to the new position
         let beyondWasTarget = (grid[by][bx] === '.');
         grid[by][bx] = beyondWasTarget ? '*' : '$';
 
-        // Il giocatore prende il posto del blocco
+        // The player takes the box's previous spot
         let boxWasOnTarget = (grid[ny][nx] === '*');
         grid[ny][nx] = boxWasOnTarget ? '+' : '@';
     } else {
-        // Movimento semplice del giocatore
+        // Simple player movement
         grid[ny][nx] = (grid[ny][nx] === '.') ? '+' : '@';
     }
 
@@ -357,7 +421,7 @@ function updateGrid(px, py, nx, ny, pushedBox, bx, by) {
 
 function checkWinCondition() {
     let isComplete = true;
-    // Controlla se ci sono ancora blocchi '$' non sulle destinazioni
+    // Check if there are still any '$' boxes not on targets
     for (let y = 0; y < grid.length; y++) {
         for (let x = 0; x < grid[y].length; x++) {
             if (grid[y][x] === '$') {
@@ -372,9 +436,14 @@ function checkWinCondition() {
         inputLocked = true;
         clearInterval(timerInterval);
 
-        // Piccolo delay per far vedere l'ultimo blocco posizionato
+        // Short delay to show the last box placed
         setTimeout(() => {
-            showModal("Livello Superato!", "Ottimo lavoro! Preparati per la prossima sfida.", () => {
+            const nextCode = getLevelCode(currentLevelIndex + 2);
+            const msg = nextCode
+                ? `Ottimo lavoro! Codice livello ${currentLevelIndex + 2}: ${nextCode}`
+                : "Ottimo lavoro! Preparati per la prossima sfida.";
+
+            showModal("Livello Superato!", msg, () => {
                 currentLevelIndex++;
                 loadLevel(currentLevelIndex);
             });
@@ -407,5 +476,5 @@ function hideModal() {
     modalContent.classList.add('scale-95');
 }
 
-// Avvio
+// Start
 init();

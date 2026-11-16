@@ -297,7 +297,10 @@
     <div class="w-full max-w-2xl px-6 mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
         <div class="text-center md:text-left">
             <h1 class="title text-3xl">Sokonova</h1>
-            <p id="level-display" class="text-slate-400 font-semibold mt-1">Livello 1</p>
+            <div class="flex items-center justify-center md:justify-start gap-2 mt-1">
+                <p id="level-display" class="text-slate-400 font-semibold">Livello 1</p>
+                <span id="code-badge" class="hidden text-xs font-mono font-bold tracking-widest uppercase px-2 py-0.5 rounded-md bg-amber-400/15 text-amber-300 border border-amber-400/30"></span>
+            </div>
         </div>
 
         <div class="flex items-center gap-4">
@@ -341,7 +344,7 @@
         <h1 class="title text-5xl mb-3">Sokonova</h1>
         <p class="text-slate-300 text-lg mb-8 animate-pulse text-center px-4">
             <span class="only-touch">Tocca lo schermo per iniziare</span>
-            <span class="only-keyboard">Premi un tasto iniziare</span>
+            <span class="only-keyboard">Premi un tasto per iniziare</span>
         </p>
         <div class="flex gap-4">
             <div class="hint-card only-keyboard">
@@ -350,6 +353,29 @@
             <div class="hint-card only-touch">
                 <p class="text-slate-400 text-sm">Swipe (scorri)</p>
             </div>
+        </div>
+
+        <!-- Box inserimento codice livello -->
+        <div id="password-box" class="mt-8 flex flex-col items-center gap-2 cursor-default" onclick="event.stopPropagation()">
+            <div class="flex items-center gap-2">
+                <input
+                    id="code-input"
+                    type="text"
+                    maxlength="5"
+                    placeholder="CODICE"
+                    autocomplete="off"
+                    spellcheck="false"
+                    class="w-32 text-center font-mono font-bold uppercase tracking-[0.25em] text-amber-300 placeholder-slate-500 bg-[#1c1636] border border-white/15 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-amber-400"
+                />
+                <button
+                    id="code-btn"
+                    type="button"
+                    class="btn-icon px-4 py-2 text-sm font-bold text-amber-300"
+                >
+                    Vai
+                </button>
+            </div>
+            <p id="code-error" class="text-xs text-red-400 h-4"></p>
         </div>
     </div>
 
