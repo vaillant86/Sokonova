@@ -1,17 +1,84 @@
+/* =========================================================
+   THEME 1: CLASSIC (Default)
+   ========================================================= */
 :root {
     --bg-top: #1f1846;
     --bg-bottom: #0a0817;
     --bg-glow: #3a2d7a;
+    --bg-grid: transparent;
     --panel: #1c1636;
     --panel-border: rgba(255, 255, 255, 0.08);
+    --btn-top: #3b3266;
+    --btn-bottom: #2a2350;
+    --board-top: #332a57;
+    --board-bottom: #1d1734;
+    --board-border: rgba(255, 255, 255, 0.06);
+    --title-gradient: linear-gradient(90deg, #fcd34d, #fb923c 45%, #f472b6);
+    --title-shadow: 0 2px 20px rgba(251, 146, 60, 0.25);
+    --accent: #fcd34d;
+    --accent-soft: rgba(251, 191, 36, 0.15);
+    --accent-border: rgba(251, 191, 36, 0.35);
     --wall-base: #4a3d63;
     --mortar: #2a2140;
     --floor: #2a2443;
-    --gold: #fbbf24;
+    --target-color: #fbbf24;
+    --target-bg: rgba(251, 191, 36, 0.12);
+    --target-glow: rgba(251, 191, 36, 0.45);
     --crate-a: #d69a55;
     --crate-b: #9c6532;
     --crate-line: #5c3a1c;
+    --crate-done-a: #6ee7a0;
+    --crate-done-b: #16a34a;
+    --crate-done-line: #14532d;
+    --crate-done-glow: rgba(74, 222, 128, 0.55);
+    --player-bg: radial-gradient(circle at 35% 30%, #bfdbfe 0%, #3b82f6 45%, #1e3a8a 100%);
+    --modal-top: #2a2350;
+    --modal-bottom: #1a1534;
+    --modal-btn-bg: linear-gradient(180deg, #fbbf24, #f59e0b);
+    --modal-btn-text: #1c1636;
+    --kbd-bg: #2a2350;
     --cell: clamp(24px, min(7vw, 6.5vh), 56px);
+}
+
+/* =========================================================
+   THEME 2: SCI-FI / NEON CORE
+   ========================================================= */
+body[data-theme="scifi"] {
+    --bg-top: #090e1a;
+    --bg-bottom: #03050a;
+    --bg-glow: rgba(6, 182, 212, 0.22);
+    --bg-grid: rgba(56, 189, 248, 0.055);
+    --panel: rgba(15, 23, 42, 0.85);
+    --panel-border: rgba(56, 189, 248, 0.22);
+    --btn-top: #16243d;
+    --btn-bottom: #0c1526;
+    --board-top: #101b30;
+    --board-bottom: #070d19;
+    --board-border: rgba(56, 189, 248, 0.35);
+    --title-gradient: linear-gradient(90deg, #67e8f9, #38bdf8 50%, #a855f7);
+    --title-shadow: 0 0 24px rgba(56, 189, 248, 0.45);
+    --accent: #38bdf8;
+    --accent-soft: rgba(56, 189, 248, 0.14);
+    --accent-border: rgba(56, 189, 248, 0.45);
+    --wall-base: #1b283f;
+    --mortar: #38bdf8;
+    --floor: #0c1424;
+    --target-color: #22d3ee;
+    --target-bg: rgba(34, 211, 238, 0.12);
+    --target-glow: rgba(34, 211, 238, 0.65);
+    --crate-a: #334155;
+    --crate-b: #1e293b;
+    --crate-line: #f59e0b;
+    --crate-done-a: #064e3b;
+    --crate-done-b: #022c22;
+    --crate-done-line: #34d399;
+    --crate-done-glow: rgba(52, 211, 153, 0.7);
+    --player-bg: radial-gradient(circle at 35% 30%, #e0f2fe 0%, #0ea5e9 45%, #1d4ed8 100%);
+    --modal-top: #111c33;
+    --modal-bottom: #080e1c;
+    --modal-btn-bg: linear-gradient(180deg, #38bdf8, #0284c7);
+    --modal-btn-text: #04101f;
+    --kbd-bg: #111c33;
 }
 
 * {
@@ -30,23 +97,46 @@ body {
     color: #f1f5f9;
     font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
     background:
+        linear-gradient(var(--bg-grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px),
         radial-gradient(900px 500px at 50% -10%, var(--bg-glow) 0%, transparent 65%),
         linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+    background-size: 36px 36px, 36px 36px, 100% 100%, 100% 100%;
     overflow: hidden;
     touch-action: none;
     user-select: none;
     -webkit-user-select: none;
 }
 
-/* Intestazione */
+/* Header & Accents */
 .title {
     font-weight: 900;
     letter-spacing: -0.02em;
-    background: linear-gradient(90deg, #fcd34d, #fb923c 45%, #f472b6);
+    background: var(--title-gradient);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    text-shadow: 0 2px 20px rgba(251, 146, 60, 0.25);
+    text-shadow: var(--title-shadow);
+}
+
+.theme-accent {
+    color: var(--accent);
+}
+
+.badge-accent {
+    background: var(--accent-soft);
+    color: var(--accent);
+    border: 1px solid var(--accent-border);
+}
+
+.code-field {
+    background: var(--panel);
+    color: var(--accent);
+    border: 1px solid var(--panel-border);
+}
+
+.code-field:focus {
+    border-color: var(--accent);
 }
 
 .pill {
@@ -57,7 +147,7 @@ body {
 }
 
 .btn-icon {
-    background: linear-gradient(180deg, #3b3266, #2a2350);
+    background: linear-gradient(180deg, var(--btn-top), var(--btn-bottom));
     border: 1px solid var(--panel-border);
     border-radius: 12px;
     box-shadow: 0 6px 14px -6px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
@@ -68,18 +158,25 @@ body {
 .btn-icon:hover { filter: brightness(1.15); }
 .btn-icon:active { transform: scale(0.94); }
 
-/* Tabellone */
+/* Board */
 #game-board {
     display: grid;
     gap: 3px;
     padding: 12px;
     border-radius: 20px;
-    background: linear-gradient(160deg, #332a57, #1d1734);
+    background: linear-gradient(160deg, var(--board-top), var(--board-bottom));
     box-shadow:
-        0 0 0 1px rgba(255, 255, 255, 0.06),
+        0 0 0 1px var(--board-border),
         0 30px 60px -20px rgba(0, 0, 0, 0.75),
         inset 0 1px 0 rgba(255, 255, 255, 0.08);
     margin-bottom: 1.5rem;
+}
+
+body[data-theme="scifi"] #game-board {
+    box-shadow:
+        0 0 0 1px var(--board-border),
+        0 0 35px -10px rgba(56, 189, 248, 0.35),
+        0 30px 60px -20px rgba(0, 0, 0, 0.85);
 }
 
 .cell {
@@ -89,7 +186,7 @@ body {
     position: relative;
 }
 
-/* Muro in mattoni */
+/* Wall */
 .wall {
     background-color: var(--wall-base);
     background-image:
@@ -100,13 +197,23 @@ body {
     box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35);
 }
 
-/* Pavimento */
+body[data-theme="scifi"] .wall {
+    background-image:
+        linear-gradient(135deg, rgba(56, 189, 248, 0.14) 0%, transparent 50%),
+        linear-gradient(180deg, #243554, #141f33);
+    background-size: 100% 100%, 100% 100%;
+    box-shadow:
+        inset 0 0 0 1px rgba(56, 189, 248, 0.45),
+        inset 0 0 10px rgba(168, 85, 247, 0.2);
+}
+
+/* Floor */
 .floor {
     background-color: var(--floor);
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.035);
 }
 
-/* Destinazione: rombo dorato luminoso */
+/* Target */
 .target {
     background-color: var(--floor);
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.035);
@@ -120,14 +227,14 @@ body {
     width: 46%;
     height: 46%;
     transform: translate(-50%, -50%) rotate(45deg);
-    border: 2px solid var(--gold);
+    border: 2px solid var(--target-color);
     border-radius: 3px;
-    background: rgba(251, 191, 36, 0.12);
-    box-shadow: 0 0 12px rgba(251, 191, 36, 0.45), inset 0 0 6px rgba(251, 191, 36, 0.35);
+    background: var(--target-bg);
+    box-shadow: 0 0 12px var(--target-glow), inset 0 0 6px var(--target-glow);
     pointer-events: none;
 }
 
-/* Cassa in legno con assi incrociate */
+/* Box */
 .box,
 .box-on-target {
     border-radius: 5px;
@@ -151,18 +258,23 @@ body {
     pointer-events: none;
 }
 
-/* Cassa sulla destinazione: verde con bagliore */
-.box-on-target {
-    --crate-a: #6ee7a0;
-    --crate-b: #16a34a;
-    --crate-line: #14532d;
-    box-shadow:
-        inset 0 0 0 2px var(--crate-line),
-        inset 0 2px 0 rgba(255, 255, 255, 0.3),
-        0 0 14px rgba(74, 222, 128, 0.55);
+/* Sci-Fi energy core inside crate */
+body[data-theme="scifi"] .box::before {
+    inset: 22%;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fde68a 0%, #f59e0b 55%, transparent 72%);
+    box-shadow: 0 0 10px rgba(245, 158, 11, 0.75);
 }
 
-/* Cassa sulla destinazione: segno di spunta al posto della X */
+/* Box on target */
+.box-on-target {
+    background: linear-gradient(160deg, var(--crate-done-a), var(--crate-done-b));
+    box-shadow:
+        inset 0 0 0 2px var(--crate-done-line),
+        inset 0 2px 0 rgba(255, 255, 255, 0.3),
+        0 0 14px var(--crate-done-glow);
+}
+
 .box-on-target::before {
     content: '';
     inset: auto;
@@ -178,7 +290,20 @@ body {
     filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.4));
 }
 
-/* Giocatore: sfera blu con occhi direzionali */
+body[data-theme="scifi"] .box-on-target::before {
+    inset: 22%;
+    left: 22%;
+    top: 22%;
+    width: auto;
+    height: auto;
+    border: none;
+    border-radius: 50%;
+    transform: none;
+    background: radial-gradient(circle, #d1fae5 0%, #10b981 55%, transparent 72%);
+    box-shadow: 0 0 12px rgba(52, 211, 153, 0.9);
+}
+
+/* Player */
 .player {
     z-index: 20;
 }
@@ -192,10 +317,14 @@ body {
     height: 64%;
     transform: translate(-50%, -50%);
     border-radius: 50%;
-    background: radial-gradient(circle at 35% 30%, #bfdbfe 0%, #3b82f6 45%, #1e3a8a 100%);
+    background: var(--player-bg);
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5), 0 0 0 2px rgba(15, 23, 42, 0.6);
     pointer-events: none;
     z-index: 1;
+}
+
+body[data-theme="scifi"] .player::after {
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.8), 0 0 0 2px rgba(125, 211, 252, 0.5);
 }
 
 .player::before {
@@ -215,12 +344,22 @@ body {
     z-index: 2;
 }
 
+/* Sci-Fi glowing visor instead of eyes */
+body[data-theme="scifi"] .player::before {
+    background: radial-gradient(ellipse 46% 16% at 50% 22%, #ffffff 0%, #67e8f9 60%, transparent 75%);
+    filter: drop-shadow(0 0 4px #22d3ee);
+}
+
 .player[data-dir="up"]::before    { transform: translate(-50%, -50%) rotate(0deg); }
 .player[data-dir="right"]::before { transform: translate(-50%, -50%) rotate(90deg); }
 .player[data-dir="down"]::before  { transform: translate(-50%, -50%) rotate(180deg); }
 .player[data-dir="left"]::before  { transform: translate(-50%, -50%) rotate(-90deg); }
 
-/* Finestra modale */
+.empty {
+    background: transparent;
+}
+
+/* Modal window */
 #modal-overlay {
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
@@ -238,26 +377,29 @@ body {
 }
 
 #modal-content {
-    background: linear-gradient(180deg, #2a2350, #1a1534);
-    border: 1px solid rgba(251, 191, 36, 0.25);
-    box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8), 0 0 40px -10px rgba(251, 191, 36, 0.2);
+    background: linear-gradient(180deg, var(--modal-top), var(--modal-bottom));
+    border: 1px solid var(--accent-border);
+    box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8), 0 0 40px -10px var(--accent-soft);
 }
 
 #modal-btn {
-    background: linear-gradient(180deg, #fbbf24, #f59e0b);
-    color: #1c1636;
-    box-shadow: 0 8px 20px -6px rgba(245, 158, 11, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    background: var(--modal-btn-bg);
+    color: var(--modal-btn-text);
+    box-shadow: 0 8px 20px -6px var(--accent-soft), inset 0 1px 0 rgba(255, 255, 255, 0.4);
     transition: transform 0.15s ease, filter 0.15s ease;
 }
 
 #modal-btn:hover { filter: brightness(1.08); }
 #modal-btn:active { transform: scale(0.97); }
 
-/* Schermata iniziale */
+/* Start screen */
 #start-overlay {
     background:
+        linear-gradient(var(--bg-grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px),
         radial-gradient(900px 500px at 50% -10%, var(--bg-glow) 0%, transparent 65%),
         linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+    background-size: 36px 36px, 36px 36px, 100% 100%, 100% 100%;
 }
 
 .logo-crate {
@@ -283,24 +425,21 @@ body {
         linear-gradient(-45deg, transparent 46%, var(--crate-line) 46%, var(--crate-line) 54%, transparent 54%);
 }
 
-.hint-card {
-    background: var(--panel);
-    border: 1px solid var(--panel-border);
-    border-radius: 14px;
-    padding: 1rem;
-    text-align: center;
-    min-width: 130px;
-    box-shadow: 0 8px 20px -10px rgba(0, 0, 0, 0.6);
+body[data-theme="scifi"] .logo-crate::before {
+    inset: 24%;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fde68a 0%, #f59e0b 55%, transparent 72%);
+    box-shadow: 0 0 14px rgba(245, 158, 11, 0.85);
 }
 
-/* Modalità in base al dispositivo (impostata da game.js) */
+/* Input mode visibility (set by game.js) */
 body[data-mode="touch"] .only-keyboard,
 body[data-mode="keyboard"] .only-touch {
     display: none !important;
 }
 
 kbd {
-    background: #2a2350;
+    background: var(--kbd-bg);
     border: 1px solid var(--panel-border);
     border-bottom-width: 2px;
     border-radius: 6px;

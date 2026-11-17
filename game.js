@@ -15,12 +15,12 @@
 
 let currentLevelIndex = 0;
 
-// Quick start system via URL (?livello=N)
+// Quick start system via URL (?level=N or ?livello=N)
 const urlParams = new URLSearchParams(window.location.search);
-const livelloRichiesto = parseInt(urlParams.get('livello'));
-if (!isNaN(livelloRichiesto) && livelloRichiesto > 0 && livelloRichiesto <= levels.length) {
+const requestedLevel = parseInt(urlParams.get('level') || urlParams.get('livello'));
+if (!isNaN(requestedLevel) && requestedLevel > 0 && requestedLevel <= levels.length) {
     // Subtract 1 because the array is 0-indexed
-    currentLevelIndex = livelloRichiesto - 1;
+    currentLevelIndex = requestedLevel - 1;
 }
 
 let grid = [];
@@ -94,9 +94,9 @@ let modalCallback = null;
 
 // Detects the device type: 'touch' (phone/tablet) or 'keyboard' (PC).
 function detectInputMode() {
-    const forced = (urlParams.get('controlli') || '').toLowerCase();
+    const forced = (urlParams.get('controls') || urlParams.get('controlli') || '').toLowerCase();
     if (forced === 'touch') return 'touch';
-    if (forced === 'tastiera' || forced === 'keyboard') return 'keyboard';
+    if (forced === 'keyboard' || forced === 'tastiera') return 'keyboard';
 
     const coarse = window.matchMedia('(pointer: coarse)').matches;
     const fine = window.matchMedia('(pointer: fine)').matches;
@@ -110,9 +110,53 @@ function setupInputMode() {
     document.body.dataset.mode = detectInputMode();
 }
 
+// Theme management
+const THEMES = [
+    { id: 'classic', label: 'Classic' },
+    { id: 'scifi', label: 'Sci-Fi' }
+];
+const THEME_STORAGE_KEY = 'sokonova_theme';
+let currentThemeIndex = 0;
+
+function applyTheme(index) {
+    currentThemeIndex = index % THEMES.length;
+    const theme = THEMES[currentThemeIndex];
+    document.body.dataset.theme = theme.id;
+
+    const themeBtn = document.getElementById('theme-btn');
+    const themeLabel = document.getElementById('theme-label');
+    if (themeBtn) themeBtn.title = `Theme: ${theme.label}`;
+    if (themeLabel) themeLabel.innerText = theme.label;
+
+    try {
+        localStorage.setItem(THEME_STORAGE_KEY, theme.id);
+    } catch (_) {}
+}
+
+function setupTheme() {
+    let saved = null;
+    try {
+        saved = localStorage.getItem(THEME_STORAGE_KEY);
+    } catch (_) {}
+
+    const savedIndex = THEMES.findIndex(t => t.id === saved);
+    applyTheme(savedIndex >= 0 ? savedIndex : 0);
+
+    const themeBtn = document.getElementById('theme-btn');
+    if (themeBtn) {
+        themeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            applyTheme(currentThemeIndex + 1);
+        });
+    }
+}
+
 // Initialize the game
 function init() {
     setupInputMode();
+    setupTheme();
+
+    window.addEventListener('resize', updateCellSize);
 
     const codeInput = document.getElementById('code-input');
     const codeBtn = document.getElementById('code-btn');
@@ -121,7 +165,7 @@ function init() {
     const submitCode = () => {
         const targetIndex = findLevelIndexByCode(codeInput.value);
         if (targetIndex === -1) {
-            codeError.innerText = 'Codice non valido';
+            codeError.innerText = 'Invalid code';
             codeInput.value = '';
             return;
         }
@@ -149,7 +193,7 @@ function init() {
         else handleKeyDown(e);
     });
     window.addEventListener('touchstart', (e) => {
-        if (e.target.closest('#password-box')) return;
+        if (e.target.closest('#password-box') || e.target.closest('#theme-btn')) return;
         if (!gameStarted) startGame();
     }, { passive: false });
 
@@ -157,7 +201,7 @@ function init() {
 
     // Click on the start screen (useful on PC)
     document.getElementById('start-overlay').addEventListener('click', (e) => {
-        if (e.target.closest('#password-box')) return;
+        if (e.target.closest('#password-box') || e.target.closest('#theme-btn')) return;
         if (!gameStarted) startGame();
     });
 
@@ -180,9 +224,25 @@ function startGame() {
     }, 500);
 }
 
+function updateCellSize() {
+    if (!grid.length || !grid[0].length) return;
+    const cols = grid[0].length;
+    const rows = grid.length;
+    const gap = 3;
+
+    const availW = window.innerWidth - 44;
+    const availH = window.innerHeight - 230;
+
+    const cellW = (availW - (cols - 1) * gap) / cols;
+    const cellH = (availH - (rows - 1) * gap) / rows;
+    const size = Math.max(24, Math.min(58, Math.floor(Math.min(cellW, cellH))));
+
+    boardEl.style.setProperty('--cell', `${size}px`);
+}
+
 function loadLevel(index) {
     if (index >= levels.length) {
-        showModal("Vittoria!", "Hai completato tutti i livelli. Sei un maestro di Sokonova!", () => {
+        showModal("Victory!", "You completed all levels. You are a Sokonova master!", () => {
             currentLevelIndex = 0;
             loadLevel(0);
         });
@@ -217,14 +277,15 @@ function loadLevel(index) {
     // Set up CSS Grid based on map dimensions
     boardEl.style.gridTemplateColumns = `repeat(${maxWidth}, 1fr)`;
     boardEl.style.gridTemplateRows = `repeat(${grid.length}, 1fr)`;
+    updateCellSize();
 
     // Update UI
     const levelNumber = index + 1;
-    levelDisplay.innerText = `Livello ${levelNumber} / ${levels.length}`;
+    levelDisplay.innerText = `Level ${levelNumber} / ${levels.length}`;
 
     const levelCode = getLevelCode(levelNumber);
     if (levelCode) {
-        codeBadge.innerText = `Codice: ${levelCode}`;
+        codeBadge.innerText = `Code: ${levelCode}`;
         codeBadge.classList.remove('hidden');
     } else {
         codeBadge.classList.add('hidden');
@@ -257,7 +318,7 @@ function setupTimer(index) {
             if (timeLeft <= 0) {
                 clearInterval(timerInterval);
                 inputLocked = true;
-                showModal("Tempo Scaduto!", "Hai esaurito il tempo a disposizione.", () => {
+                showModal("Time's Up!", "You ran out of time.", () => {
                     restartCurrentLevel();
                 });
             }
@@ -467,10 +528,10 @@ function checkWinCondition() {
         setTimeout(() => {
             const nextCode = getLevelCode(currentLevelIndex + 2);
             const msg = nextCode
-                ? `Ottimo lavoro! Codice livello ${currentLevelIndex + 2}: ${nextCode}`
-                : "Ottimo lavoro! Preparati per la prossima sfida.";
+                ? `Great job! Level ${currentLevelIndex + 2} code: ${nextCode}`
+                : "Great job! Get ready for the next challenge.";
 
-            showModal("Livello Superato!", msg, () => {
+            showModal("Level Complete!", msg, () => {
                 currentLevelIndex++;
                 loadLevel(currentLevelIndex);
             });
