@@ -25,6 +25,8 @@ if (!isNaN(livelloRichiesto) && livelloRichiesto > 0 && livelloRichiesto <= leve
 
 let grid = [];
 let player = { x: 0, y: 0 };
+let playerDir = 'down';
+let pushCount = 0;
 
 // Timer Variables
 let timerInterval = null;
@@ -78,6 +80,7 @@ let gameStarted = false;
 // UI Elements
 const boardEl = document.getElementById('game-board');
 const levelDisplay = document.getElementById('level-display');
+const pushesDisplay = document.getElementById('pushes-display');
 const timerDisplay = document.getElementById('timer-display');
 const codeBadge = document.getElementById('code-badge');
 
@@ -189,6 +192,9 @@ function loadLevel(index) {
     const rawData = levels[index];
     grid = [];
     inputLocked = false;
+    playerDir = 'down';
+    pushCount = 0;
+    pushesDisplay.innerText = '0';
 
     // Maximum width for padding and CSS Grid
     let maxWidth = 0;
@@ -289,8 +295,14 @@ function render() {
             else if (char === '.') cell.classList.add('target');
             else if (char === '$') cell.classList.add('box', 'floor');
             else if (char === '*') cell.classList.add('box-on-target', 'floor');
-            else if (char === '@') cell.classList.add('player', 'floor');
-            else if (char === '+') cell.classList.add('player', 'target');
+            else if (char === '@') {
+                cell.classList.add('player', 'floor');
+                cell.dataset.dir = playerDir;
+            }
+            else if (char === '+') {
+                cell.classList.add('player', 'target');
+                cell.dataset.dir = playerDir;
+            }
             else cell.classList.add('empty');
 
             boardEl.appendChild(cell);
@@ -360,7 +372,19 @@ function setupSwipeControls() {
     }, { passive: false });
 }
 
+function updatePlayerDirection(dx, dy) {
+    if (dy === -1) playerDir = 'up';
+    else if (dy === 1) playerDir = 'down';
+    else if (dx === -1) playerDir = 'left';
+    else if (dx === 1) playerDir = 'right';
+
+    const playerEl = boardEl.querySelector('.player');
+    if (playerEl) playerEl.dataset.dir = playerDir;
+}
+
 function move(dx, dy) {
+    updatePlayerDirection(dx, dy);
+
     let newX = player.x + dx;
     let newY = player.y + dy;
 
@@ -400,6 +424,9 @@ function updateGrid(px, py, nx, ny, pushedBox, bx, by) {
     grid[py][px] = (grid[py][px] === '+') ? '.' : ' ';
 
     if (pushedBox) {
+        pushCount++;
+        pushesDisplay.innerText = pushCount;
+
         // Move the box to the new position
         let beyondWasTarget = (grid[by][bx] === '.');
         grid[by][bx] = beyondWasTarget ? '*' : '$';
