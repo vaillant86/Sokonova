@@ -19,6 +19,7 @@
     --accent-soft: rgba(251, 191, 36, 0.15);
     --accent-border: rgba(251, 191, 36, 0.35);
     --wall-base: #4a3d63;
+    --wall-border: rgba(0, 0, 0, 0.45);
     --mortar: #2a2140;
     --floor: #2a2443;
     --target-color: #fbbf24;
@@ -61,6 +62,7 @@ body[data-theme="scifi"] {
     --accent-soft: rgba(56, 189, 248, 0.14);
     --accent-border: rgba(56, 189, 248, 0.45);
     --wall-base: #1b283f;
+    --wall-border: rgba(56, 189, 248, 0.65);
     --mortar: #38bdf8;
     --floor: #0c1424;
     --target-color: #22d3ee;
@@ -79,6 +81,48 @@ body[data-theme="scifi"] {
     --modal-btn-bg: linear-gradient(180deg, #38bdf8, #0284c7);
     --modal-btn-text: #04101f;
     --kbd-bg: #111c33;
+}
+
+/* =========================================================
+   THEME 3: ARCADE 16-BIT / 90s CONSOLE
+   ========================================================= */
+body[data-theme="arcade"] {
+    --bg-top: #151926;
+    --bg-bottom: #0d1018;
+    --bg-glow: transparent;
+    --bg-grid: transparent;
+    --panel: #1e2436;
+    --panel-border: #475569;
+    --btn-top: #334155;
+    --btn-bottom: #1e293b;
+    --board-top: #1a2030;
+    --board-bottom: #121724;
+    --board-border: #facc15;
+    --title-gradient: linear-gradient(180deg, #fde047 0%, #f97316 55%, #ef4444 100%);
+    --title-shadow: 0 3px 0 #7f1d1d;
+    --accent: #facc15;
+    --accent-soft: rgba(250, 204, 21, 0.18);
+    --accent-border: #facc15;
+    --wall-base: #2563eb;
+    --wall-border: #0f172a;
+    --mortar: #1e3a8a;
+    --floor: #1e293b;
+    --target-color: #f43f5e;
+    --target-bg: rgba(244, 63, 94, 0.22);
+    --target-glow: transparent;
+    --crate-a: #f97316;
+    --crate-b: #ea580c;
+    --crate-line: #7c2d12;
+    --crate-done-a: #22c55e;
+    --crate-done-b: #16a34a;
+    --crate-done-line: #14532d;
+    --crate-done-glow: transparent;
+    --player-bg: #38bdf8;
+    --modal-top: #1e2436;
+    --modal-bottom: #141826;
+    --modal-btn-bg: #facc15;
+    --modal-btn-text: #0f172a;
+    --kbd-bg: #1e293b;
 }
 
 * {
@@ -108,6 +152,20 @@ body {
     -webkit-user-select: none;
 }
 
+/* Subtle CRT scanlines for Arcade 16-Bit */
+body[data-theme="arcade"] {
+    background:
+        repeating-linear-gradient(
+            0deg,
+            rgba(0, 0, 0, 0.22) 0px,
+            rgba(0, 0, 0, 0.22) 2px,
+            transparent 2px,
+            transparent 4px
+        ),
+        linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+    background-size: 100% 4px, 100% 100%;
+}
+
 /* Header & Accents */
 .title {
     font-weight: 900;
@@ -117,6 +175,13 @@ body {
     background-clip: text;
     color: transparent;
     text-shadow: var(--title-shadow);
+}
+
+body[data-theme="arcade"] .title {
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    text-shadow: none;
+    filter: drop-shadow(0 3px 0 #7f1d1d);
 }
 
 .theme-accent {
@@ -146,6 +211,12 @@ body {
     box-shadow: 0 8px 20px -8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
+body[data-theme="arcade"] .pill {
+    border-width: 2px;
+    border-radius: 6px;
+    box-shadow: 0 4px 0 #090d16;
+}
+
 .btn-icon {
     background: linear-gradient(180deg, var(--btn-top), var(--btn-bottom));
     border: 1px solid var(--panel-border);
@@ -158,10 +229,22 @@ body {
 .btn-icon:hover { filter: brightness(1.15); }
 .btn-icon:active { transform: scale(0.94); }
 
+body[data-theme="arcade"] .btn-icon {
+    border-width: 2px;
+    border-radius: 6px;
+    box-shadow: 0 4px 0 #090d16, inset 0 2px 0 rgba(255, 255, 255, 0.15);
+    transition: transform 0.06s steps(2);
+}
+
+body[data-theme="arcade"] .btn-icon:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #090d16;
+}
+
 /* Board */
 #game-board {
     display: grid;
-    gap: 3px;
+    gap: 0;
     padding: 12px;
     border-radius: 20px;
     background: linear-gradient(160deg, var(--board-top), var(--board-bottom));
@@ -179,6 +262,12 @@ body[data-theme="scifi"] #game-board {
         0 30px 60px -20px rgba(0, 0, 0, 0.85);
 }
 
+body[data-theme="arcade"] #game-board {
+    border-radius: 8px;
+    border: 3px solid var(--board-border);
+    box-shadow: 0 8px 0 #090d16;
+}
+
 .cell {
     width: var(--cell);
     height: var(--cell);
@@ -186,31 +275,46 @@ body[data-theme="scifi"] #game-board {
     position: relative;
 }
 
-/* Wall */
-.wall {
-    background-color: var(--wall-base);
-    background-image:
-        linear-gradient(var(--mortar) 2px, transparent 2px),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(0, 0, 0, 0.28));
-    background-size: 100% 33.4%, 100% 100%;
-    border-radius: 4px;
-    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35);
+body[data-theme="arcade"] .cell {
+    border-radius: 2px;
 }
 
+/* =========================================================
+   CONTINUOUS WALLS (AUTO-TILING)
+   ========================================================= */
+.wall {
+    background-color: var(--wall-base);
+    background-image: linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(0, 0, 0, 0.14) 100%);
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    z-index: 5;
+}
+
+/* Sci-Fi continuous metallic wall */
 body[data-theme="scifi"] .wall {
-    background-image:
-        linear-gradient(135deg, rgba(56, 189, 248, 0.14) 0%, transparent 50%),
-        linear-gradient(180deg, #243554, #141f33);
-    background-size: 100% 100%, 100% 100%;
-    box-shadow:
-        inset 0 0 0 1px rgba(56, 189, 248, 0.45),
-        inset 0 0 10px rgba(168, 85, 247, 0.2);
+    background-color: #16233b;
+    background-image: linear-gradient(135deg, rgba(56, 189, 248, 0.12) 0%, transparent 60%);
+    box-shadow: inset 0 0 12px rgba(56, 189, 248, 0.18);
+}
+
+/* Arcade 16-Bit solid wall */
+body[data-theme="arcade"] .wall {
+    background-color: #2563eb;
+    background-image: none;
+    border: none;
+    border-radius: 0;
+    box-shadow: inset 0 0 0 2px #0f172a;
 }
 
 /* Floor */
 .floor {
     background-color: var(--floor);
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.035);
+}
+
+body[data-theme="arcade"] .floor {
+    box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.08);
 }
 
 /* Target */
@@ -232,6 +336,12 @@ body[data-theme="scifi"] .wall {
     background: var(--target-bg);
     box-shadow: 0 0 12px var(--target-glow), inset 0 0 6px var(--target-glow);
     pointer-events: none;
+}
+
+body[data-theme="arcade"] .target::before {
+    border-width: 3px;
+    border-radius: 0;
+    box-shadow: none;
 }
 
 /* Box */
@@ -264,6 +374,16 @@ body[data-theme="scifi"] .box::before {
     border-radius: 50%;
     background: radial-gradient(circle, #fde68a 0%, #f59e0b 55%, transparent 72%);
     box-shadow: 0 0 10px rgba(245, 158, 11, 0.75);
+}
+
+/* Arcade 16-Bit pixel-bevel crate */
+body[data-theme="arcade"] .box {
+    border-radius: 2px;
+    background: var(--crate-a);
+    border: 2px solid #090d16;
+    box-shadow:
+        inset 3px 3px 0 #fdba74,
+        inset -3px -3px 0 #9a3412;
 }
 
 /* Box on target */
@@ -303,6 +423,19 @@ body[data-theme="scifi"] .box-on-target::before {
     box-shadow: 0 0 12px rgba(52, 211, 153, 0.9);
 }
 
+body[data-theme="arcade"] .box-on-target {
+    border-radius: 2px;
+    background: var(--crate-done-a);
+    border: 2px solid #090d16;
+    box-shadow:
+        inset 3px 3px 0 #86efac,
+        inset -3px -3px 0 #14532d;
+}
+
+body[data-theme="arcade"] .box-on-target::before {
+    filter: none;
+}
+
 /* Player */
 .player {
     z-index: 20;
@@ -327,6 +460,15 @@ body[data-theme="scifi"] .player::after {
     box-shadow: 0 0 12px rgba(56, 189, 248, 0.8), 0 0 0 2px rgba(125, 211, 252, 0.5);
 }
 
+body[data-theme="arcade"] .player::after {
+    border-radius: 6px;
+    border: 2px solid #090d16;
+    box-shadow:
+        inset 2px 2px 0 #bae6fd,
+        inset -2px -2px 0 #0284c7,
+        0 3px 0 #090d16;
+}
+
 .player::before {
     content: '';
     position: absolute;
@@ -348,6 +490,10 @@ body[data-theme="scifi"] .player::after {
 body[data-theme="scifi"] .player::before {
     background: radial-gradient(ellipse 46% 16% at 50% 22%, #ffffff 0%, #67e8f9 60%, transparent 75%);
     filter: drop-shadow(0 0 4px #22d3ee);
+}
+
+body[data-theme="arcade"] .player::before {
+    transition: transform 0.05s steps(2);
 }
 
 .player[data-dir="up"]::before    { transform: translate(-50%, -50%) rotate(0deg); }
@@ -382,6 +528,12 @@ body[data-theme="scifi"] .player::before {
     box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8), 0 0 40px -10px var(--accent-soft);
 }
 
+body[data-theme="arcade"] #modal-content {
+    border-width: 3px;
+    border-radius: 8px;
+    box-shadow: 0 8px 0 #090d16;
+}
+
 #modal-btn {
     background: var(--modal-btn-bg);
     color: var(--modal-btn-text);
@@ -392,6 +544,12 @@ body[data-theme="scifi"] .player::before {
 #modal-btn:hover { filter: brightness(1.08); }
 #modal-btn:active { transform: scale(0.97); }
 
+body[data-theme="arcade"] #modal-btn {
+    border: 2px solid #090d16;
+    border-radius: 6px;
+    box-shadow: 0 4px 0 #854d0e;
+}
+
 /* Start screen */
 #start-overlay {
     background:
@@ -400,6 +558,19 @@ body[data-theme="scifi"] .player::before {
         radial-gradient(900px 500px at 50% -10%, var(--bg-glow) 0%, transparent 65%),
         linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
     background-size: 36px 36px, 36px 36px, 100% 100%, 100% 100%;
+}
+
+body[data-theme="arcade"] #start-overlay {
+    background:
+        repeating-linear-gradient(
+            0deg,
+            rgba(0, 0, 0, 0.22) 0px,
+            rgba(0, 0, 0, 0.22) 2px,
+            transparent 2px,
+            transparent 4px
+        ),
+        linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+    background-size: 100% 4px, 100% 100%;
 }
 
 .logo-crate {
@@ -430,6 +601,16 @@ body[data-theme="scifi"] .logo-crate::before {
     border-radius: 50%;
     background: radial-gradient(circle, #fde68a 0%, #f59e0b 55%, transparent 72%);
     box-shadow: 0 0 14px rgba(245, 158, 11, 0.85);
+}
+
+body[data-theme="arcade"] .logo-crate {
+    border-radius: 4px;
+    background: var(--crate-a);
+    border: 3px solid #090d16;
+    box-shadow:
+        inset 4px 4px 0 #fdba74,
+        inset -4px -4px 0 #9a3412,
+        0 6px 0 #090d16;
 }
 
 /* Input mode visibility (set by game.js) */

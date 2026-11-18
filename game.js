@@ -31,15 +31,16 @@ let pushCount = 0;
 // Timer Variables
 let timerInterval = null;
 let timeLeft = 0;
+let timerStarted = false;
 
 // Timer rules: modify only these values
 const TIMER_FREE_LEVELS = 10;   // levels 1..10: no time limit
-const TIMER_BLOCK_SIZE = 30;    // each block of levels shares the same time limit
-const TIMER_BASE_SECONDS = 30;  // time limit for the first timed block (levels 11..40)
-const TIMER_STEP_SECONDS = 30;  // time limit increase for each subsequent block
+const TIMER_BLOCK_SIZE = 20;    // each block of levels shares the same time limit
+const TIMER_BASE_SECONDS = 30;  // time limit for the first timed block (levels 11..30)
+const TIMER_STEP_SECONDS = 15;  // time limit increase for each subsequent block
 
 // Returns the time limit in seconds for a level (0-based index), or null if untimed.
-// Examples with current values: 11-40 -> 30s, 41-70 -> 60s, 71-100 -> 90s, ...
+// Examples with current values: 11-30 -> 30s, 31-50 -> 45s, 51-70 -> 60s, ...
 function timeLimitForIndex(index) {
     if (index < TIMER_FREE_LEVELS) return null;
     const levelNumber = index + 1;
@@ -113,7 +114,8 @@ function setupInputMode() {
 // Theme management
 const THEMES = [
     { id: 'classic', label: 'Classic' },
-    { id: 'scifi', label: 'Sci-Fi' }
+    { id: 'scifi', label: 'Sci-Fi' },
+    { id: 'arcade', label: 'Arcade' }
 ];
 const THEME_STORAGE_KEY = 'sokonova_theme';
 let currentThemeIndex = 0;
@@ -228,7 +230,7 @@ function updateCellSize() {
     if (!grid.length || !grid[0].length) return;
     const cols = grid[0].length;
     const rows = grid.length;
-    const gap = 3;
+    const gap = 0;
 
     const availW = window.innerWidth - 44;
     const availH = window.innerHeight - 230;
@@ -297,10 +299,14 @@ function loadLevel(index) {
 
 function setupTimer(index) {
     clearInterval(timerInterval);
+    timerInterval = null;
+    timerStarted = false;
 
     const limit = timeLimitForIndex(index);
 
     if (limit === null) {
+        timeLimit = 0;
+        timeLeft = 0;
         timerDisplay.innerText = "∞";
         timerDisplay.classList.remove('text-red-400');
         timerDisplay.classList.add('text-emerald-400');
@@ -308,22 +314,27 @@ function setupTimer(index) {
         timeLimit = limit;
         timeLeft = timeLimit;
         updateTimerUI();
-
-        timerInterval = setInterval(() => {
-            if (inputLocked) return; // Do not decrease time while paused or in a modal
-
-            timeLeft--;
-            updateTimerUI();
-
-            if (timeLeft <= 0) {
-                clearInterval(timerInterval);
-                inputLocked = true;
-                showModal("Time's Up!", "You ran out of time.", () => {
-                    restartCurrentLevel();
-                });
-            }
-        }, 1000);
     }
+}
+
+function startLevelTimer() {
+    if (timerStarted || timeLimit <= 0) return;
+    timerStarted = true;
+
+    timerInterval = setInterval(() => {
+        if (inputLocked) return; // Do not decrease time while paused or in a modal
+
+        timeLeft--;
+        updateTimerUI();
+
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            inputLocked = true;
+            showModal("Time's Up!", "You ran out of time.", () => {
+                restartCurrentLevel();
+            });
+        }
+    }, 1000);
 }
 
 function updateTimerUI() {
@@ -351,7 +362,13 @@ function render() {
             // Base classes and visual rendering logic
             cell.className = 'cell';
 
-            if (char === '#') cell.classList.add('wall');
+            if (char === '#') {
+            cell.classList.add('wall');
+            if (y > 0 && grid[y - 1][x] === '#') cell.classList.add('wall-top');
+            if (y < grid.length - 1 && grid[y + 1][x] === '#') cell.classList.add('wall-bottom');
+            if (x > 0 && grid[y][x - 1] === '#') cell.classList.add('wall-left');
+            if (x < grid[y].length - 1 && grid[y][x + 1] === '#') cell.classList.add('wall-right');
+            }
             else if (char === ' ') cell.classList.add('floor');
             else if (char === '.') cell.classList.add('target');
             else if (char === '$') cell.classList.add('box', 'floor');
@@ -481,6 +498,8 @@ function move(dx, dy) {
 }
 
 function updateGrid(px, py, nx, ny, pushedBox, bx, by) {
+    startLevelTimer();
+
     // Remove player from the old position
     grid[py][px] = (grid[py][px] === '+') ? '.' : ' ';
 
