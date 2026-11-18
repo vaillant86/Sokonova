@@ -628,3 +628,50 @@ kbd {
     color: #e2e8f0;
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
+
+/* =========================================================
+   TACTILE MICRO-ANIMATIONS (SLIDE & TARGET LOCK)
+   ========================================================= */
+@keyframes cell-slide {
+    0% {
+        transform: translate(calc(var(--dx) * -100%), calc(var(--dy) * -100%));
+    }
+    100% {
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes box-target-lock {
+    0% {
+        transform: translate(calc(var(--dx) * -100%), calc(var(--dy) * -100%)) scale(1);
+    }
+    55% {
+        transform: translate(0, 0) scale(1.16);
+    }
+    80% {
+        transform: translate(0, 0) scale(0.94);
+    }
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+}
+
+.anim-slide {
+    animation: cell-slide 0.095s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
+}
+
+.anim-box-lock {
+    animation: box-target-lock 0.24s cubic-bezier(0.34, 1.56, 0.64, 1);
+    will-change: transform;
+}
+
+/* Snappier 16-bit feel for Arcade theme */
+body[data-theme="arcade"] .anim-slide {
+    animation-duration: 0.07s;
+    animation-timing-function: steps(3);
+}
+
+body[data-theme="arcade"] .anim-box-lock {
+    animation-duration: 0.18s;
+}

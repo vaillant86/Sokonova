@@ -1,20 +1,25 @@
 # Sokonova
 
-Sokoban-style puzzle game: push the boxes onto the targets, featuring levels of increasing difficulty.
+Sokonova is a challenging puzzle game (inspired by Sokoban): push the boxes onto the targets, beware of tricks and time limits.
 
 ## How to play
 
+### Via web link
+Open **[https://vaillant86.github.io/Sokonova](https://vaillant86.github.io/Sokonova)** directly in your browser.
+
+### Local
 Open `index.html` in your browser. Since Tailwind is loaded via CDN, an internet connection is required.
 
 Controls adapt automatically to your device:
 
-- **PC:** Arrow keys or WASD.
+- **PC:** Arrow keys or WASD to move, `R` to restart the current level.
 - **Mobile:** Swipe anywhere on the screen.
 
 ## Features
 
-- **Time limits:** no limit for levels 1–10; from level 11 onwards, the time limit increases progressively with difficulty.
-- **Checkpoint codes:** every ten levels (from level 11 onwards), you receive a 5-letter code. Enter it on the start screen to pick up right where you left off.
+- **Time limits:** no limit for levels 1–10; from level 11 onwards, the timer starts on first move.
+- **Checkpoint codes:** every ten levels, from level 11 onwards, you receive a 5-letter code. Enter it in the upper right box to pick up right where you left off.
+- **Visual themes:** switch anytime between **Classic**, **Sci-Fi**, and **Arcade** themes.
 
 ## Structure
 

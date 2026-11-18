@@ -7,29 +7,33 @@
  * '*' = Box on Target
  * '+' = Player on Target
  * ' ' = Empty
- *
  */
 
 // Levels are defined in levels.js, loaded before this file.
-
 
 let currentLevelIndex = 0;
 
 // Quick start system via URL (?level=N or ?livello=N)
 const urlParams = new URLSearchParams(window.location.search);
-const requestedLevel = parseInt(urlParams.get('level') || urlParams.get('livello'));
+const requestedLevel = parseInt(urlParams.get('level') || urlParams.get('livello'), 10);
 if (!isNaN(requestedLevel) && requestedLevel > 0 && requestedLevel <= levels.length) {
-    // Subtract 1 because the array is 0-indexed
     currentLevelIndex = requestedLevel - 1;
 }
 
+// Game State
 let grid = [];
 let player = { x: 0, y: 0 };
 let playerDir = 'down';
 let pushCount = 0;
+let lastMove = null;
+
+// Lock controls during transitions/modals
+let inputLocked = false;
+let gameStarted = false;
 
 // Timer Variables
 let timerInterval = null;
+let timeLimit = 0;
 let timeLeft = 0;
 let timerStarted = false;
 
@@ -38,6 +42,45 @@ const TIMER_FREE_LEVELS = 10;   // levels 1..10: no time limit
 const TIMER_BLOCK_SIZE = 20;    // each block of levels shares the same time limit
 const TIMER_BASE_SECONDS = 30;  // time limit for the first timed block (levels 11..30)
 const TIMER_STEP_SECONDS = 15;  // time limit increase for each subsequent block
+
+// Fixed 5-letter checkpoint passwords (levels 11, 21, 31, ...)
+const CHECKPOINT_CODES = (typeof LEVEL_CODES !== 'undefined') ? LEVEL_CODES : {
+    11: 'QXJMT',
+    21: 'BRKVA',
+    31: 'NPLZE',
+    41: 'YCWTF',
+    51: 'VQELA',
+    61: 'HDMSQ',
+    71: 'KRGUX',
+    81: 'TJBPN',
+    91: 'SZWKC',
+    101: 'MFYRD',
+};
+
+// Theme configuration
+const THEMES = [
+    { id: 'classic', label: 'Classic' },
+    { id: 'scifi', label: 'Sci-Fi' },
+    { id: 'arcade', label: 'Arcade' }
+];
+const THEME_STORAGE_KEY = 'sokonova_theme';
+let currentThemeIndex = 0;
+
+// UI Elements
+const boardEl = document.getElementById('game-board');
+const levelDisplay = document.getElementById('level-display');
+const pushesDisplay = document.getElementById('pushes-display');
+const timerDisplay = document.getElementById('timer-display');
+const codeBadge = document.getElementById('code-badge');
+const homeBtn = document.getElementById('home-btn');
+
+// Modal Elements
+const modalOverlay = document.getElementById('modal-overlay');
+const modalContent = document.getElementById('modal-content');
+const modalTitle = document.getElementById('modal-title');
+const modalMessage = document.getElementById('modal-message');
+const modalBtn = document.getElementById('modal-btn');
+let modalCallback = null;
 
 // Returns the time limit in seconds for a level (0-based index), or null if untimed.
 // Examples with current values: 11-30 -> 30s, 31-50 -> 45s, 51-70 -> 60s, ...
@@ -48,52 +91,34 @@ function timeLimitForIndex(index) {
     return TIMER_BASE_SECONDS + block * TIMER_STEP_SECONDS;
 }
 
-// Generates a deterministic 5-letter uppercase password for checkpoint levels (11, 21, 31, ...)
-function getLevelCode(levelNumber) {
-    if (levelNumber < 11 || (levelNumber - 1) % 10 !== 0) return null;
-    let seed = (levelNumber * 2654435761) >>> 0;
-    let code = '';
-    for (let i = 0; i < 5; i++) {
-        seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
-        code += String.fromCharCode(65 + (seed % 26));
-    }
-    return code;
+// Returns the checkpoint level number (11, 21, 31, ...) active for a given level, or null for levels 1..10
+function getCheckpointLevel(levelNumber) {
+    if (levelNumber < 11) return null;
+    return Math.floor((levelNumber - 1) / 10) * 10 + 1;
+}
+
+// Returns the persistent 5-letter code shown in the HUD across the whole 10-level block (e.g. 11..20 -> code of 11)
+function getActiveLevelCode(levelNumber) {
+    const checkpoint = getCheckpointLevel(levelNumber);
+    if (!checkpoint) return null;
+    return CHECKPOINT_CODES[checkpoint] || null;
 }
 
 // Returns the 0-based level index matching the given 5-letter code, or -1 if invalid
 function findLevelIndexByCode(rawCode) {
     const clean = rawCode.trim().toUpperCase();
     if (clean.length !== 5) return -1;
-    for (let lvl = 11; lvl <= levels.length; lvl += 10) {
-        if (getLevelCode(lvl) === clean) {
+
+    for (const [lvlStr, code] of Object.entries(CHECKPOINT_CODES)) {
+        const lvl = parseInt(lvlStr, 10);
+        if (code.toUpperCase() === clean && lvl <= levels.length) {
             return lvl - 1;
         }
     }
     return -1;
 }
 
-let timeLimit = 60; // seconds for the current level (set in setupTimer)
-
-// Lock controls during transitions/modals
-let inputLocked = false;
-let gameStarted = false;
-
-// UI Elements
-const boardEl = document.getElementById('game-board');
-const levelDisplay = document.getElementById('level-display');
-const pushesDisplay = document.getElementById('pushes-display');
-const timerDisplay = document.getElementById('timer-display');
-const codeBadge = document.getElementById('code-badge');
-
-// Modal Elements
-const modalOverlay = document.getElementById('modal-overlay');
-const modalContent = document.getElementById('modal-content');
-const modalTitle = document.getElementById('modal-title');
-const modalMessage = document.getElementById('modal-message');
-const modalBtn = document.getElementById('modal-btn');
-let modalCallback = null;
-
-// Detects the device type: 'touch' (phone/tablet) or 'keyboard' (PC).
+// Detects the device type: 'touch' (phone/tablet) or 'keyboard' (PC)
 function detectInputMode() {
     const forced = (urlParams.get('controls') || urlParams.get('controlli') || '').toLowerCase();
     if (forced === 'touch') return 'touch';
@@ -102,8 +127,6 @@ function detectInputMode() {
     const coarse = window.matchMedia('(pointer: coarse)').matches;
     const fine = window.matchMedia('(pointer: fine)').matches;
     const hasTouch = navigator.maxTouchPoints > 0;
-    // Device with a coarse pointer (finger): touch mode.
-    // Device with a precise mouse or keyboard: keyboard mode.
     return (coarse || (!fine && hasTouch)) ? 'touch' : 'keyboard';
 }
 
@@ -112,14 +135,6 @@ function setupInputMode() {
 }
 
 // Theme management
-const THEMES = [
-    { id: 'classic', label: 'Classic' },
-    { id: 'scifi', label: 'Sci-Fi' },
-    { id: 'arcade', label: 'Arcade' }
-];
-const THEME_STORAGE_KEY = 'sokonova_theme';
-let currentThemeIndex = 0;
-
 function applyTheme(index) {
     currentThemeIndex = index % THEMES.length;
     const theme = THEMES[currentThemeIndex];
@@ -172,6 +187,7 @@ function init() {
             return;
         }
         codeError.innerText = '';
+        codeInput.value = '';
         currentLevelIndex = targetIndex;
         startGame();
     };
@@ -191,37 +207,69 @@ function init() {
 
     window.addEventListener('keydown', (e) => {
         if (e.target.tagName === 'INPUT') return;
-        if (!gameStarted) startGame();
-        else handleKeyDown(e);
+        if (!gameStarted) {
+            startGame();
+        } else {
+            handleKeyDown(e);
+        }
     });
+
     window.addEventListener('touchstart', (e) => {
-        if (e.target.closest('#password-box') || e.target.closest('#theme-btn')) return;
-        if (!gameStarted) startGame();
+        if (e.target.closest('#password-box') || e.target.closest('#theme-btn') || e.target.closest('#home-btn')) return;
+        if (!gameStarted) {
+            startGame();
+        }
     }, { passive: false });
 
     setupSwipeControls();
 
     // Click on the start screen (useful on PC)
     document.getElementById('start-overlay').addEventListener('click', (e) => {
-        if (e.target.closest('#password-box') || e.target.closest('#theme-btn')) return;
-        if (!gameStarted) startGame();
+        if (e.target.closest('#password-box') || e.target.closest('#theme-btn') || e.target.closest('#home-btn')) return;
+        if (!gameStarted) {
+            startGame();
+        }
     });
+
+    if (homeBtn) {
+        homeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            goHome();
+        });
+    }
 
     modalBtn.addEventListener('click', () => {
         hideModal();
         if (modalCallback) modalCallback();
     });
+}
 
-    // Wait for user interaction to start the first level
+// Returns to the start screen, stops the timer, and closes active modals
+function goHome() {
+    if (!gameStarted) return;
+    gameStarted = false;
+    inputLocked = true;
+    clearInterval(timerInterval);
+    timerStarted = false;
+    modalCallback = null;
+    hideModal();
+
+    if (homeBtn) homeBtn.classList.add('hidden');
+
+    const overlay = document.getElementById('start-overlay');
+    overlay.classList.remove('hidden', 'opacity-0');
 }
 
 function startGame() {
     if (gameStarted) return;
     gameStarted = true;
+    inputLocked = true;
+
     const overlay = document.getElementById('start-overlay');
     overlay.classList.add('opacity-0');
     setTimeout(() => {
         overlay.classList.add('hidden');
+        if (homeBtn) homeBtn.classList.remove('hidden');
         loadLevel(currentLevelIndex);
     }, 500);
 }
@@ -256,17 +304,20 @@ function loadLevel(index) {
     inputLocked = false;
     playerDir = 'down';
     pushCount = 0;
+    lastMove = null;
     pushesDisplay.innerText = '0';
 
     // Maximum width for padding and CSS Grid
     let maxWidth = 0;
-    rawData.forEach(row => { if (row.length > maxWidth) maxWidth = row.length; });
+    rawData.forEach(row => {
+        if (row.length > maxWidth) maxWidth = row.length;
+    });
 
     // Build the game grid and locate the player
     for (let y = 0; y < rawData.length; y++) {
-        let rowArray = [];
+        const rowArray = [];
         for (let x = 0; x < maxWidth; x++) {
-            let char = rawData[y][x] || ' '; // Pad with empty spaces
+            const char = rawData[y][x] || ' ';
             if (char === '@' || char === '+') {
                 player.x = x;
                 player.y = y;
@@ -285,7 +336,7 @@ function loadLevel(index) {
     const levelNumber = index + 1;
     levelDisplay.innerText = `Level ${levelNumber} / ${levels.length}`;
 
-    const levelCode = getLevelCode(levelNumber);
+    const levelCode = getActiveLevelCode(levelNumber);
     if (levelCode) {
         codeBadge.innerText = `Code: ${levelCode}`;
         codeBadge.classList.remove('hidden');
@@ -322,7 +373,7 @@ function startLevelTimer() {
     timerStarted = true;
 
     timerInterval = setInterval(() => {
-        if (inputLocked) return; // Do not decrease time while paused or in a modal
+        if (inputLocked) return;
 
         timeLeft--;
         updateTimerUI();
@@ -354,34 +405,47 @@ function updateTimerUI() {
 
 function render() {
     boardEl.innerHTML = '';
+
     for (let y = 0; y < grid.length; y++) {
         for (let x = 0; x < grid[y].length; x++) {
             const char = grid[y][x];
             const cell = document.createElement('div');
-
-            // Base classes and visual rendering logic
             cell.className = 'cell';
 
             if (char === '#') {
-            cell.classList.add('wall');
-            if (y > 0 && grid[y - 1][x] === '#') cell.classList.add('wall-top');
-            if (y < grid.length - 1 && grid[y + 1][x] === '#') cell.classList.add('wall-bottom');
-            if (x > 0 && grid[y][x - 1] === '#') cell.classList.add('wall-left');
-            if (x < grid[y].length - 1 && grid[y][x + 1] === '#') cell.classList.add('wall-right');
-            }
-            else if (char === ' ') cell.classList.add('floor');
-            else if (char === '.') cell.classList.add('target');
-            else if (char === '$') cell.classList.add('box', 'floor');
-            else if (char === '*') cell.classList.add('box-on-target', 'floor');
-            else if (char === '@') {
+                cell.classList.add('wall');
+                if (y > 0 && grid[y - 1][x] === '#') cell.classList.add('wall-top');
+                if (y < grid.length - 1 && grid[y + 1][x] === '#') cell.classList.add('wall-bottom');
+                if (x > 0 && grid[y][x - 1] === '#') cell.classList.add('wall-left');
+                if (x < grid[y].length - 1 && grid[y][x + 1] === '#') cell.classList.add('wall-right');
+            } else if (char === ' ') {
+                cell.classList.add('floor');
+            } else if (char === '.') {
+                cell.classList.add('target');
+            } else if (char === '$') {
+                cell.classList.add('box', 'floor');
+            } else if (char === '*') {
+                cell.classList.add('box-on-target', 'floor');
+            } else if (char === '@') {
                 cell.classList.add('player', 'floor');
                 cell.dataset.dir = playerDir;
-            }
-            else if (char === '+') {
+            } else if (char === '+') {
                 cell.classList.add('player', 'target');
                 cell.dataset.dir = playerDir;
+            } else {
+                cell.classList.add('empty');
             }
-            else cell.classList.add('empty');
+
+            if (lastMove) {
+                const isMovedPlayer = lastMove.playerTo.x === x && lastMove.playerTo.y === y;
+                const isMovedBox = lastMove.boxTo && lastMove.boxTo.x === x && lastMove.boxTo.y === y;
+
+                if (isMovedPlayer || isMovedBox) {
+                    cell.style.setProperty('--dx', lastMove.dx);
+                    cell.style.setProperty('--dy', lastMove.dy);
+                    cell.classList.add(lastMove.boxLanded && isMovedBox ? 'anim-box-lock' : 'anim-slide');
+                }
+            }
 
             boardEl.appendChild(cell);
         }
@@ -391,7 +455,9 @@ function render() {
 function handleKeyDown(e) {
     if (inputLocked || !gameStarted) return;
 
-    let dx = 0, dy = 0;
+    let dx = 0;
+    let dy = 0;
+
     if (['ArrowUp', 'w', 'W'].includes(e.key)) dy = -1;
     else if (['ArrowDown', 's', 'S'].includes(e.key)) dy = 1;
     else if (['ArrowLeft', 'a', 'A'].includes(e.key)) dx = -1;
@@ -402,7 +468,7 @@ function handleKeyDown(e) {
     }
 
     if (dx !== 0 || dy !== 0) {
-        e.preventDefault(); // Prevent scrolling
+        e.preventDefault();
         move(dx, dy);
     }
 }
@@ -411,40 +477,38 @@ function handleKeyDown(e) {
 function setupSwipeControls() {
     let touchStartX = 0;
     let touchStartY = 0;
-    const swipeThreshold = 30; // Minimum distance to register a valid swipe
+    const swipeThreshold = 30;
 
     // Prevent pull-to-refresh and native scrolling during gameplay
-    window.addEventListener('touchmove', e => {
+    window.addEventListener('touchmove', (e) => {
         if (gameStarted && !inputLocked) {
             e.preventDefault();
         }
     }, { passive: false });
 
-    window.addEventListener('touchstart', e => {
+    window.addEventListener('touchstart', (e) => {
         touchStartX = e.changedTouches[0].screenX;
         touchStartY = e.changedTouches[0].screenY;
     }, { passive: false });
 
-    window.addEventListener('touchend', e => {
+    window.addEventListener('touchend', (e) => {
         if (inputLocked || !gameStarted) return;
 
-        let touchEndX = e.changedTouches[0].screenX;
-        let touchEndY = e.changedTouches[0].screenY;
+        const touchEndX = e.changedTouches[0].screenX;
+        const touchEndY = e.changedTouches[0].screenY;
 
-        let dx = touchEndX - touchStartX;
-        let dy = touchEndY - touchStartY;
+        const dx = touchEndX - touchStartX;
+        const dy = touchEndY - touchStartY;
 
         if (Math.abs(dx) > Math.abs(dy)) {
-            // Horizontal movement
             if (Math.abs(dx) > swipeThreshold) {
-                if (dx > 0) move(1, 0); // Right
-                else move(-1, 0);       // Left
+                if (dx > 0) move(1, 0);
+                else move(-1, 0);
             }
         } else {
-            // Vertical movement
             if (Math.abs(dy) > swipeThreshold) {
-                if (dy > 0) move(0, 1); // Down
-                else move(0, -1);       // Up
+                if (dy > 0) move(0, 1);
+                else move(0, -1);
             }
         }
     }, { passive: false });
@@ -463,13 +527,13 @@ function updatePlayerDirection(dx, dy) {
 function move(dx, dy) {
     updatePlayerDirection(dx, dy);
 
-    let newX = player.x + dx;
-    let newY = player.y + dy;
+    const newX = player.x + dx;
+    const newY = player.y + dy;
 
     // Out of bounds
     if (newY < 0 || newY >= grid.length || newX < 0 || newX >= grid[newY].length) return;
 
-    let targetCell = grid[newY][newX];
+    const targetCell = grid[newY][newX];
 
     // Wall
     if (targetCell === '#') return;
@@ -480,16 +544,14 @@ function move(dx, dy) {
         return;
     }
 
-    // There is a box to push
+    // Box to push
     if (targetCell === '$' || targetCell === '*') {
-        let beyondX = newX + dx;
-        let beyondY = newY + dy;
+        const beyondX = newX + dx;
+        const beyondY = newY + dy;
 
-        // Check what is behind the box
         if (beyondY >= 0 && beyondY < grid.length && beyondX >= 0 && beyondX < grid[beyondY].length) {
-            let beyondCell = grid[beyondY][beyondX];
+            const beyondCell = grid[beyondY][beyondX];
 
-            // If there is empty space or a target behind it, push
             if (beyondCell === ' ' || beyondCell === '.') {
                 updateGrid(player.x, player.y, newX, newY, true, beyondX, beyondY);
             }
@@ -508,11 +570,11 @@ function updateGrid(px, py, nx, ny, pushedBox, bx, by) {
         pushesDisplay.innerText = pushCount;
 
         // Move the box to the new position
-        let beyondWasTarget = (grid[by][bx] === '.');
+        const beyondWasTarget = (grid[by][bx] === '.');
         grid[by][bx] = beyondWasTarget ? '*' : '$';
 
         // The player takes the box's previous spot
-        let boxWasOnTarget = (grid[ny][nx] === '*');
+        const boxWasOnTarget = (grid[ny][nx] === '*');
         grid[ny][nx] = boxWasOnTarget ? '+' : '@';
     } else {
         // Simple player movement
@@ -522,13 +584,22 @@ function updateGrid(px, py, nx, ny, pushedBox, bx, by) {
     player.x = nx;
     player.y = ny;
 
+    lastMove = {
+        dx: nx - px,
+        dy: ny - py,
+        playerTo: { x: nx, y: ny },
+        boxTo: pushedBox ? { x: bx, y: by } : null,
+        boxLanded: pushedBox && (grid[by][bx] === '*')
+    };
+
     render();
+    lastMove = null;
     checkWinCondition();
 }
 
 function checkWinCondition() {
     let isComplete = true;
-    // Check if there are still any '$' boxes not on targets
+
     for (let y = 0; y < grid.length; y++) {
         for (let x = 0; x < grid[y].length; x++) {
             if (grid[y][x] === '$') {
@@ -543,11 +614,12 @@ function checkWinCondition() {
         inputLocked = true;
         clearInterval(timerInterval);
 
-        // Short delay to show the last box placed
         setTimeout(() => {
-            const nextCode = getLevelCode(currentLevelIndex + 2);
+            const nextLevel = currentLevelIndex + 2;
+            const isNewCheckpoint = nextLevel >= 11 && (nextLevel - 1) % 10 === 0;
+            const nextCode = isNewCheckpoint ? getActiveLevelCode(nextLevel) : null;
             const msg = nextCode
-                ? `Great job! Level ${currentLevelIndex + 2} code: ${nextCode}`
+                ? `Great job! Level ${nextLevel} code: ${nextCode}`
                 : "Great job! Get ready for the next challenge.";
 
             showModal("Level Complete!", msg, () => {
