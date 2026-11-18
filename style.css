@@ -178,8 +178,7 @@ body[data-theme="arcade"] {
 }
 
 body[data-theme="arcade"] .title {
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
+    letter-spacing: -0.02em;
     text-shadow: none;
     filter: drop-shadow(0 3px 0 #7f1d1d);
 }
@@ -232,7 +231,7 @@ body[data-theme="arcade"] .pill {
 body[data-theme="arcade"] .btn-icon {
     border-width: 2px;
     border-radius: 6px;
-    box-shadow: 0 4px 0 #090d16, inset 0 2px 0 rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 0 #090d16;
     transition: transform 0.06s steps(2);
 }
 

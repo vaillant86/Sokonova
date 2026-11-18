@@ -37,11 +37,13 @@ let timeLimit = 0;
 let timeLeft = 0;
 let timerStarted = false;
 
-// Timer rules: modify only these values
-const TIMER_FREE_LEVELS = 10;   // levels 1..10: no time limit
-const TIMER_BLOCK_SIZE = 20;    // each block of levels shares the same time limit
-const TIMER_BASE_SECONDS = 30;  // time limit for the first timed block (levels 11..30)
-const TIMER_STEP_SECONDS = 15;  // time limit increase for each subsequent block
+// Score-based timer rules (15s tiers from 30s up to 180s at score 200)
+const TIMER_FREE_LEVELS = 10;   // levels 1..10: untimed tutorial
+const TIMER_MIN_SECONDS = 30;   // minimum time limit (score <= 50)
+const TIMER_MAX_SECONDS = 180;  // maximum time limit (3 minutes, score >= 186..200)
+const TIMER_STEP_SECONDS = 15;  // tier increment in seconds
+const TIMER_BASE_SCORE = 50;    // score threshold for the 30s tier
+const TIMER_SCORE_STEP = 35;    // score points per 15s tier
 
 // Fixed 5-letter checkpoint passwords (levels 11, 21, 31, ...)
 const CHECKPOINT_CODES = (typeof LEVEL_CODES !== 'undefined') ? LEVEL_CODES : {
@@ -82,13 +84,22 @@ const modalMessage = document.getElementById('modal-message');
 const modalBtn = document.getElementById('modal-btn');
 let modalCallback = null;
 
-// Returns the time limit in seconds for a level (0-based index), or null if untimed.
-// Examples with current values: 11-30 -> 30s, 31-50 -> 45s, 51-70 -> 60s, ...
-function timeLimitForIndex(index) {
+// Returns the time limit in seconds based on level complexity score, or null if untimed.
+// Tiers: <=50 -> 30s, 51..65 -> 45s, 66..80 -> 60s, ..., 186..200 -> 180s (3 min).
+function timeLimitForLevel(index, levelEntry) {
     if (index < TIMER_FREE_LEVELS) return null;
-    const levelNumber = index + 1;
-    const block = Math.floor((levelNumber - (TIMER_FREE_LEVELS + 1)) / TIMER_BLOCK_SIZE);
-    return TIMER_BASE_SECONDS + block * TIMER_STEP_SECONDS;
+
+    const score = (levelEntry && typeof levelEntry.score === 'number')
+        ? levelEntry.score
+        : TIMER_BASE_SCORE;
+
+    const maxTiers = Math.floor((TIMER_MAX_SECONDS - TIMER_MIN_SECONDS) / TIMER_STEP_SECONDS);
+    const tier = Math.max(
+        0,
+        Math.min(maxTiers, Math.ceil((score - TIMER_BASE_SCORE) / TIMER_SCORE_STEP))
+    );
+
+    return TIMER_MIN_SECONDS + tier * TIMER_STEP_SECONDS;
 }
 
 // Returns the checkpoint level number (11, 21, 31, ...) active for a given level, or null for levels 1..10
@@ -299,7 +310,9 @@ function loadLevel(index) {
         return;
     }
 
-    const rawData = levels[index];
+    const levelEntry = levels[index];
+    const rawData = Array.isArray(levelEntry) ? levelEntry : levelEntry.map;
+
     grid = [];
     inputLocked = false;
     playerDir = 'down';
@@ -344,16 +357,16 @@ function loadLevel(index) {
         codeBadge.classList.add('hidden');
     }
 
-    setupTimer(index);
+    setupTimer(index, levelEntry);
     render();
 }
 
-function setupTimer(index) {
+function setupTimer(index, levelEntry) {
     clearInterval(timerInterval);
     timerInterval = null;
     timerStarted = false;
 
-    const limit = timeLimitForIndex(index);
+    const limit = timeLimitForLevel(index, levelEntry);
 
     if (limit === null) {
         timeLimit = 0;
