@@ -13,7 +13,7 @@
 
 let currentLevelIndex = 0;
 
-// Quick start system via URL (?level=N)
+// Quick start system via URL (?level=N or ?livello=N)
 const urlParams = new URLSearchParams(window.location.search);
 const requestedLevel = parseInt(urlParams.get('level') || urlParams.get('livello'), 10);
 const hasDirectLevelParam = !isNaN(requestedLevel) && requestedLevel > 0 && requestedLevel <= levels.length;
@@ -38,13 +38,14 @@ let timeLimit = 0;
 let timeLeft = 0;
 let timerStarted = false;
 
-// Score-based timer rules (15s tiers from 30s up to 180s at score 200)
-const TIMER_FREE_LEVELS = 10;   // levels 1..10: untimed tutorial
+// Score-based timer rules: every 15 score points above TIMER_BASE_SCORE adds one 10s tier,
+// from 30s up to a 180s cap (reached at score 261 and above)
+const TIMER_FREE_LEVELS = 10;   // levels 1..10: untimed tutorial & warm-up
 const TIMER_MIN_SECONDS = 30;   // minimum time limit (score <= 50)
-const TIMER_MAX_SECONDS = 180;  // maximum time limit (3 minutes, score >= 186..200)
-const TIMER_STEP_SECONDS = 15;  // tier increment in seconds
-const TIMER_BASE_SCORE = 50;    // score threshold for the 30s tier
-const TIMER_SCORE_STEP = 35;    // score points per 15s tier
+const TIMER_MAX_SECONDS = 180;  // maximum time limit (3 minutes, reached at score >= 261)
+const TIMER_STEP_SECONDS = 10;  // tier increment in seconds
+const TIMER_BASE_SCORE = 50;    // highest score still in the 30s tier (also fallback if a level has no score)
+const TIMER_SCORE_STEP = 15;    // score points per 10s tier
 
 // Fixed 5-letter checkpoint passwords (levels 11, 21, 31, ...)
 const CHECKPOINT_CODES = (typeof LEVEL_CODES !== 'undefined') ? LEVEL_CODES : {
@@ -97,7 +98,7 @@ const modalBtn = document.getElementById('modal-btn');
 let modalCallback = null;
 
 // Returns the time limit in seconds based on level complexity score, or null if untimed.
-// Tiers: <=50 -> 30s, 51..65 -> 45s, 66..80 -> 60s, ..., 186..200 -> 180s (3 min).
+// Tiers: <=50 -> 30s, 51..65 -> 40s, 66..80 -> 50s, 81..95 -> 60s, ..., >=261 -> 180s (3 min cap).
 function timeLimitForLevel(index, levelEntry) {
     if (index < TIMER_FREE_LEVELS) return null;
 
@@ -317,6 +318,24 @@ function updateCellSize() {
     boardEl.style.setProperty('--cell', `${size}px`);
 }
 
+// Updates the contextual hint below the board (special instructions for tutorials T0 and T1)
+function updateLevelHint(index) {
+    const hintKb = document.getElementById('hint-keyboard');
+    const hintTouch = document.getElementById('hint-touch');
+    if (!hintKb || !hintTouch) return;
+
+    if (index === 0) {
+        hintKb.innerHTML = 'Use <kbd>Arrows</kbd> or <kbd>WASD</kbd> to push every crate onto a glowing target.';
+        hintTouch.innerHTML = 'Drag your finger in any direction to move and push every crate onto a target.';
+    } else if (index === 1) {
+        hintKb.innerHTML = 'Tip: You can only push crates, never pull them. Avoid corners, or press <kbd>R</kbd> to restart.';
+        hintTouch.innerHTML = 'Tip: Crates can only be pushed, never pulled. Avoid corners, or tap restart if stuck.';
+    } else {
+        hintKb.innerHTML = 'Move with <kbd>Arrows</kbd> or <kbd>WASD</kbd>.';
+        hintTouch.innerHTML = 'Swipe on the screen to move.';
+    }
+}
+
 function loadLevel(index) {
     if (index >= levels.length) {
         showModal("Victory!", "You completed all levels. You are a Sokonova master!", () => {
@@ -364,6 +383,7 @@ function loadLevel(index) {
     // Update UI
     const levelNumber = index + 1;
     levelDisplay.innerText = `Level ${levelNumber}`;
+    updateLevelHint(index);
 
     const levelCode = getActiveLevelCode(levelNumber);
     if (levelCode) {
@@ -502,44 +522,62 @@ function handleKeyDown(e) {
     }
 }
 
-// Mobile continuous swipe handling
+// Mobile continuous swipe handling with auto-recovery
 function setupSwipeControls() {
     let lastX = 0;
     let lastY = 0;
-    let isSwiping = false;
     let activeTouchId = null;
     let lastStepTime = 0;
-    const STEP_COOLDOWN_MS = 85;
+    const STEP_COOLDOWN_MS = 70;
 
-    // Wider step distance (1.25x cell size, clamped between 42px and 56px) for precise control
+    // Proportional step distance (clamped between 30px and 44px)
     const getStepThreshold = () => {
-        const cellVal = parseFloat(boardEl.style.getPropertyValue('--cell')) || 38;
-        return Math.max(42, Math.min(56, Math.round(cellVal * 1.25)));
+        const cellVal = parseFloat(boardEl.style.getPropertyValue('--cell')) || 36;
+        return Math.max(30, Math.min(44, Math.round(cellVal * 0.95)));
+    };
+
+    const resetTouch = () => {
+        activeTouchId = null;
     };
 
     window.addEventListener('touchstart', (e) => {
-        if (!gameStarted || inputLocked) return;
+        if (!gameStarted || inputLocked) {
+            resetTouch();
+            return;
+        }
         if (e.target.closest('button, input, #password-box, #modal-content')) return;
 
-        const touch = e.changedTouches[0];
-        activeTouchId = touch.identifier;
-        lastX = touch.clientX;
-        lastY = touch.clientY;
-        isSwiping = true;
+        const touch = e.touches[0];
+        if (touch) {
+            activeTouchId = touch.identifier;
+            lastX = touch.clientX;
+            lastY = touch.clientY;
+        }
     }, { passive: false });
 
     window.addEventListener('touchmove', (e) => {
         if (gameStarted && !inputLocked) {
             e.preventDefault();
         }
-        if (!isSwiping || !gameStarted || inputLocked) return;
+        if (!gameStarted || inputLocked) {
+            resetTouch();
+            return;
+        }
 
+        // Find tracked finger, or auto-recover to the primary finger if only one is on screen
         let touch = null;
-        for (let i = 0; i < e.changedTouches.length; i++) {
-            if (e.changedTouches[i].identifier === activeTouchId) {
-                touch = e.changedTouches[i];
+        for (let i = 0; i < e.touches.length; i++) {
+            if (e.touches[i].identifier === activeTouchId) {
+                touch = e.touches[i];
                 break;
             }
+        }
+        if (!touch && e.touches.length === 1) {
+            touch = e.touches[0];
+            activeTouchId = touch.identifier;
+            lastX = touch.clientX;
+            lastY = touch.clientY;
+            return;
         }
         if (!touch) return;
 
@@ -554,28 +592,39 @@ function setupSwipeControls() {
 
         if (Math.abs(dx) > Math.abs(dy)) {
             move(dx > 0 ? 1 : -1, 0);
+            lastX = dx > 0 ? Math.min(touch.clientX, lastX + step) : Math.max(touch.clientX, lastX - step);
+            lastY = touch.clientY;
         } else {
             move(0, dy > 0 ? 1 : -1);
+            lastY = dy > 0 ? Math.min(touch.clientY, lastY + step) : Math.max(touch.clientY, lastY - step);
+            lastX = touch.clientX;
         }
 
-        // Re-anchor origin to current finger position after each step to prevent burst jumps
-        lastX = touch.clientX;
-        lastY = touch.clientY;
         lastStepTime = now;
     }, { passive: false });
 
-    const endSwipe = (e) => {
-        for (let i = 0; i < e.changedTouches.length; i++) {
-            if (e.changedTouches[i].identifier === activeTouchId) {
-                isSwiping = false;
-                activeTouchId = null;
+    const handleTouchEnd = (e) => {
+        if (e.touches.length === 0) {
+            resetTouch();
+            return;
+        }
+        let stillActive = false;
+        for (let i = 0; i < e.touches.length; i++) {
+            if (e.touches[i].identifier === activeTouchId) {
+                stillActive = true;
                 break;
             }
         }
+        if (!stillActive) {
+            const fallback = e.touches[0];
+            activeTouchId = fallback.identifier;
+            lastX = fallback.clientX;
+            lastY = fallback.clientY;
+        }
     };
 
-    window.addEventListener('touchend', endSwipe, { passive: false });
-    window.addEventListener('touchcancel', endSwipe, { passive: false });
+    window.addEventListener('touchend', handleTouchEnd, { passive: false });
+    window.addEventListener('touchcancel', handleTouchEnd, { passive: false });
 }
 
 function updatePlayerDirection(dx, dy) {

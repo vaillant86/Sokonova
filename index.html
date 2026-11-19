@@ -9,16 +9,16 @@
 </head>
 <body>
 
-    <!-- Theme toggle button (top-left, always visible) -->
-    <button id="theme-btn" type="button" aria-label="Change theme" title="Theme: Classic" class="btn-icon fixed top-3 left-3 sm:top-5 sm:left-5 z-[70] px-3 py-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wider">
+    <!-- Theme toggle button (top-right, always visible) -->
+    <button id="theme-btn" type="button" aria-label="Change theme" title="Theme: Classic" class="btn-icon fixed top-3 right-3 sm:top-5 sm:right-5 z-[70] px-3 py-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wider">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 theme-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
         </svg>
         <span id="theme-label" class="theme-accent">Classic</span>
     </button>
 
-    <!-- Home button (bottom-left, always visible) -->
-    <button id="home-btn" type="button" aria-label="Back to home" title="Back to home" class="hidden btn-icon fixed bottom-3 left-3 sm:bottom-5 sm:left-5 z-[70] px-3 py-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wider">
+    <!-- Home button (top-left, shown during the game) -->
+    <button id="home-btn" type="button" aria-label="Back to home" title="Back to home" class="hidden btn-icon fixed top-3 left-3 sm:top-5 sm:left-5 z-[70] px-3 py-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wider">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 theme-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10" />
         </svg>
@@ -58,9 +58,9 @@
     <div id="game-board"></div>
 
     <!-- Hint -->
-    <div class="text-slate-400 text-sm mt-2 text-center px-4">
-        <span class="only-keyboard">Move with <kbd>Arrows</kbd> or <kbd>WASD</kbd>.</span>
-        <span class="only-touch">Swipe on the screen to move.</span>
+    <div id="hint-box" class="text-slate-400 text-sm mt-3 text-center px-4 max-w-md min-h-[2.5rem] flex items-center justify-center">
+        <span id="hint-keyboard" class="only-keyboard">Move with <kbd>Arrows</kbd> or <kbd>WASD</kbd>.</span>
+        <span id="hint-touch" class="only-touch">Swipe on the screen to move.</span>
     </div>
 
     <!-- Modal window -->
@@ -76,8 +76,8 @@
 
     <!-- Welcome screen -->
     <div id="start-overlay" class="fixed inset-0 z-[60] flex flex-col items-center justify-center cursor-pointer transition-opacity duration-500">
-        <!-- Code box (top-right) -->
-        <div id="password-box" class="fixed top-3 right-3 sm:top-5 sm:right-5 flex flex-col items-end gap-1.5 cursor-default" onclick="event.stopPropagation()">
+        <!-- Code box (bottom-left) -->
+        <div id="password-box" class="fixed bottom-3 left-3 sm:bottom-5 sm:left-5 flex flex-col items-start gap-1.5 cursor-default" onclick="event.stopPropagation()">
             <div class="flex items-center gap-2">
                 <input
                     id="code-input"
@@ -99,7 +99,7 @@
                     </svg>
                 </button>
             </div>
-            <p id="code-error" class="text-xs text-red-400 h-4 pr-1"></p>
+            <p id="code-error" class="text-xs text-red-400 h-4 pl-1"></p>
         </div>
 
         <div class="logo-crate"></div>

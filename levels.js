@@ -9,9 +9,9 @@
 const levels = [
     // <LEVELS>
 
-        // Level 1 (score: 18, minimum 4 pushes)
+        // Level 1 (score: 5, minimum 4 pushes)
         {
-            score: 18,
+            score: 5,
             map: [
                 "######",
                 "#   .#",
@@ -20,9 +20,9 @@ const levels = [
                 "######"
             ]
         },
-        // Level 2 (score: 40, minimum 10 pushes)
+        // Level 2 (score: 5, minimum 10 pushes)
         {
-            score: 40,
+            score: 5,
             map: [
                 "##########",
                 "# $+*    #",
