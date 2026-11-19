@@ -13,10 +13,11 @@
 
 let currentLevelIndex = 0;
 
-// Quick start system via URL (?level=N or ?livello=N)
+// Quick start system via URL (?level=N)
 const urlParams = new URLSearchParams(window.location.search);
 const requestedLevel = parseInt(urlParams.get('level') || urlParams.get('livello'), 10);
-if (!isNaN(requestedLevel) && requestedLevel > 0 && requestedLevel <= levels.length) {
+const hasDirectLevelParam = !isNaN(requestedLevel) && requestedLevel > 0 && requestedLevel <= levels.length;
+if (hasDirectLevelParam) {
     currentLevelIndex = requestedLevel - 1;
 }
 
@@ -47,24 +48,35 @@ const TIMER_SCORE_STEP = 35;    // score points per 15s tier
 
 // Fixed 5-letter checkpoint passwords (levels 11, 21, 31, ...)
 const CHECKPOINT_CODES = (typeof LEVEL_CODES !== 'undefined') ? LEVEL_CODES : {
-    11: 'QXJMT',
-    21: 'BRKVA',
-    31: 'NPLZE',
-    41: 'YCWTF',
-    51: 'VQELA',
-    61: 'HDMSQ',
-    71: 'KRGUX',
-    81: 'TJBPN',
-    91: 'SZWKC',
-    101: 'MFYRD',
+    11:  'FKRWD',
+    21:  'MZQTN',
+    31:  'BGYPL',
+    41:  'XCVRA',
+    51:  'JHUES',
+    61:  'NKTMF',
+    71:  'PQXLB',
+    81:  'DZWCG',
+    91:  'RYVNH',
+    101: 'SLKJP',
+    111: 'AUTQE',
+    121: 'WFMXB',
+    131: 'CGRZD',
+    141: 'HVKYN',
+    151: 'PJLTC',
+    161: 'XQWSE',
+    171: 'MNBKU',
+    181: 'TRGFA',
+    191: 'ZYLHD',
 };
 
 // Theme configuration
 const THEMES = [
     { id: 'classic', label: 'Classic' },
     { id: 'scifi', label: 'Sci-Fi' },
-    { id: 'arcade', label: 'Arcade' }
+    { id: 'arcade', label: 'Arcade' },
+    { id: 'monument', label: 'Monument' }
 ];
+
 const THEME_STORAGE_KEY = 'sokonova_theme';
 let currentThemeIndex = 0;
 
@@ -253,6 +265,10 @@ function init() {
         hideModal();
         if (modalCallback) modalCallback();
     });
+
+    if (hasDirectLevelParam) {
+        startGame();
+    }
 }
 
 // Returns to the start screen, stops the timer, and closes active modals
@@ -347,7 +363,7 @@ function loadLevel(index) {
 
     // Update UI
     const levelNumber = index + 1;
-    levelDisplay.innerText = `Level ${levelNumber} / ${levels.length}`;
+    levelDisplay.innerText = `Level ${levelNumber}`;
 
     const levelCode = getActiveLevelCode(levelNumber);
     if (levelCode) {
@@ -486,45 +502,80 @@ function handleKeyDown(e) {
     }
 }
 
-// Mobile swipe handling
+// Mobile continuous swipe handling
 function setupSwipeControls() {
-    let touchStartX = 0;
-    let touchStartY = 0;
-    const swipeThreshold = 30;
+    let lastX = 0;
+    let lastY = 0;
+    let isSwiping = false;
+    let activeTouchId = null;
+    let lastStepTime = 0;
+    const STEP_COOLDOWN_MS = 85;
 
-    // Prevent pull-to-refresh and native scrolling during gameplay
+    // Wider step distance (1.25x cell size, clamped between 42px and 56px) for precise control
+    const getStepThreshold = () => {
+        const cellVal = parseFloat(boardEl.style.getPropertyValue('--cell')) || 38;
+        return Math.max(42, Math.min(56, Math.round(cellVal * 1.25)));
+    };
+
+    window.addEventListener('touchstart', (e) => {
+        if (!gameStarted || inputLocked) return;
+        if (e.target.closest('button, input, #password-box, #modal-content')) return;
+
+        const touch = e.changedTouches[0];
+        activeTouchId = touch.identifier;
+        lastX = touch.clientX;
+        lastY = touch.clientY;
+        isSwiping = true;
+    }, { passive: false });
+
     window.addEventListener('touchmove', (e) => {
         if (gameStarted && !inputLocked) {
             e.preventDefault();
         }
-    }, { passive: false });
+        if (!isSwiping || !gameStarted || inputLocked) return;
 
-    window.addEventListener('touchstart', (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-        touchStartY = e.changedTouches[0].screenY;
-    }, { passive: false });
-
-    window.addEventListener('touchend', (e) => {
-        if (inputLocked || !gameStarted) return;
-
-        const touchEndX = e.changedTouches[0].screenX;
-        const touchEndY = e.changedTouches[0].screenY;
-
-        const dx = touchEndX - touchStartX;
-        const dy = touchEndY - touchStartY;
-
-        if (Math.abs(dx) > Math.abs(dy)) {
-            if (Math.abs(dx) > swipeThreshold) {
-                if (dx > 0) move(1, 0);
-                else move(-1, 0);
-            }
-        } else {
-            if (Math.abs(dy) > swipeThreshold) {
-                if (dy > 0) move(0, 1);
-                else move(0, -1);
+        let touch = null;
+        for (let i = 0; i < e.changedTouches.length; i++) {
+            if (e.changedTouches[i].identifier === activeTouchId) {
+                touch = e.changedTouches[i];
+                break;
             }
         }
+        if (!touch) return;
+
+        const now = performance.now();
+        if (now - lastStepTime < STEP_COOLDOWN_MS) return;
+
+        const step = getStepThreshold();
+        const dx = touch.clientX - lastX;
+        const dy = touch.clientY - lastY;
+
+        if (Math.abs(dx) < step && Math.abs(dy) < step) return;
+
+        if (Math.abs(dx) > Math.abs(dy)) {
+            move(dx > 0 ? 1 : -1, 0);
+        } else {
+            move(0, dy > 0 ? 1 : -1);
+        }
+
+        // Re-anchor origin to current finger position after each step to prevent burst jumps
+        lastX = touch.clientX;
+        lastY = touch.clientY;
+        lastStepTime = now;
     }, { passive: false });
+
+    const endSwipe = (e) => {
+        for (let i = 0; i < e.changedTouches.length; i++) {
+            if (e.changedTouches[i].identifier === activeTouchId) {
+                isSwiping = false;
+                activeTouchId = null;
+                break;
+            }
+        }
+    };
+
+    window.addEventListener('touchend', endSwipe, { passive: false });
+    window.addEventListener('touchcancel', endSwipe, { passive: false });
 }
 
 function updatePlayerDirection(dx, dy) {

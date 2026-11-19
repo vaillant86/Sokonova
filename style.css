@@ -6,6 +6,7 @@
     --bg-bottom: #0a0817;
     --bg-glow: #3a2d7a;
     --bg-grid: transparent;
+    --text-main: #f1f5f9;
     --panel: #1c1636;
     --panel-border: rgba(255, 255, 255, 0.08);
     --btn-top: #3b3266;
@@ -38,6 +39,7 @@
     --modal-btn-bg: linear-gradient(180deg, #fbbf24, #f59e0b);
     --modal-btn-text: #1c1636;
     --kbd-bg: #2a2350;
+    --kbd-text: #e2e8f0;
     --cell: clamp(24px, min(7vw, 6.5vh), 56px);
 }
 
@@ -125,6 +127,53 @@ body[data-theme="arcade"] {
     --kbd-bg: #1e293b;
 }
 
+/* =========================================================
+   THEME 4: MONUMENT (Tactile Minimal / Monument Valley)
+   ========================================================= */
+body[data-theme="monument"] {
+    --bg-top: #ebe1d1;
+    --bg-bottom: #ddd0bc;
+    --bg-glow: rgba(255, 255, 255, 0.7);
+    --bg-grid: transparent;
+    --text-main: #3d352e;
+    --panel: #fffbf4;
+    --panel-border: #dfd2c0;
+    --btn-top: #fffdf9;
+    --btn-bottom: #f7efe2;
+    --board-top: #e8dcc9;
+    --board-bottom: #dfd1bc;
+    --board-border: #cbbba4;
+    --title-gradient: linear-gradient(180deg, #d6654d 0%, #c85a43 100%);
+    --title-shadow: 0 2px 0 rgba(255, 255, 255, 0.85);
+    --accent: #c85a43;
+    --accent-soft: #f5e2da;
+    --accent-border: #e4bfb2;
+    --wall-base: #d7c9b4;
+    --wall-border: #ab9980;
+    --mortar: #b8a78f;
+    --floor: #f5ede0;
+    --target-color: #c85a43;
+    --target-bg: #dfd1bc;
+    --target-glow: transparent;
+    --crate-a: #e57358;
+    --crate-b: #c8543b;
+    --crate-line: #993c28;
+    --crate-done-a: #5da393;
+    --crate-done-b: #448274;
+    --crate-done-line: #2f5e53;
+    --crate-done-glow: transparent;
+    --player-bg: linear-gradient(145deg, #4b5563 0%, #2d333b 100%);
+    --modal-top: #fffdf8;
+    --modal-bottom: #f7efe3;
+    --modal-btn-bg: #c85a43;
+    --modal-btn-text: #fffbf4;
+    --kbd-bg: #fffaf2;
+    --kbd-text: #3d352e;
+}
+
+/* =========================================================
+   BASE LAYOUT & BACKGROUNDS
+   ========================================================= */
 * {
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
@@ -138,7 +187,7 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    color: #f1f5f9;
+    color: var(--text-main);
     font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
     background:
         linear-gradient(var(--bg-grid) 1px, transparent 1px),
@@ -152,7 +201,6 @@ body {
     -webkit-user-select: none;
 }
 
-/* Subtle CRT scanlines for Arcade 16-Bit */
 body[data-theme="arcade"] {
     background:
         repeating-linear-gradient(
@@ -166,7 +214,30 @@ body[data-theme="arcade"] {
     background-size: 100% 4px, 100% 100%;
 }
 
-/* Header & Accents */
+body[data-theme="monument"] {
+    background: radial-gradient(circle at 50% 25%, var(--bg-top) 0%, var(--bg-bottom) 100%);
+}
+
+/* Light-theme text contrast overrides */
+body[data-theme="monument"] .text-slate-400 {
+    color: #7c6f63;
+}
+
+body[data-theme="monument"] .text-slate-300 {
+    color: #5c5046;
+}
+
+body[data-theme="monument"] #timer-display.text-emerald-400 {
+    color: #3d7a6c;
+}
+
+body[data-theme="monument"] #timer-display.text-red-400 {
+    color: #c84b31;
+}
+
+/* =========================================================
+   HEADER, PILLS & BUTTONS
+   ========================================================= */
 .title {
     font-weight: 900;
     letter-spacing: -0.02em;
@@ -178,9 +249,13 @@ body[data-theme="arcade"] {
 }
 
 body[data-theme="arcade"] .title {
-    letter-spacing: -0.02em;
     text-shadow: none;
     filter: drop-shadow(0 3px 0 #7f1d1d);
+}
+
+body[data-theme="monument"] .title {
+    text-shadow: none;
+    filter: drop-shadow(0 2px 0 rgba(255, 255, 255, 0.75));
 }
 
 .theme-accent {
@@ -193,6 +268,10 @@ body[data-theme="arcade"] .title {
     border: 1px solid var(--accent-border);
 }
 
+body[data-theme="monument"] .badge-accent {
+    color: #b44933;
+}
+
 .code-field {
     background: var(--panel);
     color: var(--accent);
@@ -201,6 +280,11 @@ body[data-theme="arcade"] .title {
 
 .code-field:focus {
     border-color: var(--accent);
+}
+
+body[data-theme="monument"] .code-field {
+    color: #3d352e;
+    box-shadow: inset 0 2px 4px rgba(84, 68, 52, 0.08);
 }
 
 .pill {
@@ -216,6 +300,10 @@ body[data-theme="arcade"] .pill {
     box-shadow: 0 4px 0 #090d16;
 }
 
+body[data-theme="monument"] .pill {
+    box-shadow: 0 4px 10px rgba(84, 68, 52, 0.08), 0 2px 0 #d5c6b2;
+}
+
 .btn-icon {
     background: linear-gradient(180deg, var(--btn-top), var(--btn-bottom));
     border: 1px solid var(--panel-border);
@@ -225,8 +313,13 @@ body[data-theme="arcade"] .pill {
     cursor: pointer;
 }
 
-.btn-icon:hover { filter: brightness(1.15); }
-.btn-icon:active { transform: scale(0.94); }
+.btn-icon:hover {
+    filter: brightness(1.15);
+}
+
+.btn-icon:active {
+    transform: scale(0.94);
+}
 
 body[data-theme="arcade"] .btn-icon {
     border-width: 2px;
@@ -240,7 +333,20 @@ body[data-theme="arcade"] .btn-icon:active {
     box-shadow: 0 2px 0 #090d16;
 }
 
-/* Board */
+body[data-theme="monument"] .btn-icon {
+    box-shadow: 0 4px 10px rgba(84, 68, 52, 0.08), 0 2px 0 #d5c6b2;
+    color: #3d352e;
+}
+
+body[data-theme="monument"] .btn-icon:hover {
+    background: #ffffff;
+    border-color: var(--accent);
+    filter: none;
+}
+
+/* =========================================================
+   GAME BOARD & CELLS
+   ========================================================= */
 #game-board {
     display: grid;
     gap: 0;
@@ -267,6 +373,14 @@ body[data-theme="arcade"] #game-board {
     box-shadow: 0 8px 0 #090d16;
 }
 
+body[data-theme="monument"] #game-board {
+    border-radius: 14px;
+    border: 3px solid var(--board-border);
+    box-shadow:
+        0 18px 35px rgba(74, 58, 42, 0.14),
+        0 4px 0 #bfb09a;
+}
+
 .cell {
     width: var(--cell);
     height: var(--cell);
@@ -276,6 +390,10 @@ body[data-theme="arcade"] #game-board {
 
 body[data-theme="arcade"] .cell {
     border-radius: 2px;
+}
+
+body[data-theme="monument"] .cell {
+    border-radius: 0;
 }
 
 /* =========================================================
@@ -290,23 +408,37 @@ body[data-theme="arcade"] .cell {
     z-index: 5;
 }
 
-/* Sci-Fi continuous metallic wall */
 body[data-theme="scifi"] .wall {
     background-color: #16233b;
     background-image: linear-gradient(135deg, rgba(56, 189, 248, 0.12) 0%, transparent 60%);
     box-shadow: inset 0 0 12px rgba(56, 189, 248, 0.18);
 }
 
-/* Arcade 16-Bit solid wall */
 body[data-theme="arcade"] .wall {
-    background-color: #2563eb;
+    background-color: var(--wall-base);
     background-image: none;
-    border: none;
-    border-radius: 0;
-    box-shadow: inset 0 0 0 2px #0f172a;
+    box-shadow: inset 0 0 0 2px var(--wall-border);
 }
 
-/* Floor */
+body[data-theme="monument"] .wall {
+    background-color: var(--wall-base);
+    background-image: linear-gradient(160deg, #dfd2bf 0%, #cfc0aa 100%);
+    border-top: 2px solid #f7f1e7;
+    border-left: 2px solid #efe6d8;
+    border-right: 2px solid var(--mortar);
+    border-bottom: 3px solid var(--wall-border);
+    box-shadow: 0 3px 6px rgba(66, 52, 38, 0.12);
+    z-index: 2;
+}
+
+body[data-theme="monument"] .wall.wall-top    { border-top: none; }
+body[data-theme="monument"] .wall.wall-bottom { border-bottom: none; box-shadow: none; }
+body[data-theme="monument"] .wall.wall-left   { border-left: none; }
+body[data-theme="monument"] .wall.wall-right  { border-right: none; }
+
+/* =========================================================
+   FLOOR & TARGETS
+   ========================================================= */
 .floor {
     background-color: var(--floor);
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.035);
@@ -316,7 +448,10 @@ body[data-theme="arcade"] .floor {
     box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.08);
 }
 
-/* Target */
+body[data-theme="monument"] .floor {
+    box-shadow: inset 0 0 0 0.5px rgba(176, 158, 134, 0.35);
+}
+
 .target {
     background-color: var(--floor);
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.035);
@@ -343,7 +478,27 @@ body[data-theme="arcade"] .target::before {
     box-shadow: none;
 }
 
-/* Box */
+body[data-theme="monument"] .target {
+    background-color: #efe5d5;
+    box-shadow: inset 0 0 0 0.5px rgba(176, 158, 134, 0.35);
+}
+
+body[data-theme="monument"] .target::before {
+    inset: 26%;
+    left: 26%;
+    top: 26%;
+    width: auto;
+    height: auto;
+    transform: none;
+    border: none;
+    border-radius: 50%;
+    background: var(--target-bg);
+    box-shadow: inset 0 2px 4px rgba(74, 58, 42, 0.25), 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* =========================================================
+   BOXES & BOXES ON TARGET
+   ========================================================= */
 .box,
 .box-on-target {
     border-radius: 5px;
@@ -367,7 +522,6 @@ body[data-theme="arcade"] .target::before {
     pointer-events: none;
 }
 
-/* Sci-Fi energy core inside crate */
 body[data-theme="scifi"] .box::before {
     inset: 22%;
     border-radius: 50%;
@@ -375,7 +529,6 @@ body[data-theme="scifi"] .box::before {
     box-shadow: 0 0 10px rgba(245, 158, 11, 0.75);
 }
 
-/* Arcade 16-Bit pixel-bevel crate */
 body[data-theme="arcade"] .box {
     border-radius: 2px;
     background: var(--crate-a);
@@ -383,6 +536,21 @@ body[data-theme="arcade"] .box {
     box-shadow:
         inset 3px 3px 0 #fdba74,
         inset -3px -3px 0 #9a3412;
+}
+
+body[data-theme="monument"] .box {
+    background: var(--floor);
+    box-shadow: inset 0 0 0 0.5px rgba(176, 158, 134, 0.35);
+}
+
+body[data-theme="monument"] .box::before {
+    inset: 11%;
+    border-radius: 7px;
+    background: linear-gradient(145deg, var(--crate-a) 0%, var(--crate-b) 100%);
+    border-top: 1.5px solid #f49b85;
+    box-shadow:
+        0 4px 0 var(--crate-line),
+        0 6px 10px rgba(74, 42, 32, 0.22);
 }
 
 /* Box on target */
@@ -435,7 +603,31 @@ body[data-theme="arcade"] .box-on-target::before {
     filter: none;
 }
 
-/* Player */
+body[data-theme="monument"] .box-on-target {
+    background: var(--floor);
+    box-shadow: inset 0 0 0 0.5px rgba(176, 158, 134, 0.35);
+}
+
+body[data-theme="monument"] .box-on-target::before {
+    inset: 11%;
+    left: 11%;
+    top: 11%;
+    width: auto;
+    height: auto;
+    border: none;
+    border-top: 1.5px solid #88c7b8;
+    border-radius: 7px;
+    transform: none;
+    filter: none;
+    background: linear-gradient(145deg, var(--crate-done-a) 0%, var(--crate-done-b) 100%);
+    box-shadow:
+        0 3px 0 var(--crate-done-line),
+        0 5px 8px rgba(42, 74, 66, 0.2);
+}
+
+/* =========================================================
+   PLAYER & DIRECTIONAL EYES
+   ========================================================= */
 .player {
     z-index: 20;
 }
@@ -468,6 +660,14 @@ body[data-theme="arcade"] .player::after {
         0 3px 0 #090d16;
 }
 
+body[data-theme="monument"] .player::after {
+    width: 72%;
+    height: 72%;
+    box-shadow:
+        0 3px 0 #1b1f24,
+        0 5px 8px rgba(30, 35, 42, 0.25);
+}
+
 .player::before {
     content: '';
     position: absolute;
@@ -485,7 +685,6 @@ body[data-theme="arcade"] .player::after {
     z-index: 2;
 }
 
-/* Sci-Fi glowing visor instead of eyes */
 body[data-theme="scifi"] .player::before {
     background: radial-gradient(ellipse 46% 16% at 50% 22%, #ffffff 0%, #67e8f9 60%, transparent 75%);
     filter: drop-shadow(0 0 4px #22d3ee);
@@ -493,6 +692,14 @@ body[data-theme="scifi"] .player::before {
 
 body[data-theme="arcade"] .player::before {
     transition: transform 0.05s steps(2);
+}
+
+body[data-theme="monument"] .player::before {
+    width: 72%;
+    height: 72%;
+    background:
+        radial-gradient(circle at 36% 26%, #faf6ef 0 11%, transparent 12%),
+        radial-gradient(circle at 64% 26%, #faf6ef 0 11%, transparent 12%);
 }
 
 .player[data-dir="up"]::before    { transform: translate(-50%, -50%) rotate(0deg); }
@@ -504,11 +711,17 @@ body[data-theme="arcade"] .player::before {
     background: transparent;
 }
 
-/* Modal window */
+/* =========================================================
+   MODALS & START OVERLAY
+   ========================================================= */
 #modal-overlay {
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
     transition: opacity 0.3s ease;
+}
+
+body[data-theme="monument"] #modal-overlay {
+    background: rgba(61, 53, 46, 0.45);
 }
 
 .modal-hidden {
@@ -533,6 +746,19 @@ body[data-theme="arcade"] #modal-content {
     box-shadow: 0 8px 0 #090d16;
 }
 
+body[data-theme="monument"] #modal-content {
+    border: 1px solid var(--panel-border);
+    box-shadow: 0 20px 40px rgba(61, 53, 46, 0.22), 0 4px 0 #d5c6b2;
+}
+
+body[data-theme="monument"] #modal-title {
+    color: #3d352e;
+}
+
+body[data-theme="monument"] #modal-message {
+    color: #6b5e52;
+}
+
 #modal-btn {
     background: var(--modal-btn-bg);
     color: var(--modal-btn-text);
@@ -540,8 +766,13 @@ body[data-theme="arcade"] #modal-content {
     transition: transform 0.15s ease, filter 0.15s ease;
 }
 
-#modal-btn:hover { filter: brightness(1.08); }
-#modal-btn:active { transform: scale(0.97); }
+#modal-btn:hover {
+    filter: brightness(1.08);
+}
+
+#modal-btn:active {
+    transform: scale(0.97);
+}
 
 body[data-theme="arcade"] #modal-btn {
     border: 2px solid #090d16;
@@ -549,7 +780,10 @@ body[data-theme="arcade"] #modal-btn {
     box-shadow: 0 4px 0 #854d0e;
 }
 
-/* Start screen */
+body[data-theme="monument"] #modal-btn {
+    box-shadow: 0 4px 0 var(--crate-line);
+}
+
 #start-overlay {
     background:
         linear-gradient(var(--bg-grid) 1px, transparent 1px),
@@ -570,6 +804,10 @@ body[data-theme="arcade"] #start-overlay {
         ),
         linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
     background-size: 100% 4px, 100% 100%;
+}
+
+body[data-theme="monument"] #start-overlay {
+    background: radial-gradient(circle at 50% 30%, var(--bg-top) 0%, var(--bg-bottom) 100%);
 }
 
 .logo-crate {
@@ -612,7 +850,19 @@ body[data-theme="arcade"] .logo-crate {
         0 6px 0 #090d16;
 }
 
-/* Input mode visibility (set by game.js) */
+body[data-theme="monument"] .logo-crate {
+    background: linear-gradient(145deg, var(--crate-a) 0%, var(--crate-b) 100%);
+    border: 2px solid #f49b85;
+    box-shadow: 0 8px 0 var(--crate-line), 0 14px 24px rgba(74, 42, 32, 0.2);
+}
+
+body[data-theme="monument"] .logo-crate::before {
+    content: none;
+}
+
+/* =========================================================
+   INPUT HELPERS & TACTILE MICRO-ANIMATIONS
+   ========================================================= */
 body[data-mode="touch"] .only-keyboard,
 body[data-mode="keyboard"] .only-touch {
     display: none !important;
@@ -624,13 +874,10 @@ kbd {
     border-bottom-width: 2px;
     border-radius: 6px;
     padding: 1px 6px;
-    color: #e2e8f0;
+    color: var(--kbd-text);
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
-/* =========================================================
-   TACTILE MICRO-ANIMATIONS (SLIDE & TARGET LOCK)
-   ========================================================= */
 @keyframes cell-slide {
     0% {
         transform: translate(calc(var(--dx) * -100%), calc(var(--dy) * -100%));
@@ -665,7 +912,6 @@ kbd {
     will-change: transform;
 }
 
-/* Snappier 16-bit feel for Arcade theme */
 body[data-theme="arcade"] .anim-slide {
     animation-duration: 0.07s;
     animation-timing-function: steps(3);

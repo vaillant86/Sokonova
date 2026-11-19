@@ -1,9 +1,9 @@
 /**
- * LIVELLI DI SOKOBAN
+ * SOKONOVA LEVELS
  *
- * Questo file contiene solo l'elenco dei livelli.
- * Viene caricato prima di game.js.
- * Il blocco tra i marcatori è gestito da generate_levels.py: non modificarlo a mano.
+ * This file only contains the level list.
+ * It is loaded before game.js.
+ * The block between the markers is managed by generate_levels.py; do not edit it manually.
  */
 
 const levels = [
