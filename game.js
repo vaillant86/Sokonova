@@ -9,7 +9,7 @@
  * ' ' = Empty
  */
 
-// Levels are defined in levels.js, loaded before this file.
+// Levels and locales are defined in levels.js, locale-en.js, and locale-it.js.
 
 let currentLevelIndex = 0;
 
@@ -74,6 +74,118 @@ const CHECKPOINT_CODES = (typeof LEVEL_CODES !== 'undefined') ? LEVEL_CODES : {
     181: 'TRGFA',
     191: 'ZYLHD',
 };
+
+// Localization configuration
+const SUPPORTED_LANGS = ['en', 'it'];
+const LANG_STORAGE_KEY = 'sokonova_lang';
+let currentLang = 'en';
+
+function t(key, vars = {}) {
+    const locales = window.SOKONOVA_LOCALES || {};
+    const dict = locales[currentLang] || locales.en || {};
+    const fallback = locales.en || {};
+    let str = dict[key] !== undefined ? dict[key] : (fallback[key] !== undefined ? fallback[key] : key);
+
+    for (const [k, v] of Object.entries(vars)) {
+        str = str.replace(new RegExp(`\\{${k}\\}`, 'g'), String(v));
+    }
+    return str;
+}
+
+function applyLanguage(lang) {
+    currentLang = SUPPORTED_LANGS.includes(lang) ? lang : 'en';
+    document.documentElement.lang = currentLang;
+
+    try {
+        localStorage.setItem(LANG_STORAGE_KEY, currentLang);
+    } catch (_) {}
+
+    const langBtn = document.getElementById('lang-btn');
+    const langLabel = document.getElementById('lang-label');
+    const flagEn = document.getElementById('flag-en');
+    const flagIt = document.getElementById('flag-it');
+
+    if (langBtn) {
+        langBtn.title = t('switchLangTitle');
+        langBtn.setAttribute('aria-label', t('switchLangTitle'));
+    }
+    if (langLabel) langLabel.innerText = currentLang.toUpperCase();
+    if (flagEn) flagEn.classList.toggle('hidden', currentLang !== 'en');
+    if (flagIt) flagIt.classList.toggle('hidden', currentLang !== 'it');
+
+    const homeLabel = document.getElementById('home-label');
+    if (homeLabel) homeLabel.innerText = t('homeLabel');
+    if (homeBtn) {
+        homeBtn.title = t('homeTitle');
+        homeBtn.setAttribute('aria-label', t('homeTitle'));
+    }
+
+    const pushesLabel = document.getElementById('pushes-label');
+    const timeLabel = document.getElementById('time-label');
+    if (pushesLabel) pushesLabel.innerText = t('pushesLabel');
+    if (timeLabel) timeLabel.innerText = t('timeLabel');
+
+    const restartBtn = document.getElementById('restart-btn');
+    if (restartBtn) {
+        restartBtn.title = t('restartTitle');
+        restartBtn.setAttribute('aria-label', t('restartTitle'));
+    }
+
+    const codeInput = document.getElementById('code-input');
+    const codeBtn = document.getElementById('code-btn');
+    if (codeInput) codeInput.placeholder = t('codePlaceholder');
+    if (codeBtn) codeBtn.setAttribute('aria-label', t('sendCodeLabel'));
+
+    const startTouchText = document.getElementById('start-touch-text');
+    const startKeyboardText = document.getElementById('start-keyboard-text');
+    if (startTouchText) startTouchText.innerText = t('swipeToStart');
+    if (startKeyboardText) startKeyboardText.innerText = t('pressAnyKey');
+
+    if (modalBtn) modalBtn.innerText = t('modalOk');
+
+    const currentTheme = THEMES[currentThemeIndex];
+    const themeBtn = document.getElementById('theme-btn');
+    if (themeBtn && currentTheme) {
+        themeBtn.title = t('themeTitle', { label: currentTheme.label });
+    }
+
+    updateSoundUI();
+    updateUndoUI();
+
+    if (gameStarted) {
+        const levelNumber = currentLevelIndex + 1;
+        levelDisplay.innerText = t('levelLabel', { n: levelNumber });
+        updateLevelHint(currentLevelIndex);
+
+        const levelCode = getActiveLevelCode(levelNumber);
+        if (levelCode && codeBadge) {
+            codeBadge.innerText = t('codeBadge', { code: levelCode });
+        }
+    }
+}
+
+function setupLanguage() {
+    let saved = null;
+    try {
+        saved = localStorage.getItem(LANG_STORAGE_KEY);
+    } catch (_) {}
+
+    if (SUPPORTED_LANGS.includes(saved)) {
+        applyLanguage(saved);
+    } else {
+        const browserLang = (navigator.language || '').toLowerCase();
+        applyLanguage(browserLang.startsWith('it') ? 'it' : 'en');
+    }
+
+    const langBtn = document.getElementById('lang-btn');
+    if (langBtn) {
+        langBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const nextIndex = (SUPPORTED_LANGS.indexOf(currentLang) + 1) % SUPPORTED_LANGS.length;
+            applyLanguage(SUPPORTED_LANGS[nextIndex]);
+        });
+    }
+}
 
 // Theme configuration
 const THEMES = [
@@ -183,7 +295,7 @@ function applyTheme(index) {
 
     const themeBtn = document.getElementById('theme-btn');
     const themeLabel = document.getElementById('theme-label');
-    if (themeBtn) themeBtn.title = `Theme: ${theme.label}`;
+    if (themeBtn) themeBtn.title = t('themeTitle', { label: theme.label });
     if (themeLabel) themeLabel.innerText = theme.label;
 
     try {
@@ -227,7 +339,7 @@ function updateSoundUI() {
     const btn = document.getElementById('sound-btn');
     const iconOn = document.getElementById('sound-icon-on');
     const iconOff = document.getElementById('sound-icon-off');
-    if (btn) btn.title = soundEnabled ? 'Sound: ON' : 'Sound: OFF';
+    if (btn) btn.title = soundEnabled ? t('soundOnTitle') : t('soundOffTitle');
     if (iconOn) iconOn.classList.toggle('hidden', !soundEnabled);
     if (iconOff) iconOff.classList.toggle('hidden', soundEnabled);
 }
@@ -302,11 +414,11 @@ function updateUndoUI() {
     undoBtn.disabled = !canUndo;
 
     if (boss) {
-        undoBtn.title = 'Undo disabled on Boss levels';
+        undoBtn.title = t('undoBossTitle');
     } else if (undosRemaining > 0) {
-        undoBtn.title = `Undo move (${undosRemaining} left)`;
+        undoBtn.title = t('undoTitle', { left: undosRemaining });
     } else {
-        undoBtn.title = 'No undos left';
+        undoBtn.title = t('undoEmptyTitle');
     }
 }
 
@@ -348,6 +460,7 @@ function init() {
     setupInputMode();
     setupTheme();
     setupSound();
+    setupLanguage();
 
     window.addEventListener('resize', updateCellSize);
 
@@ -358,7 +471,7 @@ function init() {
     const submitCode = () => {
         const targetIndex = findLevelIndexByCode(codeInput.value);
         if (targetIndex === -1) {
-            codeError.innerText = 'Invalid code';
+            codeError.innerText = t('invalidCode');
             codeInput.value = '';
             return;
         }
@@ -391,7 +504,7 @@ function init() {
     });
 
     window.addEventListener('touchstart', (e) => {
-        if (e.target.closest('#password-box') || e.target.closest('#theme-btn') || e.target.closest('#home-btn')) return;
+        if (e.target.closest('#password-box, #theme-btn, #lang-btn, #home-btn')) return;
         if (!gameStarted) {
             startGame();
         }
@@ -401,7 +514,7 @@ function init() {
 
     // Click on the start screen (useful on PC)
     document.getElementById('start-overlay').addEventListener('click', (e) => {
-        if (e.target.closest('#password-box') || e.target.closest('#theme-btn') || e.target.closest('#home-btn')) return;
+        if (e.target.closest('#password-box, #theme-btn, #lang-btn, #home-btn')) return;
         if (!gameStarted) {
             startGame();
         }
@@ -493,16 +606,16 @@ function updateLevelHint(index) {
 
     if (index === 0) {
         hintBox.classList.remove('hidden');
-        hintKb.innerHTML = 'Push every crate onto a glowing target using <kbd>Arrows</kbd> or <kbd>WASD</kbd>.';
-        hintTouch.innerHTML = 'Swipe in any direction to push every crate onto a target.';
+        hintKb.innerHTML = t('hintT0Keyboard');
+        hintTouch.innerHTML = t('hintT0Touch');
     } else if (index === 1) {
         hintBox.classList.remove('hidden');
-        hintKb.innerHTML = 'Crates can only be pushed, never pulled. Stuck? Press <kbd>Z</kbd> to undo (3 max) or <kbd>R</kbd> to restart.';
-        hintTouch.innerHTML = 'Crates can only be pushed, never pulled. Stuck? Tap Undo (3 max) or Restart.';
+        hintKb.innerHTML = t('hintT1Keyboard');
+        hintTouch.innerHTML = t('hintT1Touch');
     } else if (index === 9) {
         hintBox.classList.remove('hidden');
-        hintKb.innerHTML = 'Boss Level: Undo is disabled. Plan every push carefully!';
-        hintTouch.innerHTML = 'Boss Level: Undo is disabled. Plan every push carefully!';
+        hintKb.innerHTML = t('hintBoss10');
+        hintTouch.innerHTML = t('hintBoss10');
     } else {
         hintBox.classList.add('hidden');
     }
@@ -511,7 +624,7 @@ function updateLevelHint(index) {
 function loadLevel(index) {
     if (index >= levels.length) {
         document.body.classList.remove('boss-level');
-        showModal("Victory!", "You completed all levels. You are a Sokonova master!", () => {
+        showModal(t('victoryTitle'), t('victoryMsg'), () => {
             currentLevelIndex = 0;
             loadLevel(0);
         });
@@ -563,12 +676,12 @@ function loadLevel(index) {
         bossBadge.classList.toggle('hidden', !boss);
     }
 
-    levelDisplay.innerText = `Level ${levelNumber}`;
+    levelDisplay.innerText = t('levelLabel', { n: levelNumber });
     updateLevelHint(index);
 
     const levelCode = getActiveLevelCode(levelNumber);
     if (levelCode) {
-        codeBadge.innerText = `Code: ${levelCode}`;
+        codeBadge.innerText = t('codeBadge', { code: levelCode });
         codeBadge.classList.remove('hidden');
     } else {
         codeBadge.classList.add('hidden');
@@ -617,7 +730,7 @@ function startLevelTimer() {
             clearInterval(timerInterval);
             inputLocked = true;
             updateUndoUI();
-            showModal("Time's Up!", "You ran out of time.", () => {
+            showModal(t('timesUpTitle'), t('timesUpMsg'), () => {
                 restartCurrentLevel();
             });
         }
@@ -930,10 +1043,10 @@ function checkWinCondition() {
             const isNewCheckpoint = nextLevel >= 11 && (nextLevel - 1) % 10 === 0;
             const nextCode = isNewCheckpoint ? getActiveLevelCode(nextLevel) : null;
 
-            const title = wasBoss ? "Boss Defeated!" : "Level Complete!";
+            const title = wasBoss ? t('bossDefeatedTitle') : t('levelCompleteTitle');
             const msg = nextCode
-                ? `Great job! Level ${nextLevel} code: ${nextCode}`
-                : "Great job! Get ready for the next challenge.";
+                ? t('levelCompleteCodeMsg', { n: nextLevel, code: nextCode })
+                : t('levelCompleteMsg');
 
             showModal(title, msg, () => {
                 currentLevelIndex++;

@@ -9,7 +9,7 @@
 </head>
 <body>
 
-    <!-- Theme toggle button (always visible) -->
+    <!-- Theme toggle button (top-right, always visible) -->
     <button id="theme-btn" type="button" aria-label="Change theme" title="Theme: Classic" class="btn-icon fixed top-3 right-3 sm:top-5 sm:right-5 z-[70] px-3 py-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wider">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 theme-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
@@ -17,18 +17,43 @@
         <span id="theme-label" class="theme-accent">Classic</span>
     </button>
 
-    <!-- Home button (only visible during the game) -->
+    <!-- Language toggle button (below theme button, top-right) -->
+    <button id="lang-btn" type="button" aria-label="Language: English" title="Language: English" class="btn-icon fixed top-14 right-3 sm:top-[4.25rem] sm:right-5 z-[70] px-3 py-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wider">
+        <!-- Union Jack (EN) -->
+        <svg id="flag-en" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 36" class="h-3.5 w-5 rounded-[2px] shrink-0 shadow-sm">
+            <clipPath id="uk-clip"><rect width="60" height="36" rx="3"/></clipPath>
+            <g clip-path="url(#uk-clip)">
+                <rect width="60" height="36" fill="#012169"/>
+                <path d="M0,0 L60,36 M60,0 L0,36" stroke="#fff" stroke-width="7"/>
+                <path d="M0,0 L60,36 M60,0 L0,36" stroke="#C8102E" stroke-width="4"/>
+                <path d="M30,0 v36 M0,18 h60" stroke="#fff" stroke-width="11"/>
+                <path d="M30,0 v36 M0,18 h60" stroke="#C8102E" stroke-width="6.5"/>
+            </g>
+        </svg>
+        <!-- Italian Flag (IT) -->
+        <svg id="flag-it" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 36" class="hidden h-3.5 w-5 rounded-[2px] shrink-0 shadow-sm">
+            <clipPath id="it-clip"><rect width="60" height="36" rx="3"/></clipPath>
+            <g clip-path="url(#it-clip)">
+                <rect width="20" height="36" x="0" fill="#009246"/>
+                <rect width="20" height="36" x="20" fill="#ffffff"/>
+                <rect width="20" height="36" x="40" fill="#ce2b37"/>
+            </g>
+        </svg>
+        <span id="lang-label" class="theme-accent">EN</span>
+    </button>
+
+    <!-- Home button (top-left, shown during the game) -->
     <button id="home-btn" type="button" aria-label="Back to home" title="Back to home" class="hidden btn-icon fixed top-3 left-3 sm:top-5 sm:left-5 z-[70] px-3 py-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wider">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 theme-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10" />
         </svg>
-        <span class="theme-accent">Home</span>
+        <span id="home-label" class="theme-accent">Home</span>
     </button>
 
     <!-- Main vertical game stack with equal vertical spacing -->
     <main id="game-stack" class="w-full px-4 mt-10 sm:mt-0 flex flex-col items-center gap-4">
 
-        <!-- 1. Title & level indicator -->
+        <!-- 1. Title & Level indicator -->
         <div class="text-center">
             <h1 class="title text-3xl sm:text-4xl leading-tight">Sokonova</h1>
             <div class="flex items-center justify-center gap-2 mt-1">
@@ -41,12 +66,12 @@
         <!-- 2. HUD controls bar aligned to the board width -->
         <div id="hud-controls" class="flex items-stretch justify-between gap-2">
             <div class="pill flex-1 px-2.5 py-1.5 text-center min-w-0 flex flex-col justify-center">
-                <p class="text-[10px] text-slate-400 uppercase tracking-widest font-bold leading-none mb-1">Pushes</p>
+                <p id="pushes-label" class="text-[10px] text-slate-400 uppercase tracking-widest font-bold leading-none mb-1">Pushes</p>
                 <p id="pushes-display" class="text-lg sm:text-xl font-mono font-bold theme-accent leading-none">0</p>
             </div>
 
             <div class="pill flex-1 px-2.5 py-1.5 text-center min-w-0 flex flex-col justify-center">
-                <p class="text-[10px] text-slate-400 uppercase tracking-widest font-bold leading-none mb-1">Time</p>
+                <p id="time-label" class="text-[10px] text-slate-400 uppercase tracking-widest font-bold leading-none mb-1">Time</p>
                 <p id="timer-display" class="text-lg sm:text-xl font-mono font-bold leading-none">∞</p>
             </div>
 
@@ -65,7 +90,7 @@
                 </svg>
             </button>
 
-            <button type="button" onclick="restartCurrentLevel()" class="btn-icon px-3 py-2 flex items-center justify-center shrink-0" title="Restart level" aria-label="Restart level">
+            <button id="restart-btn" type="button" onclick="restartCurrentLevel()" class="btn-icon px-3 py-2 flex items-center justify-center shrink-0" title="Restart level" aria-label="Restart level">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6 theme-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
@@ -99,8 +124,21 @@
         <!-- Code box (bottom-left) -->
         <div id="password-box" class="fixed bottom-3 left-3 sm:bottom-5 sm:left-5 flex flex-col items-start gap-1.5 cursor-default" onclick="event.stopPropagation()">
             <div class="flex items-center gap-2">
-                <input id="code-input" type="text" maxlength="5" placeholder="CODE" autocomplete="off" spellcheck="false" class="code-field w-28 sm:w-32 text-center font-mono font-bold uppercase tracking-[0.25em] placeholder-slate-500 rounded-xl px-3 py-2 text-sm focus:outline-none"/>
-                <button id="code-btn" type="button" aria-label="Send code" class="btn-icon p-2 flex items-center justify-center theme-accent">
+                <input
+                    id="code-input"
+                    type="text"
+                    maxlength="5"
+                    placeholder="CODE"
+                    autocomplete="off"
+                    spellcheck="false"
+                    class="code-field w-28 sm:w-32 text-center font-mono font-bold uppercase tracking-[0.25em] placeholder-slate-500 rounded-xl px-3 py-2 text-sm focus:outline-none"
+                />
+                <button
+                    id="code-btn"
+                    type="button"
+                    aria-label="Send code"
+                    class="btn-icon p-2 flex items-center justify-center theme-accent"
+                >
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                     </svg>
@@ -112,12 +150,14 @@
         <div class="logo-crate"></div>
         <h1 class="title text-5xl mb-3">Sokonova</h1>
         <p class="text-slate-300 text-lg animate-pulse text-center px-4">
-            <span class="only-touch">Swipe to start</span>
-            <span class="only-keyboard">Press any key to start</span>
+            <span id="start-touch-text" class="only-touch">Swipe to start</span>
+            <span id="start-keyboard-text" class="only-keyboard">Press any key to start</span>
         </p>
     </div>
 
-    <!-- Game logic and levels -->
+    <!-- Locales, levels and game logic -->
+    <script src="locale-en.js"></script>
+    <script src="locale-it.js"></script>
     <script src="levels.js"></script>
     <script src="game.js"></script>
 </body>

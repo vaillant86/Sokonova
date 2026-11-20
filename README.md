@@ -22,6 +22,7 @@ Controls adapt automatically to your device:
 - **Boss levels:** every 10th level starting at level 10 (`10, 20, 30...`) features dedicated visual styling, a higher difficulty spike, and **undo disabled**.
 - **Checkpoint codes:** every ten levels, from level 11 onwards, you receive a 5-letter code. Enter it in the bottom-left box on the start screen to pick up right where you left off.
 - **Visual themes:** switch anytime between 4 themes (`Classic`, `Sci-Fi`, `Arcade`, and `Monument`).
+- **Multilingual support:** automatic browser language detection with instant switching between **English** (`EN`) and **Italian** (`IT`) via the top-right flag toggle.
 - **Procedural sound effects:** synthesized Web Audio feedback for movement, crate placement, undo, countdown ticks, and level completion, toggleable at any time.
 
 ## Structure
@@ -31,9 +32,11 @@ Controls adapt automatically to your device:
 | `index.html` | Page structure and HUD layout |
 | `style.css` | Styling, themes, and animations |
 | `game.js` | Game engine, input handling, and Web Audio synthesizer |
+| `locale-en.js` | English localization dictionary |
+| `locale-it.js` | Italian localization dictionary |
 | `levels.js` | Level definitions, difficulty scores, and checkpoint codes |
 
 ## Levels & versioning
 
 - **Level Order:** Levels are organized into 10-level thematic blocks (`parking`, `traffic`, `endurance`) following a progressive **Boss-peak curve**, where every 10th level acts as the toughest finale of its block. Level order may shift between updates as new levels are generated.
-- **Versioning:** Release numbers match the total count of playable levels (e.g., `v0.5.0` = 50 levels).
+- **Versioning:** Release numbers match the total count of playable levels (e.g., `v1.0.0` = 100 levels).
