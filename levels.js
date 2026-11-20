@@ -9,7 +9,7 @@
 const levels = [
     // <LEVELS>
 
-        // Level 1 (score: 5, minimum 4 pushes)
+        // Level 1 - Tutorial T0 (fixed, score: 5)
         {
             score: 5,
             map: [
@@ -20,7 +20,7 @@ const levels = [
                 "######"
             ]
         },
-        // Level 2 (score: 5, minimum 10 pushes)
+        // Level 2 - Tutorial T1 (fixed, score: 5)
         {
             score: 5,
             map: [
@@ -34,7 +34,37 @@ const levels = [
                 "##########"
             ]
         },
-        // Level 3 (score: 40, minimum 10 pushes)
+        // Level 3 (score: 51, challenge: endurance, minimum 13 pushes)
+        {
+            score: 51,
+            challenge: "endurance",
+            map: [
+                "###########",
+                "#.      $ #",
+                "#  @      #",
+                "#      $  #",
+                "#         #",
+                "# $    .###",
+                "#    .  ###",
+                "###########"
+            ]
+        },
+        // Level 4 (score: 33, challenge: parking, minimum 10 pushes)
+        {
+            score: 33,
+            challenge: "parking",
+            map: [
+                "##########",
+                "#       .#",
+                "# @      #",
+                "#   ##   #",
+                "#   ##  $#",
+                "# .   $  #",
+                "# .  $   #",
+                "##########"
+            ]
+        },
+        // Level 5 (score: 40)
         {
             score: 40,
             map: [
@@ -48,7 +78,7 @@ const levels = [
                 "##########"
             ]
         },
-        // Level 4 (score: 40, minimum 10 pushes)
+        // Level 6 (score: 40)
         {
             score: 40,
             map: [
@@ -60,7 +90,7 @@ const levels = [
                 "##########"
             ]
         },
-        // Level 5 (score: 42, minimum 13 pushes)
+        // Level 7 (score: 42)
         {
             score: 42,
             map: [
@@ -73,7 +103,7 @@ const levels = [
                 "########"
             ]
         },
-        // Level 6 (score: 48, minimum 10 pushes)
+        // Level 8 (score: 48)
         {
             score: 48,
             map: [
@@ -85,7 +115,7 @@ const levels = [
                 "##########"
             ]
         },
-        // Level 7 (score: 48, minimum 12 pushes)
+        // Level 9 (score: 48)
         {
             score: 48,
             map: [
@@ -98,7 +128,7 @@ const levels = [
                 "#########"
             ]
         },
-        // Level 8 (score: 50, minimum 11 pushes)
+        // Level 10 (score: 50)
         {
             score: 50,
             map: [
@@ -112,7 +142,7 @@ const levels = [
                 "#########"
             ]
         },
-        // Level 9 (score: 50, minimum 11 pushes)
+        // Level 11 (score: 50)
         {
             score: 50,
             map: [
@@ -125,7 +155,21 @@ const levels = [
                 "#########"
             ]
         },
-        // Level 10 (score: 52, minimum 10 pushes)
+        // Level 12 (score: 50, challenge: parking, minimum 12 pushes)
+        {
+            score: 50,
+            challenge: "parking",
+            map: [
+                "###########",
+                "#         #",
+                "#  .   $@$#",
+                "#  .    $ #",
+                "####      #",
+                "####     .#",
+                "###########"
+            ]
+        },
+        // Level 13 (score: 52)
         {
             score: 52,
             map: [
@@ -139,7 +183,7 @@ const levels = [
                 "#########"
             ]
         },
-        // Level 11 (score: 53, minimum 9 pushes)
+        // Level 14 (score: 53)
         {
             score: 53,
             map: [
@@ -152,7 +196,7 @@ const levels = [
                 "#########"
             ]
         },
-        // Level 12 (score: 53, minimum 10 pushes)
+        // Level 15 (score: 53)
         {
             score: 53,
             map: [
@@ -164,7 +208,7 @@ const levels = [
                 "##########"
             ]
         },
-        // Level 13 (score: 53, minimum 11 pushes)
+        // Level 16 (score: 53)
         {
             score: 53,
             map: [
@@ -178,7 +222,22 @@ const levels = [
                 "#########"
             ]
         },
-        // Level 14 (score: 56, minimum 10 pushes)
+        // Level 17 (score: 53, challenge: parking, minimum 12 pushes)
+        {
+            score: 53,
+            challenge: "parking",
+            map: [
+                "###########",
+                "# . .   @ #",
+                "#   $  $  #",
+                "#   ##    #",
+                "#   ##    #",
+                "#         #",
+                "#  $    . #",
+                "###########"
+            ]
+        },
+        // Level 18 (score: 56)
         {
             score: 56,
             map: [
@@ -191,7 +250,7 @@ const levels = [
                 "#########"
             ]
         },
-        // Level 15 (score: 56, minimum 16 pushes)
+        // Level 19 (score: 56)
         {
             score: 56,
             map: [
@@ -205,7 +264,7 @@ const levels = [
                 "#########"
             ]
         },
-        // Level 16 (score: 58, minimum 9 pushes)
+        // Level 20 (score: 58)
         {
             score: 58,
             map: [
@@ -218,7 +277,7 @@ const levels = [
                 "########"
             ]
         },
-        // Level 17 (score: 59, minimum 10 pushes)
+        // Level 21 (score: 59)
         {
             score: 59,
             map: [
@@ -231,7 +290,21 @@ const levels = [
                 "#########"
             ]
         },
-        // Level 18 (score: 59, minimum 12 pushes)
+        // Level 22 (score: 56, challenge: traffic)
+        {
+            score: 56,
+            challenge: "traffic",
+            map: [
+                "#########",
+                "#   . .##",
+                "#  $ $ .#",
+                "#       #",
+                "#  $    #",
+                "#    @ ##",
+                "#########"
+            ]
+        },
+        // Level 23 (score: 59)
         {
             score: 59,
             map: [
@@ -244,7 +317,7 @@ const levels = [
                 "########"
             ]
         },
-        // Level 19 (score: 59, minimum 14 pushes)
+        // Level 24 (score: 59)
         {
             score: 59,
             map: [
@@ -258,7 +331,22 @@ const levels = [
                 "##########"
             ]
         },
-        // Level 20 (score: 62, minimum 13 pushes)
+        // Level 25 (score: 59, challenge: parking, minimum 12 pushes)
+        {
+            score: 59,
+            challenge: "parking",
+            map: [
+                "###########",
+                "# .   $   #",
+                "#  $@     #",
+                "#      $  #",
+                "#  .      #",
+                "###   $   #",
+                "###  .  . #",
+                "###########"
+            ]
+        },
+        // Level 26 (score: 62)
         {
             score: 62,
             map: [
@@ -271,7 +359,7 @@ const levels = [
                 "#########"
             ]
         },
-        // Level 21 (score: 63, minimum 10 pushes)
+        // Level 27 (score: 63)
         {
             score: 63,
             map: [
@@ -285,7 +373,79 @@ const levels = [
                 "##########"
             ]
         },
-        // Level 22 (score: 65, minimum 15 pushes)
+        // Level 28 (score: 59, challenge: traffic)
+        {
+            score: 59,
+            challenge: "traffic",
+            map: [
+                "#########",
+                "# .    .#",
+                "# @     #",
+                "#    $  #",
+                "#.    $ #",
+                "# $     #",
+                "##     ##",
+                "#########"
+            ]
+        },
+        // Level 29 (score: 59, challenge: traffic, minimum 10 pushes)
+        {
+            score: 59,
+            challenge: "traffic",
+            map: [
+                "###########",
+                "#         #",
+                "# $ ##    #",
+                "#   ##  . #",
+                "#   @.$   #",
+                "#      $ .#",
+                "###########"
+            ]
+        },
+        // Level 30 (score: 61, challenge: traffic, minimum 10 pushes)
+        {
+            score: 61,
+            challenge: "traffic",
+            map: [
+                "###########",
+                "# .@      #",
+                "#   ##  $ #",
+                "#  .##  $ #",
+                "#  $      #",
+                "#       . #",
+                "###########"
+            ]
+        },
+        // Level 31 (score: 61, challenge: traffic, minimum 11 pushes)
+        {
+            score: 61,
+            challenge: "traffic",
+            map: [
+                "##########",
+                "# @    ..#",
+                "#   $   .#",
+                "#       $#",
+                "#    $   #",
+                "####     #",
+                "####     #",
+                "##########"
+            ]
+        },
+        // Level 32 (score: 63, challenge: traffic)
+        {
+            score: 63,
+            challenge: "traffic",
+            map: [
+                "##########",
+                "#        #",
+                "#.$ ##$  #",
+                "#   ##   #",
+                "# .  $   #",
+                "#.@      #",
+                "##########"
+            ]
+        },
+        // Level 33 (score: 65)
         {
             score: 65,
             map: [
@@ -299,7 +459,7 @@ const levels = [
                 "#########"
             ]
         },
-        // Level 23 (score: 66, minimum 11 pushes)
+        // Level 34 (score: 66)
         {
             score: 66,
             map: [
@@ -312,7 +472,7 @@ const levels = [
                 "#########"
             ]
         },
-        // Level 24 (score: 67, minimum 10 pushes)
+        // Level 35 (score: 67)
         {
             score: 67,
             map: [
@@ -325,7 +485,7 @@ const levels = [
                 "#########"
             ]
         },
-        // Level 25 (score: 67, minimum 14 pushes)
+        // Level 36 (score: 67)
         {
             score: 67,
             map: [
@@ -338,7 +498,7 @@ const levels = [
                 "#########"
             ]
         },
-        // Level 26 (score: 67, minimum 16 pushes)
+        // Level 37 (score: 67)
         {
             score: 67,
             map: [
@@ -351,7 +511,36 @@ const levels = [
                 "########"
             ]
         },
-        // Level 27 (score: 68, minimum 13 pushes)
+        // Level 38 (score: 67, challenge: parking)
+        {
+            score: 67,
+            challenge: "parking",
+            map: [
+                "###########",
+                "#   . . $ #",
+                "#   ##  . #",
+                "#   ##$   #",
+                "#     $   #",
+                "#   $ . @ #",
+                "###########"
+            ]
+        },
+        // Level 39 (score: 67, challenge: parking, minimum 12 pushes)
+        {
+            score: 67,
+            challenge: "parking",
+            map: [
+                "##########",
+                "###      #",
+                "###      #",
+                "#   . $  #",
+                "#.     $ #",
+                "#  @  $ .#",
+                "# . $    #",
+                "##########"
+            ]
+        },
+        // Level 40 (score: 68)
         {
             score: 68,
             map: [
@@ -365,565 +554,181 @@ const levels = [
                 "##########"
             ]
         },
-        // Level 28 (score: 71, minimum 14 pushes)
+        // Level 41 (score: 63, challenge: traffic, minimum 13 pushes)
         {
-            score: 71,
-            map: [
-                "#########",
-                "#########",
-                "##    ..#",
-                "##  $ ..#",
-                "## $$ $ #",
-                "##    @ #",
-                "#########"
-            ]
-        },
-        // Level 29 (score: 71, minimum 18 pushes)
-        {
-            score: 71,
-            map: [
-                "#########",
-                "#  @    #",
-                "# $$$   #",
-                "#    ## #",
-                "#    #* #",
-                "#    ...#",
-                "#########"
-            ]
-        },
-        // Level 30 (score: 72, minimum 14 pushes)
-        {
-            score: 72,
-            map: [
-                "##########",
-                "# @     ##",
-                "# $$    ##",
-                "#   $ $ ##",
-                "#  .    ##",
-                "#  *    ##",
-                "###...####",
-                "##########"
-            ]
-        },
-        // Level 31 (score: 72, minimum 15 pushes)
-        {
-            score: 72,
-            map: [
-                "#########",
-                "##...   #",
-                "###.$ $ #",
-                "# #     #",
-                "#@$ ##$ #",
-                "#   ##  #",
-                "#########"
-            ]
-        },
-        // Level 32 (score: 73, minimum 12 pushes)
-        {
-            score: 73,
-            map: [
-                "########",
-                "#      #",
-                "#  $ $ #",
-                "# # $. #",
-                "###  . #",
-                "#@$  ..#",
-                "########"
-            ]
-        },
-        // Level 33 (score: 73, minimum 16 pushes)
-        {
-            score: 73,
-            map: [
-                "##########",
-                "#        #",
-                "#     $@$#",
-                "#   $  $ #",
-                "#        #",
-                "#  ##  $.#",
-                "#  ##....#",
-                "##########"
-            ]
-        },
-        // Level 34 (score: 74, minimum 14 pushes)
-        {
-            score: 74,
-            map: [
-                "#########",
-                "#       #",
-                "#  #$ $ #",
-                "#  #    #",
-                "#@$   *.#",
-                "#     ..#",
-                "#########"
-            ]
-        },
-        // Level 35 (score: 75, minimum 12 pushes)
-        {
-            score: 75,
-            map: [
-                "##########",
-                "#        #",
-                "# $   $  #",
-                "#  #*.   #",
-                "# $#+#####",
-                "#  #* #  #",
-                "#   .    #",
-                "##########"
-            ]
-        },
-        // Level 36 (score: 75, minimum 12 pushes)
-        {
-            score: 75,
-            map: [
-                "##########",
-                "#        #",
-                "# #      #",
-                "# #      #",
-                "# ## $   #",
-                "#$* $    #",
-                "#+*..    #",
-                "##########"
-            ]
-        },
-        // Level 37 (score: 75, minimum 16 pushes)
-        {
-            score: 75,
-            map: [
-                "#########",
-                "#      .#",
-                "# $ ##..#",
-                "#     $.#",
-                "#  $@$  #",
-                "#       #",
-                "#########"
-            ]
-        },
-        // Level 38 (score: 77, minimum 15 pushes)
-        {
-            score: 77,
-            map: [
-                "##########",
-                "#       .#",
-                "#    # *.#",
-                "#    # *.#",
-                "# #  # $ #",
-                "#  $ # $ #",
-                "#  @ #   #",
-                "##########"
-            ]
-        },
-        // Level 39 (score: 77, minimum 15 pushes)
-        {
-            score: 77,
-            map: [
-                "#########",
-                "#   @   #",
-                "# $ $  ##",
-                "# $  $  #",
-                "####.   #",
-                "####... #",
-                "#########"
-            ]
-        },
-        // Level 40 (score: 78, minimum 16 pushes)
-        {
-            score: 78,
-            map: [
-                "##########",
-                "#        #",
-                "# $#$#   #",
-                "#      # #",
-                "#  $@$   #",
-                "# .#. $  #",
-                "# ...    #",
-                "##########"
-            ]
-        },
-        // Level 41 (score: 79, minimum 14 pushes)
-        {
-            score: 79,
-            map: [
-                "#########",
-                "#       #",
-                "# $     #",
-                "#$@# $  #",
-                "# *#    #",
-                "#..# $  #",
-                "# ..    #",
-                "#########"
-            ]
-        },
-        // Level 42 (score: 80, minimum 16 pushes)
-        {
-            score: 80,
-            map: [
-                "##########",
-                "#        #",
-                "# $$     #",
-                "#   $ #  #",
-                "#   +.#$ #",
-                "#  .*.#  #",
-                "#        #",
-                "##########"
-            ]
-        },
-        // Level 43 (score: 81, minimum 13 pushes)
-        {
-            score: 81,
-            map: [
-                "##########",
-                "###      #",
-                "### $  $.#",
-                "### $  *.#",
-                "####   ..#",
-                "#### @$  #",
-                "####     #",
-                "##########"
-            ]
-        },
-        // Level 44 (score: 83, minimum 14 pushes)
-        {
-            score: 83,
-            map: [
-                "########",
-                "#.#    #",
-                "#.#@$  #",
-                "#. $$  #",
-                "#      #",
-                "########"
-            ]
-        },
-        // Level 45 (score: 83, minimum 19 pushes)
-        {
-            score: 83,
-            map: [
-                "#########",
-                "#       #",
-                "#     $ #",
-                "#..##   #",
-                "#.$ #$$ #",
-                "#.@     #",
-                "#########"
-            ]
-        },
-        // Level 46 (score: 84, minimum 18 pushes)
-        {
-            score: 84,
-            map: [
-                "##########",
-                "#  #.    #",
-                "#  #.. $ #",
-                "# $ ..   #",
-                "# @# $#  #",
-                "#  # $ $ #",
-                "#  #     #",
-                "##########"
-            ]
-        },
-        // Level 47 (score: 84, minimum 19 pushes)
-        {
-            score: 84,
-            map: [
-                "##########",
-                "#.*#     #",
-                "#*+# #   #",
-                "#.$#     #",
-                "#  #  $  #",
-                "#    $   #",
-                "#        #",
-                "##########"
-            ]
-        },
-        // Level 48 (score: 86, minimum 16 pushes)
-        {
-            score: 86,
-            map: [
-                "##########",
-                "#        #",
-                "# *. #   #",
-                "#...  ## #",
-                "# $#  $@ #",
-                "#$ #   $ #",
-                "#        #",
-                "##########"
-            ]
-        },
-        // Level 49 (score: 86, minimum 18 pushes)
-        {
-            score: 86,
-            map: [
-                "#########",
-                "#.+ #   #",
-                "#.* $   #",
-                "#   # # #",
-                "# $ # $ #",
-                "#   #   #",
-                "#########"
-            ]
-        },
-        // Level 50 (score: 86, minimum 18 pushes)
-        {
-            score: 86,
-            map: [
-                "#########",
-                "#       #",
-                "# $$  @ #",
-                "#    #$ #",
-                "# $  #  #",
-                "#   ....#",
-                "#########"
-            ]
-        },
-        // Level 51 (score: 87, minimum 16 pushes)
-        {
-            score: 87,
-            map: [
-                "##########",
-                "#        #",
-                "#    $   #",
-                "#   #  # #",
-                "# * #    #",
-                "#.*$#    #",
-                "#.*@#    #",
-                "##########"
-            ]
-        },
-        // Level 52 (score: 87, minimum 18 pushes)
-        {
-            score: 87,
-            map: [
-                "##########",
-                "#       .#",
-                "#  $ ##*.#",
-                "#     #..#",
-                "# ##     #",
-                "#  # $$$ #",
-                "#     @  #",
-                "##########"
-            ]
-        },
-        // Level 53 (score: 88, minimum 15 pushes)
-        {
-            score: 88,
-            map: [
-                "##########",
-                "#....    #",
-                "#   .$ $ #",
-                "#  $ # @ #",
-                "# $ ## # #",
-                "# $    # #",
-                "#        #",
-                "##########"
-            ]
-        },
-        // Level 54 (score: 88, minimum 18 pushes)
-        {
-            score: 88,
-            map: [
-                "#########",
-                "#.@     #",
-                "#.*$  $ #",
-                "#. ##   #",
-                "#   # $ #",
-                "#       #",
-                "#########"
-            ]
-        },
-        // Level 55 (score: 89, minimum 13 pushes)
-        {
-            score: 89,
-            map: [
-                "##########",
-                "#  #...  #",
-                "# ##..$$ #",
-                "#   $    #",
-                "#  $@$   #",
-                "#  ##    #",
-                "#  #     #",
-                "##########"
-            ]
-        },
-        // Level 56 (score: 89, minimum 16 pushes)
-        {
-            score: 89,
-            map: [
-                "#########",
-                "#  #    #",
-                "# $   #.#",
-                "#   $ ..#",
-                "# $#@$. #",
-                "#  #    #",
-                "#########"
-            ]
-        },
-        // Level 57 (score: 89, minimum 19 pushes)
-        {
-            score: 89,
-            map: [
-                "##########",
-                "#        #",
-                "# $ $ @..#",
-                "#     $..#",
-                "# $  $ .##",
-                "#       ##",
-                "##########",
-                "##########"
-            ]
-        },
-        // Level 58 (score: 90, minimum 15 pushes)
-        {
-            score: 90,
-            map: [
-                "#########",
-                "#+*.    #",
-                "#*##$ # #",
-                "#.$   # #",
-                "#   ##  #",
-                "#  $    #",
-                "#       #",
-                "#########"
-            ]
-        },
-        // Level 59 (score: 90, minimum 15 pushes)
-        {
-            score: 90,
-            map: [
-                "#########",
-                "#  *.#  #",
-                "# $..#  #",
-                "# #. #@ #",
-                "# $  #$ #",
-                "# $     #",
-                "#       #",
-                "#########"
-            ]
-        },
-        // Level 60 (score: 90, minimum 15 pushes)
-        {
-            score: 90,
-            map: [
-                "########",
-                "#   #  #",
-                "# $ #$ #",
-                "# $ #  #",
-                "#.#  $@#",
-                "#...   #",
-                "########"
-            ]
-        },
-        // Level 61 (score: 90, minimum 15 pushes)
-        {
-            score: 90,
-            map: [
-                "##########",
-                "# @  #   #",
-                "# $$ #   #",
-                "# .$ #   #",
-                "# *  #   #",
-                "# .#  $  #",
-                "#..      #",
-                "##########"
-            ]
-        },
-        // Level 62 (score: 90, minimum 18 pushes)
-        {
-            score: 90,
-            map: [
-                "##########",
-                "#...     #",
-                "#..$$#   #",
-                "#$ #@$   #",
-                "#  #     #",
-                "#  #  $  #",
-                "#  #     #",
-                "##########"
-            ]
-        },
-        // Level 63 (score: 91, minimum 17 pushes)
-        {
-            score: 91,
-            map: [
-                "##########",
-                "#        #",
-                "#    # $ #",
-                "# $ ##   #",
-                "#   $@$  #",
-                "#   ##   #",
-                "# .*...  #",
-                "##########"
-            ]
-        },
-        // Level 64 (score: 92, minimum 17 pushes)
-        {
-            score: 92,
-            map: [
-                "#########",
-                "#########",
-                "#    ...#",
-                "# $ $ . #",
-                "# $@$   #",
-                "###     #",
-                "#########"
-            ]
-        },
-        // Level 65 (score: 94, minimum 14 pushes)
-        {
-            score: 94,
-            map: [
-                "##########",
-                "#  #     #",
-                "#  # $   #",
-                "#  #     #",
-                "#  # $  .#",
-                "#     #**#",
-                "#      *+#",
-                "##########"
-            ]
-        },
-        // Level 66 (score: 95)
-        {
-            score: 95,
+            score: 63,
+            challenge: "traffic",
             map: [
                 "##########",
                 "#      . #",
-                "#     *..#",
-                "# # $ $. #",
-                "# # $    #",
-                "#     $  #",
-                "#     @  #",
+                "#        #",
+                "#   $  @ #",
+                "#     $$ #",
+                "#..      #",
+                "##     ###",
                 "##########"
             ]
         },
-        // Level 67 (score: 95)
+        // Level 42 (score: 67, challenge: traffic, minimum 13 pushes)
         {
-            score: 95,
+            score: 67,
+            challenge: "traffic",
+            map: [
+                "##########",
+                "#  @.  $ #",
+                "#  $     #",
+                "#  $     #",
+                "#       .#",
+                "#        #",
+                "#  .    ##",
+                "##########"
+            ]
+        },
+        // Level 43 (score: 69, challenge: parking)
+        {
+            score: 69,
+            challenge: "parking",
+            map: [
+                "###########",
+                "# $@ .    #",
+                "#   $   $ #",
+                "#         #",
+                "#         #",
+                "#     $ . #",
+                "#  . .   ##",
+                "###########"
+            ]
+        },
+        // Level 44 (score: 68, challenge: traffic)
+        {
+            score: 68,
+            challenge: "traffic",
+            map: [
+                "##########",
+                "#       .#",
+                "#        #",
+                "#  @.    #",
+                "# $   $  #",
+                "# .    $ #",
+                "##     ###",
+                "##########"
+            ]
+        },
+        // Level 45 (score: 68, challenge: traffic, minimum 15 pushes)
+        {
+            score: 68,
+            challenge: "traffic",
             map: [
                 "##########",
                 "#        #",
-                "#  $ ##  #",
-                "#     #  #",
-                "#    $   #",
-                "# @$  ** #",
-                "#     ...#",
+                "#   $    #",
+                "#       ##",
+                "# $    .##",
+                "#   $ ..##",
+                "#    $@.##",
                 "##########"
             ]
         },
-        // Level 68 (score: 95, minimum 16 pushes)
+        // Level 46 (score: 70, challenge: traffic)
         {
-            score: 95,
+            score: 70,
+            challenge: "traffic",
             map: [
                 "##########",
-                "#   .#   #",
-                "#  *.#   #",
-                "#   .#   #",
-                "# $$.# $ #",
-                "# @# $   #",
+                "#  # #   #",
+                "#  $     #",
+                "#    . $ #",
+                "#    .$  #",
+                "#@   .   #",
+                "##########"
+            ]
+        },
+        // Level 47 (score: 70, challenge: traffic)
+        {
+            score: 70,
+            challenge: "traffic",
+            map: [
+                "###########",
+                "#  .    $ #",
+                "# . ##@   #",
+                "#   ##$   #",
+                "#         #",
+                "#    $   .#",
+                "###########"
+            ]
+        },
+        // Level 48 (score: 71, challenge: traffic, minimum 15 pushes)
+        {
+            score: 71,
+            challenge: "traffic",
+            map: [
+                "##########",
+                "#..$  ####",
+                "#. $ $####",
+                "#.    $  #",
+                "#        #",
+                "# @      #",
                 "#        #",
                 "##########"
             ]
         },
-        // Level 69 (score: 95, minimum 20 pushes)
+        // Level 49 (score: 72, challenge: traffic)
+        {
+            score: 72,
+            challenge: "traffic",
+            map: [
+                "###########",
+                "#.       @#",
+                "# $       #",
+                "#  $$     #",
+                "#         #",
+                "###   ..###",
+                "###########"
+            ]
+        },
+        // Level 50 (score: 74, challenge: traffic)
+        {
+            score: 74,
+            challenge: "traffic",
+            map: [
+                "###########",
+                "#      @  #",
+                "#        .#",
+                "#  $  .   #",
+                "#   $ $ . #",
+                "#        ##",
+                "###########"
+            ]
+        },
+        // Level 51 (score: 75, challenge: traffic, minimum 16 pushes)
+        {
+            score: 75,
+            challenge: "traffic",
+            map: [
+                "###########",
+                "#         #",
+                "#  @##$ $ #",
+                "#   ##    #",
+                "#      $  #",
+                "# ..   .  #",
+                "###########"
+            ]
+        },
+        // Level 52 (score: 76, challenge: traffic)
+        {
+            score: 76,
+            challenge: "traffic",
+            map: [
+                "###########",
+                "#    #   .#",
+                "#  $ #  . #",
+                "#    #    #",
+                "#      @$ #",
+                "# .$ #    #",
+                "###########"
+            ]
+        },
+        // Level 53 (score: 95)
         {
             score: 95,
             map: [
@@ -937,7 +742,140 @@ const levels = [
                 "##########"
             ]
         },
-        // Level 70 (score: 96, minimum 15 pushes)
+        // Level 54 (score: 77, challenge: traffic, minimum 16 pushes)
+        {
+            score: 77,
+            challenge: "traffic",
+            map: [
+                "###########",
+                "#  #      #",
+                "#.$   @   #",
+                "#..       #",
+                "#.   $$   #",
+                "#    $    #",
+                "#  # # #  #",
+                "###########"
+            ]
+        },
+        // Level 55 (score: 78, challenge: traffic, minimum 15 pushes)
+        {
+            score: 78,
+            challenge: "traffic",
+            map: [
+                "#########",
+                "#..     #",
+                "#.@   $ #",
+                "##  $$###",
+                "##    ###",
+                "##    ###",
+                "#########"
+            ]
+        },
+        // Level 56 (score: 79, challenge: traffic)
+        {
+            score: 79,
+            challenge: "traffic",
+            map: [
+                "##########",
+                "# $  ... #",
+                "# $ $ .  #",
+                "#       ##",
+                "#    $ @##",
+                "#       ##",
+                "#       ##",
+                "##########"
+            ]
+        },
+        // Level 57 (score: 80, challenge: traffic)
+        {
+            score: 80,
+            challenge: "traffic",
+            map: [
+                "#########",
+                "#   $ ..#",
+                "#     . #",
+                "#  $  $ #",
+                "##    ###",
+                "## @  ###",
+                "##    ###",
+                "#########"
+            ]
+        },
+        // Level 58 (score: 83, challenge: traffic, minimum 11 pushes)
+        {
+            score: 83,
+            challenge: "traffic",
+            map: [
+                "##########",
+                "#  $.    #",
+                "# $      #",
+                "#     $  #",
+                "#   $. . #",
+                "#     .  #",
+                "#     @ ##",
+                "##########"
+            ]
+        },
+        // Level 59 (score: 83, challenge: traffic, minimum 12 pushes)
+        {
+            score: 83,
+            challenge: "traffic",
+            map: [
+                "###########",
+                "#.  @   ###",
+                "#    $  ###",
+                "#         #",
+                "#  $      #",
+                "#   . $   #",
+                "#   .. $  #",
+                "###########"
+            ]
+        },
+        // Level 60 (score: 85, challenge: traffic)
+        {
+            score: 85,
+            challenge: "traffic",
+            map: [
+                "##########",
+                "#   @#   #",
+                "#  $ #   #",
+                "#  $   $ #",
+                "# .  #   #",
+                "#..  #   #",
+                "##########"
+            ]
+        },
+        // Level 61 (score: 85, challenge: traffic)
+        {
+            score: 85,
+            challenge: "traffic",
+            map: [
+                "#########",
+                "#.  @ $ #",
+                "#.      #",
+                "#.      #",
+                "# $   $ #",
+                "###     #",
+                "###     #",
+                "#########"
+            ]
+        },
+        // Level 62 (score: 86, challenge: traffic)
+        {
+            score: 86,
+            challenge: "traffic",
+            map: [
+                "#########",
+                "#     ###",
+                "#  $$ ###",
+                "#     @ #",
+                "#  $.$  #",
+                "#    .  #",
+                "#   ..  #",
+                "#########"
+            ]
+        },
+        // Level 63 (score: 96)
         {
             score: 96,
             map: [
@@ -951,7 +889,7 @@ const levels = [
                 "##########"
             ]
         },
-        // Level 71 (score: 97, minimum 17 pushes)
+        // Level 64 (score: 97)
         {
             score: 97,
             map: [
@@ -965,7 +903,7 @@ const levels = [
                 "##########"
             ]
         },
-        // Level 72 (score: 97, minimum 17 pushes)
+        // Level 65 (score: 97)
         {
             score: 97,
             map: [
@@ -979,7 +917,7 @@ const levels = [
                 "##########"
             ]
         },
-        // Level 73 (score: 99, minimum 18 pushes)
+        // Level 66 (score: 99)
         {
             score: 99,
             map: [
@@ -993,7 +931,7 @@ const levels = [
                 "##########"
             ]
         },
-        // Level 74 (score: 99, minimum 18 pushes)
+        // Level 67 (score: 99)
         {
             score: 99,
             map: [
@@ -1007,7 +945,7 @@ const levels = [
                 "##########"
             ]
         },
-        // Level 75 (score: 99, minimum 21 pushes)
+        // Level 68 (score: 99)
         {
             score: 99,
             map: [
@@ -1021,7 +959,7 @@ const levels = [
                 "##########"
             ]
         },
-        // Level 76 (score: 100, minimum 15 pushes)
+        // Level 69 (score: 100)
         {
             score: 100,
             map: [
@@ -1035,7 +973,51 @@ const levels = [
                 "##########"
             ]
         },
-        // Level 77 (score: 101, minimum 16 pushes)
+        // Level 70 (score: 97, challenge: traffic, minimum 16 pushes)
+        {
+            score: 97,
+            challenge: "traffic",
+            map: [
+                "#########",
+                "# .$ #  #",
+                "# @$. . #",
+                "#  $ #  #",
+                "#    #$ #",
+                "#  . #  #",
+                "#########"
+            ]
+        },
+        // Level 71 (score: 100, challenge: traffic)
+        {
+            score: 100,
+            challenge: "traffic",
+            map: [
+                "###########",
+                "#     .  ##",
+                "#.        #",
+                "#         #",
+                "# .       #",
+                "#   $$ $  #",
+                "# @      ##",
+                "###########"
+            ]
+        },
+        // Level 72 (score: 100, challenge: traffic)
+        {
+            score: 100,
+            challenge: "traffic",
+            map: [
+                "##########",
+                "#... $   #",
+                "# .    $ #",
+                "#      $##",
+                "#       ##",
+                "#      $##",
+                "#    @  ##",
+                "##########"
+            ]
+        },
+        // Level 73 (score: 101)
         {
             score: 101,
             map: [
@@ -1049,7 +1031,7 @@ const levels = [
                 "##########"
             ]
         },
-        // Level 78 (score: 103, minimum 17 pushes)
+        // Level 74 (score: 103)
         {
             score: 103,
             map: [
@@ -1063,7 +1045,7 @@ const levels = [
                 "##########"
             ]
         },
-        // Level 79 (score: 104, minimum 17 pushes)
+        // Level 75 (score: 104)
         {
             score: 104,
             map: [
@@ -1077,7 +1059,7 @@ const levels = [
                 "##########"
             ]
         },
-        // Level 80 (score: 104, minimum 22 pushes)
+        // Level 76 (score: 104)
         {
             score: 104,
             map: [
@@ -1091,7 +1073,7 @@ const levels = [
                 "##########"
             ]
         },
-        // Level 81 (score: 106, minimum 21 pushes)
+        // Level 77 (score: 106)
         {
             score: 106,
             map: [
@@ -1105,7 +1087,7 @@ const levels = [
                 "##########"
             ]
         },
-        // Level 82 (score: 110, minimum 19 pushes)
+        // Level 78 (score: 110)
         {
             score: 110,
             map: [
@@ -1119,7 +1101,7 @@ const levels = [
                 "##########"
             ]
         },
-        // Level 83 (score: 110, minimum 20 pushes)
+        // Level 79 (score: 110)
         {
             score: 110,
             map: [
@@ -1133,7 +1115,7 @@ const levels = [
                 "##########"
             ]
         },
-        // Level 84 (score: 113, minimum 19 pushes)
+        // Level 80 (score: 113)
         {
             score: 113,
             map: [
@@ -1146,7 +1128,36 @@ const levels = [
                 "#########"
             ]
         },
-        // Level 85 (score: 116, minimum 21 pushes)
+        // Level 81 (score: 111, challenge: traffic)
+        {
+            score: 111,
+            challenge: "traffic",
+            map: [
+                "###########",
+                "#    #    #",
+                "#    #  . #",
+                "#    #    #",
+                "# $ $#    #",
+                "#.  @$    #",
+                "#.   #    #",
+                "###########"
+            ]
+        },
+        // Level 82 (score: 115, challenge: traffic, minimum 22 pushes)
+        {
+            score: 115,
+            challenge: "traffic",
+            map: [
+                "###########",
+                "#  # # #  #",
+                "# $ $     #",
+                "#        .#",
+                "#    $ $ .#",
+                "#@ # # #..#",
+                "###########"
+            ]
+        },
+        // Level 83 (score: 116)
         {
             score: 116,
             map: [
@@ -1160,7 +1171,7 @@ const levels = [
                 "#########"
             ]
         },
-        // Level 86 (score: 125, minimum 25 pushes)
+        // Level 84 (score: 125)
         {
             score: 125,
             map: [
@@ -1174,7 +1185,7 @@ const levels = [
                 "##########"
             ]
         },
-        // Level 87 (score: 133, minimum 23 pushes)
+        // Level 85 (score: 133)
         {
             score: 133,
             map: [
@@ -1188,7 +1199,7 @@ const levels = [
                 "##########"
             ]
         },
-        // Level 88 (score: 135, minimum 22 pushes)
+        // Level 86 (score: 135)
         {
             score: 135,
             map: [
@@ -1201,7 +1212,7 @@ const levels = [
                 "########"
             ]
         },
-        // Level 89 (score: 137, minimum 26 pushes)
+        // Level 87 (score: 137)
         {
             score: 137,
             map: [
@@ -1215,7 +1226,7 @@ const levels = [
                 "##########"
             ]
         },
-        // Level 90 (score: 209, minimum 37 pushes)
+        // Level 88 (score: 209)
         {
             score: 209,
             map: [
@@ -1227,6 +1238,36 @@ const levels = [
                 "# ##.. $ #",
                 "#  #...  #",
                 "##########"
+            ]
+        },
+        // Level 89 (score: 120, challenge: traffic)
+        {
+            score: 120,
+            challenge: "traffic",
+            map: [
+                "###########",
+                "#    #    #",
+                "#    # .  #",
+                "#   @#$ . #",
+                "#         #",
+                "#  $ #$.  #",
+                "#    #    #",
+                "###########"
+            ]
+        },
+        // Level 90 (score: 135, challenge: traffic, minimum 26 pushes)
+        {
+            score: 135,
+            challenge: "traffic",
+            map: [
+                "###########",
+                "#   @ #   #",
+                "#    $#   #",
+                "# .   #   #",
+                "#.    # $ #",
+                "#  $      #",
+                "#.    #   #",
+                "###########"
             ]
         }
     // </LEVELS>
