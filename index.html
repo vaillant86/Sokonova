@@ -17,7 +17,7 @@
         <span id="theme-label" class="theme-accent">Classic</span>
     </button>
 
-    <!-- Home button (only shown during the game) -->
+    <!-- Home button (only visible during the game) -->
     <button id="home-btn" type="button" aria-label="Back to home" title="Back to home" class="hidden btn-icon fixed top-3 left-3 sm:top-5 sm:left-5 z-[70] px-3 py-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wider">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 theme-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10" />
@@ -25,14 +25,15 @@
         <span class="theme-accent">Home</span>
     </button>
 
-    <!-- Main game stack -->
+    <!-- Main vertical game stack with equal vertical spacing -->
     <main id="game-stack" class="w-full px-4 mt-10 sm:mt-0 flex flex-col items-center gap-4">
 
-        <!-- 1. Title & Level indicator -->
+        <!-- 1. Title & level indicator -->
         <div class="text-center">
             <h1 class="title text-3xl sm:text-4xl leading-tight">Sokonova</h1>
             <div class="flex items-center justify-center gap-2 mt-1">
                 <p id="level-display" class="text-slate-400 font-semibold">Level 1</p>
+                <span id="boss-badge" class="hidden text-[11px] font-mono font-extrabold tracking-widest uppercase px-2 py-0.5 rounded-md badge-boss">BOSS</span>
                 <span id="code-badge" class="hidden text-xs font-mono font-bold tracking-widest uppercase px-2 py-0.5 rounded-md badge-accent"></span>
             </div>
         </div>
@@ -55,6 +56,12 @@
                 </svg>
                 <svg id="sound-icon-off" xmlns="http://www.w3.org/2000/svg" class="hidden h-5 w-5 sm:h-6 sm:w-6 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M11 5L6 9H3v6h3l5 4V5zm10 4l-6 6m0-6l6 6" />
+                </svg>
+            </button>
+
+            <button id="undo-btn" type="button" onclick="undoMove()" disabled class="btn-icon px-3 py-2 flex items-center justify-center shrink-0" title="Undo move (3 left)" aria-label="Undo move">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6 theme-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" d="M9 14L4 9m0 0l5-5M4 9h10.5a5.5 5.5 0 010 11H11" />
                 </svg>
             </button>
 
@@ -92,21 +99,8 @@
         <!-- Code box (bottom-left) -->
         <div id="password-box" class="fixed bottom-3 left-3 sm:bottom-5 sm:left-5 flex flex-col items-start gap-1.5 cursor-default" onclick="event.stopPropagation()">
             <div class="flex items-center gap-2">
-                <input
-                    id="code-input"
-                    type="text"
-                    maxlength="5"
-                    placeholder="CODE"
-                    autocomplete="off"
-                    spellcheck="false"
-                    class="code-field w-28 sm:w-32 text-center font-mono font-bold uppercase tracking-[0.25em] placeholder-slate-500 rounded-xl px-3 py-2 text-sm focus:outline-none"
-                />
-                <button
-                    id="code-btn"
-                    type="button"
-                    aria-label="Send code"
-                    class="btn-icon p-2 flex items-center justify-center theme-accent"
-                >
+                <input id="code-input" type="text" maxlength="5" placeholder="CODE" autocomplete="off" spellcheck="false" class="code-field w-28 sm:w-32 text-center font-mono font-bold uppercase tracking-[0.25em] placeholder-slate-500 rounded-xl px-3 py-2 text-sm focus:outline-none"/>
+                <button id="code-btn" type="button" aria-label="Send code" class="btn-icon p-2 flex items-center justify-center theme-accent">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                     </svg>

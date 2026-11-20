@@ -28,6 +28,11 @@ let playerDir = 'down';
 let pushCount = 0;
 let lastMove = null;
 
+// Undo State (max 3 per level)
+const MAX_UNDOS = 3;
+let moveHistory = [];
+let undosRemaining = MAX_UNDOS;
+
 // Lock controls during transitions/modals
 let inputLocked = false;
 let gameStarted = false;
@@ -91,8 +96,10 @@ const boardEl = document.getElementById('game-board');
 const levelDisplay = document.getElementById('level-display');
 const pushesDisplay = document.getElementById('pushes-display');
 const timerDisplay = document.getElementById('timer-display');
+const bossBadge = document.getElementById('boss-badge');
 const codeBadge = document.getElementById('code-badge');
 const homeBtn = document.getElementById('home-btn');
+const undoBtn = document.getElementById('undo-btn');
 
 // Modal Elements
 const modalOverlay = document.getElementById('modal-overlay');
@@ -101,6 +108,11 @@ const modalTitle = document.getElementById('modal-title');
 const modalMessage = document.getElementById('modal-message');
 const modalBtn = document.getElementById('modal-btn');
 let modalCallback = null;
+
+// Boss levels occur every 10 levels starting at level 10 (10, 20, 30, ...)
+function isBossLevel(levelNumber) {
+    return levelNumber >= 10 && levelNumber % 10 === 0;
+}
 
 // Returns the time limit in seconds based on level complexity score, or null if untimed.
 // Tiers: <=50 -> 30s, 51..65 -> 40s, 66..80 -> 50s, 81..95 -> 60s, ..., >=261 -> 180s (3 min cap).
@@ -268,6 +280,9 @@ function playSound(type) {
     if (type === 'move') {
         // Soft, subtle pop for both walking and pushing crates
         playTone(190, 130, 0.055, 'triangle', 0.07);
+    } else if (type === 'undo') {
+        // Quick reverse step tone
+        playTone(260, 165, 0.075, 'triangle', 0.08);
     } else if (type === 'target') {
         // Crisp two-note chime when a crate locks onto a target
         playTone(523.25, 523.25, 0.09, 'sine', 0.11, 0);      // C5
@@ -282,6 +297,49 @@ function playSound(type) {
         const isFinalSecond = timeLeft === 1;
         playTone(isFinalSecond ? 980 : 740, isFinalSecond ? 880 : 660, 0.045, 'sine', 0.09);
     }
+}
+
+// Undo State Management
+function updateUndoUI() {
+    if (undoBtn) {
+        const canUndo = undosRemaining > 0 && moveHistory.length > 0 && !inputLocked;
+        undoBtn.disabled = !canUndo;
+        undoBtn.title = undosRemaining > 0
+            ? `Undo move (${undosRemaining} left)`
+            : 'No undos left';
+    }
+}
+
+function recordMoveSnapshot() {
+    moveHistory.push({
+        grid: grid.map(row => [...row]),
+        player: { x: player.x, y: player.y },
+        playerDir,
+        pushCount
+    });
+    // Keep only the last MAX_UNDOS snapshots in memory
+    if (moveHistory.length > MAX_UNDOS) {
+        moveHistory.shift();
+    }
+}
+
+function undoMove() {
+    if (inputLocked || !gameStarted) return;
+    if (undosRemaining <= 0 || moveHistory.length === 0) return;
+
+    const prev = moveHistory.pop();
+    undosRemaining--;
+
+    grid = prev.grid;
+    player = { x: prev.player.x, y: prev.player.y };
+    playerDir = prev.playerDir;
+    pushCount = prev.pushCount;
+    pushesDisplay.innerText = pushCount;
+    lastMove = null;
+
+    render();
+    playSound('undo');
+    updateUndoUI();
 }
 
 // Initialize the game
@@ -374,7 +432,9 @@ function goHome() {
     timerStarted = false;
     modalCallback = null;
     hideModal();
+    updateUndoUI();
 
+    document.body.classList.remove('boss-level');
     if (homeBtn) homeBtn.classList.add('hidden');
 
     const overlay = document.getElementById('start-overlay');
@@ -408,8 +468,8 @@ function updateCellSize() {
     const cellH = availH / rows;
     let size = Math.max(24, Math.min(58, Math.floor(Math.min(cellW, cellH))));
 
-    // Ensure the board is at least wide enough to comfortably host the HUD bar
-    const minBoardWidth = Math.min(280, availW + boardPad);
+    // Ensure the board is at least wide enough to comfortably host the HUD bar (2 pills + 3 buttons)
+    const minBoardWidth = Math.min(320, availW + boardPad);
     if (cols * size + boardPad < minBoardWidth) {
         size = Math.min(68, Math.ceil((minBoardWidth - boardPad) / cols));
     }
@@ -423,26 +483,31 @@ function updateCellSize() {
     }
 }
 
-// Updates the contextual hint below the board (special instructions for tutorials T0 and T1)
 function updateLevelHint(index) {
+    const hintBox = document.getElementById('hint-box');
     const hintKb = document.getElementById('hint-keyboard');
     const hintTouch = document.getElementById('hint-touch');
-    if (!hintKb || !hintTouch) return;
+    if (!hintBox || !hintKb || !hintTouch) return;
+
+    if (index > 1) {
+        hintBox.classList.add('hidden');
+        return;
+    }
+
+    hintBox.classList.remove('hidden');
 
     if (index === 0) {
-        hintKb.innerHTML = 'Use <kbd>Arrows</kbd> or <kbd>WASD</kbd> to push every crate onto a glowing target.';
-        hintTouch.innerHTML = 'Drag your finger in any direction to move and push every crate onto a target.';
-    } else if (index === 1) {
-        hintKb.innerHTML = 'Tip: You can only push crates, never pull them. Avoid corners, or press <kbd>R</kbd> to restart.';
-        hintTouch.innerHTML = 'Tip: Crates can only be pushed, never pulled. Avoid corners, or tap restart if stuck.';
+        hintKb.innerHTML = 'Push every crate onto a glowing target using <kbd>Arrows</kbd> or <kbd>WASD</kbd>.';
+        hintTouch.innerHTML = 'Swipe in any direction to push every crate onto a target.';
     } else {
-        hintKb.innerHTML = 'Move with <kbd>Arrows</kbd> or <kbd>WASD</kbd>.';
-        hintTouch.innerHTML = 'Swipe on the screen to move.';
+        hintKb.innerHTML = 'Crates can only be pushed, never pulled. Stuck? Use <kbd>Z</kbd> to undo (3 max) or <kbd>R</kbd> to restart.';
+        hintTouch.innerHTML = 'Crates can only be pushed, never pulled. Stuck? Tap Undo (3 max) or Restart.';
     }
 }
 
 function loadLevel(index) {
     if (index >= levels.length) {
+        document.body.classList.remove('boss-level');
         showModal("Victory!", "You completed all levels. You are a Sokonova master!", () => {
             currentLevelIndex = 0;
             loadLevel(0);
@@ -458,6 +523,8 @@ function loadLevel(index) {
     playerDir = 'down';
     pushCount = 0;
     lastMove = null;
+    moveHistory = [];
+    undosRemaining = MAX_UNDOS;
     pushesDisplay.innerText = '0';
 
     // Maximum width for padding and CSS Grid
@@ -485,8 +552,14 @@ function loadLevel(index) {
     boardEl.style.gridTemplateRows = `repeat(${grid.length}, 1fr)`;
     updateCellSize();
 
-    // Update UI
+    // Update UI & Boss milestone styling
     const levelNumber = index + 1;
+    const boss = isBossLevel(levelNumber);
+    document.body.classList.toggle('boss-level', boss);
+    if (bossBadge) {
+        bossBadge.classList.toggle('hidden', !boss);
+    }
+
     levelDisplay.innerText = `Level ${levelNumber}`;
     updateLevelHint(index);
 
@@ -499,6 +572,7 @@ function loadLevel(index) {
     }
 
     setupTimer(index, levelEntry);
+    updateUndoUI();
     render();
 }
 
@@ -539,6 +613,7 @@ function startLevelTimer() {
         if (timeLeft <= 0) {
             clearInterval(timerInterval);
             inputLocked = true;
+            updateUndoUI();
             showModal("Time's Up!", "You ran out of time.", () => {
                 restartCurrentLevel();
             });
@@ -620,7 +695,11 @@ function handleKeyDown(e) {
     else if (['ArrowDown', 's', 'S'].includes(e.key)) dy = 1;
     else if (['ArrowLeft', 'a', 'A'].includes(e.key)) dx = -1;
     else if (['ArrowRight', 'd', 'D'].includes(e.key)) dx = 1;
-    else if (['r', 'R'].includes(e.key)) {
+    else if (['z', 'Z', 'Backspace'].includes(e.key) && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault();
+        undoMove();
+        return;
+    } else if (['r', 'R'].includes(e.key)) {
         restartCurrentLevel();
         return;
     }
@@ -782,6 +861,7 @@ function move(dx, dy) {
 }
 
 function updateGrid(px, py, nx, ny, pushedBox, bx, by) {
+    recordMoveSnapshot();
     startLevelTimer();
 
     // Remove player from the old position
@@ -817,6 +897,7 @@ function updateGrid(px, py, nx, ny, pushedBox, bx, by) {
     render();
     playSound(lastMove.boxLanded ? 'target' : 'move');
     lastMove = null;
+    updateUndoUI();
     checkWinCondition();
 }
 
@@ -836,17 +917,22 @@ function checkWinCondition() {
     if (isComplete) {
         inputLocked = true;
         clearInterval(timerInterval);
+        updateUndoUI();
         playSound('win');
 
         setTimeout(() => {
-            const nextLevel = currentLevelIndex + 2;
+            const completedLevel = currentLevelIndex + 1;
+            const wasBoss = isBossLevel(completedLevel);
+            const nextLevel = completedLevel + 1;
             const isNewCheckpoint = nextLevel >= 11 && (nextLevel - 1) % 10 === 0;
             const nextCode = isNewCheckpoint ? getActiveLevelCode(nextLevel) : null;
+
+            const title = wasBoss ? "Boss Defeated!" : "Level Complete!";
             const msg = nextCode
                 ? `Great job! Level ${nextLevel} code: ${nextCode}`
                 : "Great job! Get ready for the next challenge.";
 
-            showModal("Level Complete!", msg, () => {
+            showModal(title, msg, () => {
                 currentLevelIndex++;
                 loadLevel(currentLevelIndex);
             });
