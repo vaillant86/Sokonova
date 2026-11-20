@@ -81,6 +81,11 @@ const THEMES = [
 const THEME_STORAGE_KEY = 'sokonova_theme';
 let currentThemeIndex = 0;
 
+// Sound configuration (Web Audio API, zero external dependencies)
+const SOUND_STORAGE_KEY = 'sokonova_sound';
+let soundEnabled = true;
+let audioCtx = null;
+
 // UI Elements
 const boardEl = document.getElementById('game-board');
 const levelDisplay = document.getElementById('level-display');
@@ -192,10 +197,98 @@ function setupTheme() {
     }
 }
 
+// Sound effects management
+function getAudioContext() {
+    if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) {
+            audioCtx = new AudioContextClass();
+        }
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume().catch(() => {});
+    }
+    return audioCtx;
+}
+
+function updateSoundUI() {
+    const btn = document.getElementById('sound-btn');
+    const iconOn = document.getElementById('sound-icon-on');
+    const iconOff = document.getElementById('sound-icon-off');
+    if (btn) btn.title = soundEnabled ? 'Sound: ON' : 'Sound: OFF';
+    if (iconOn) iconOn.classList.toggle('hidden', !soundEnabled);
+    if (iconOff) iconOff.classList.toggle('hidden', soundEnabled);
+}
+
+function setupSound() {
+    try {
+        const saved = localStorage.getItem(SOUND_STORAGE_KEY);
+        if (saved === 'off') soundEnabled = false;
+    } catch (_) {}
+    updateSoundUI();
+}
+
+function toggleSound() {
+    soundEnabled = !soundEnabled;
+    try {
+        localStorage.setItem(SOUND_STORAGE_KEY, soundEnabled ? 'on' : 'off');
+    } catch (_) {}
+    updateSoundUI();
+    if (soundEnabled) {
+        playSound('move');
+    }
+}
+
+function playSound(type) {
+    if (!soundEnabled) return;
+    const ctx = getAudioContext();
+    if (!ctx) return;
+
+    const now = ctx.currentTime;
+
+    const playTone = (freqStart, freqEnd, duration, wave, gainPeak, delay = 0) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = wave;
+        osc.frequency.setValueAtTime(freqStart, now + delay);
+        if (freqEnd !== freqStart) {
+            osc.frequency.exponentialRampToValueAtTime(freqEnd, now + delay + duration);
+        }
+
+        gain.gain.setValueAtTime(0.0001, now + delay);
+        gain.gain.linearRampToValueAtTime(gainPeak, now + delay + 0.008);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + delay + duration);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + delay);
+        osc.stop(now + delay + duration + 0.01);
+    };
+
+    if (type === 'move') {
+        // Soft, subtle pop for both walking and pushing crates
+        playTone(190, 130, 0.055, 'triangle', 0.07);
+    } else if (type === 'target') {
+        // Crisp two-note chime when a crate locks onto a target
+        playTone(523.25, 523.25, 0.09, 'sine', 0.11, 0);      // C5
+        playTone(783.99, 783.99, 0.16, 'sine', 0.12, 0.065);  // G5
+    } else if (type === 'win') {
+        // Warm 3-note ascending fanfare on level completion
+        playTone(523.25, 523.25, 0.12, 'triangle', 0.13, 0);     // C5
+        playTone(659.25, 659.25, 0.12, 'triangle', 0.13, 0.09);  // E5
+        playTone(783.99, 783.99, 0.26, 'triangle', 0.15, 0.18);  // G5
+    } else if (type === 'tick') {
+        // Countdown tick during the final 5 seconds
+        const isFinalSecond = timeLeft === 1;
+        playTone(isFinalSecond ? 980 : 740, isFinalSecond ? 880 : 660, 0.045, 'sine', 0.09);
+    }
+}
+
 // Initialize the game
 function init() {
     setupInputMode();
     setupTheme();
+    setupSound();
 
     window.addEventListener('resize', updateCellSize);
 
@@ -306,16 +399,28 @@ function updateCellSize() {
     if (!grid.length || !grid[0].length) return;
     const cols = grid[0].length;
     const rows = grid.length;
-    const gap = 0;
+    const boardPad = 24; // 12px padding on each side
 
-    const availW = window.innerWidth - 44;
-    const availH = window.innerHeight - 230;
+    const availW = window.innerWidth - 32 - boardPad;
+    const availH = window.innerHeight - 255 - boardPad;
 
-    const cellW = (availW - (cols - 1) * gap) / cols;
-    const cellH = (availH - (rows - 1) * gap) / rows;
-    const size = Math.max(24, Math.min(58, Math.floor(Math.min(cellW, cellH))));
+    const cellW = availW / cols;
+    const cellH = availH / rows;
+    let size = Math.max(24, Math.min(58, Math.floor(Math.min(cellW, cellH))));
+
+    // Ensure the board is at least wide enough to comfortably host the HUD bar
+    const minBoardWidth = Math.min(280, availW + boardPad);
+    if (cols * size + boardPad < minBoardWidth) {
+        size = Math.min(68, Math.ceil((minBoardWidth - boardPad) / cols));
+    }
 
     boardEl.style.setProperty('--cell', `${size}px`);
+
+    const hudControls = document.getElementById('hud-controls');
+    if (hudControls) {
+        const exactBoardWidth = cols * size + boardPad;
+        hudControls.style.setProperty('--board-w', `${exactBoardWidth}px`);
+    }
 }
 
 // Updates the contextual hint below the board (special instructions for tutorials T0 and T1)
@@ -426,6 +531,10 @@ function startLevelTimer() {
 
         timeLeft--;
         updateTimerUI();
+
+        if (timeLeft > 0 && timeLeft <= 5) {
+            playSound('tick');
+        }
 
         if (timeLeft <= 0) {
             clearInterval(timerInterval);
@@ -706,6 +815,7 @@ function updateGrid(px, py, nx, ny, pushedBox, bx, by) {
     };
 
     render();
+    playSound(lastMove.boxLanded ? 'target' : 'move');
     lastMove = null;
     checkWinCondition();
 }
@@ -726,6 +836,7 @@ function checkWinCondition() {
     if (isComplete) {
         inputLocked = true;
         clearInterval(timerInterval);
+        playSound('win');
 
         setTimeout(() => {
             const nextLevel = currentLevelIndex + 2;
