@@ -1,6 +1,6 @@
 # Sokonova
 
-Sokonova is a challenging puzzle game (inspired by Sokoban): push the boxes onto the targets, beware of tricks and time limits.
+Sokonova is a challenging puzzle game (inspired by Sokoban): push the boxes onto the targets, beware of tricks, boss milestones, and time limits.
 
 ## How to play
 
@@ -12,26 +12,28 @@ Open `index.html` in your browser. Since Tailwind is loaded via CDN, an internet
 
 Controls adapt automatically to your device:
 
-- **PC:** Arrow keys or WASD to move, `R` to restart the current level.
-- **Mobile:** Swipe anywhere on the screen.
+- **PC:** Arrow keys or `WASD` to move, `Z` or `Backspace` to undo a move, `R` to restart the current level.
+- **Mobile:** Continuous swipe anywhere on the screen, with HUD buttons for undo and restart.
 
 ## Features
 
-- **Time limits:** no limit for levels 1–10; from level 11 onwards, the timer starts on first move.
-- **Checkpoint codes:** every ten levels, from level 11 onwards, you receive a 5-letter code. Enter it in the upper right box to pick up right where you left off.
-- **Visual themes:** easily switch to your preferred theme whenever you like.
-- **Sound effects:** sound effects for player movements and level completion, which can be toggled on or off at any time.
+- **Time limits:** no limit for levels 1–10 (tutorials and warm-up); from level 11 onwards, a score-based timer starts on your first move.
+- **Undo system:** rewind up to 3 moves per level via the HUD button or `Z` / `Backspace`.
+- **Boss levels:** every 10th level starting at level 10 (`10, 20, 30...`) features dedicated visual styling, a higher difficulty spike, and **undo disabled**.
+- **Checkpoint codes:** every ten levels, from level 11 onwards, you receive a 5-letter code. Enter it in the bottom-left box on the start screen to pick up right where you left off.
+- **Visual themes:** switch anytime between 4 themes (`Classic`, `Sci-Fi`, `Arcade`, and `Monument`).
+- **Procedural sound effects:** synthesized Web Audio feedback for movement, crate placement, undo, countdown ticks, and level completion, toggleable at any time.
 
 ## Structure
 
 | File | Contents |
 | --- | --- |
-| `index.html` | Page structure |
-| `style.css` | Styling |
-| `game.js` | Game engine |
-| `levels.js` | Level list |
+| `index.html` | Page structure and HUD layout |
+| `style.css` | Styling, themes, and animations |
+| `game.js` | Game engine, input handling, and Web Audio synthesizer |
+| `levels.js` | Level definitions, difficulty scores, and checkpoint codes |
 
 ## Levels & versioning
 
-- **Level Order:** Levels are arranged by increasing difficulty, meaning their order may shift between updates as new levels are created.
+- **Level Order:** Levels are organized into 10-level thematic blocks (`parking`, `traffic`, `endurance`) following a progressive **Boss-peak curve**, where every 10th level acts as the toughest finale of its block. Level order may shift between updates as new levels are generated.
 - **Versioning:** Release numbers match the total count of playable levels (e.g., `v0.5.0` = 50 levels).

@@ -998,3 +998,18 @@ body.boss-level[data-theme="monument"] #game-board {
         0 18px 35px rgba(200, 90, 67, 0.2),
         0 4px 0 #993c28;
 }
+
+/* Undo button locked state on Boss levels */
+body.boss-level #undo-btn {
+    border-color: rgba(251, 113, 133, 0.45);
+    opacity: 0.35;
+}
+
+body.boss-level[data-theme="scifi"] #undo-btn {
+    border-color: rgba(192, 132, 252, 0.55);
+}
+
+body.boss-level[data-theme="arcade"] #undo-btn,
+body.boss-level[data-theme="monument"] #undo-btn {
+    border-color: #c85a43;
+}

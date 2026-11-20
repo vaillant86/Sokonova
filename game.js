@@ -28,7 +28,7 @@ let playerDir = 'down';
 let pushCount = 0;
 let lastMove = null;
 
-// Undo State (max 3 per level)
+// Undo State (max 3 per normal level, disabled on Boss levels)
 const MAX_UNDOS = 3;
 let moveHistory = [];
 let undosRemaining = MAX_UNDOS;
@@ -278,22 +278,17 @@ function playSound(type) {
     };
 
     if (type === 'move') {
-        // Soft, subtle pop for both walking and pushing crates
         playTone(190, 130, 0.055, 'triangle', 0.07);
     } else if (type === 'undo') {
-        // Quick reverse step tone
         playTone(260, 165, 0.075, 'triangle', 0.08);
     } else if (type === 'target') {
-        // Crisp two-note chime when a crate locks onto a target
         playTone(523.25, 523.25, 0.09, 'sine', 0.11, 0);      // C5
         playTone(783.99, 783.99, 0.16, 'sine', 0.12, 0.065);  // G5
     } else if (type === 'win') {
-        // Warm 3-note ascending fanfare on level completion
         playTone(523.25, 523.25, 0.12, 'triangle', 0.13, 0);     // C5
         playTone(659.25, 659.25, 0.12, 'triangle', 0.13, 0.09);  // E5
         playTone(783.99, 783.99, 0.26, 'triangle', 0.15, 0.18);  // G5
     } else if (type === 'tick') {
-        // Countdown tick during the final 5 seconds
         const isFinalSecond = timeLeft === 1;
         playTone(isFinalSecond ? 980 : 740, isFinalSecond ? 880 : 660, 0.045, 'sine', 0.09);
     }
@@ -301,23 +296,28 @@ function playSound(type) {
 
 // Undo State Management
 function updateUndoUI() {
-    if (undoBtn) {
-        const canUndo = undosRemaining > 0 && moveHistory.length > 0 && !inputLocked;
-        undoBtn.disabled = !canUndo;
-        undoBtn.title = undosRemaining > 0
-            ? `Undo move (${undosRemaining} left)`
-            : 'No undos left';
+    if (!undoBtn) return;
+    const boss = isBossLevel(currentLevelIndex + 1);
+    const canUndo = !boss && undosRemaining > 0 && moveHistory.length > 0 && !inputLocked;
+    undoBtn.disabled = !canUndo;
+
+    if (boss) {
+        undoBtn.title = 'Undo disabled on Boss levels';
+    } else if (undosRemaining > 0) {
+        undoBtn.title = `Undo move (${undosRemaining} left)`;
+    } else {
+        undoBtn.title = 'No undos left';
     }
 }
 
 function recordMoveSnapshot() {
+    if (isBossLevel(currentLevelIndex + 1)) return;
     moveHistory.push({
         grid: grid.map(row => [...row]),
         player: { x: player.x, y: player.y },
         playerDir,
         pushCount
     });
-    // Keep only the last MAX_UNDOS snapshots in memory
     if (moveHistory.length > MAX_UNDOS) {
         moveHistory.shift();
     }
@@ -325,6 +325,7 @@ function recordMoveSnapshot() {
 
 function undoMove() {
     if (inputLocked || !gameStarted) return;
+    if (isBossLevel(currentLevelIndex + 1)) return;
     if (undosRemaining <= 0 || moveHistory.length === 0) return;
 
     const prev = moveHistory.pop();
@@ -483,25 +484,27 @@ function updateCellSize() {
     }
 }
 
+// Updates the contextual hint below the board (shown only on tutorials T0/T1 and first Boss level 10)
 function updateLevelHint(index) {
     const hintBox = document.getElementById('hint-box');
     const hintKb = document.getElementById('hint-keyboard');
     const hintTouch = document.getElementById('hint-touch');
     if (!hintBox || !hintKb || !hintTouch) return;
 
-    if (index > 1) {
-        hintBox.classList.add('hidden');
-        return;
-    }
-
-    hintBox.classList.remove('hidden');
-
     if (index === 0) {
+        hintBox.classList.remove('hidden');
         hintKb.innerHTML = 'Push every crate onto a glowing target using <kbd>Arrows</kbd> or <kbd>WASD</kbd>.';
         hintTouch.innerHTML = 'Swipe in any direction to push every crate onto a target.';
-    } else {
-        hintKb.innerHTML = 'Crates can only be pushed, never pulled. Stuck? Use <kbd>Z</kbd> to undo (3 max) or <kbd>R</kbd> to restart.';
+    } else if (index === 1) {
+        hintBox.classList.remove('hidden');
+        hintKb.innerHTML = 'Crates can only be pushed, never pulled. Stuck? Press <kbd>Z</kbd> to undo (3 max) or <kbd>R</kbd> to restart.';
         hintTouch.innerHTML = 'Crates can only be pushed, never pulled. Stuck? Tap Undo (3 max) or Restart.';
+    } else if (index === 9) {
+        hintBox.classList.remove('hidden');
+        hintKb.innerHTML = 'Boss Level: Undo is disabled. Plan every push carefully!';
+        hintTouch.innerHTML = 'Boss Level: Undo is disabled. Plan every push carefully!';
+    } else {
+        hintBox.classList.add('hidden');
     }
 }
 
@@ -517,6 +520,8 @@ function loadLevel(index) {
 
     const levelEntry = levels[index];
     const rawData = Array.isArray(levelEntry) ? levelEntry : levelEntry.map;
+    const levelNumber = index + 1;
+    const boss = isBossLevel(levelNumber);
 
     grid = [];
     inputLocked = false;
@@ -524,7 +529,7 @@ function loadLevel(index) {
     pushCount = 0;
     lastMove = null;
     moveHistory = [];
-    undosRemaining = MAX_UNDOS;
+    undosRemaining = boss ? 0 : MAX_UNDOS;
     pushesDisplay.innerText = '0';
 
     // Maximum width for padding and CSS Grid
@@ -553,8 +558,6 @@ function loadLevel(index) {
     updateCellSize();
 
     // Update UI & Boss milestone styling
-    const levelNumber = index + 1;
-    const boss = isBossLevel(levelNumber);
     document.body.classList.toggle('boss-level', boss);
     if (bossBadge) {
         bossBadge.classList.toggle('hidden', !boss);
