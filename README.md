@@ -20,6 +20,7 @@ Controls adapt automatically to your device:
 - **Time limits:** no limit for levels 1–10; from level 11 onwards, the timer starts on first move.
 - **Checkpoint codes:** every ten levels, from level 11 onwards, you receive a 5-letter code. Enter it in the upper right box to pick up right where you left off.
 - **Visual themes:** easily switch to your preferred theme whenever you like.
+- **Sound effects:** sound effects for player movements and level completion, which can be toggled on or off at any time.
 
 ## Structure
 
