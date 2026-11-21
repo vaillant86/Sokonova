@@ -76,7 +76,7 @@ const CHECKPOINT_CODES = (typeof LEVEL_CODES !== 'undefined') ? LEVEL_CODES : {
 };
 
 // Localization configuration
-const SUPPORTED_LANGS = ['en', 'it'];
+const SUPPORTED_LANGS = ['en', 'it', 'fr', 'es', 'de'];
 const LANG_STORAGE_KEY = 'sokonova_lang';
 let currentLang = 'en';
 
@@ -102,17 +102,18 @@ function applyLanguage(lang) {
 
     const langBtn = document.getElementById('lang-btn');
     const langLabel = document.getElementById('lang-label');
-    const flagEn = document.getElementById('flag-en');
-    const flagIt = document.getElementById('flag-it');
 
     if (langBtn) {
         langBtn.title = t('switchLangTitle');
         langBtn.setAttribute('aria-label', t('switchLangTitle'));
     }
     if (langLabel) langLabel.innerText = currentLang.toUpperCase();
-    if (flagEn) flagEn.classList.toggle('hidden', currentLang !== 'en');
-    if (flagIt) flagIt.classList.toggle('hidden', currentLang !== 'it');
 
+    for (const code of SUPPORTED_LANGS) {
+        const flagEl = document.getElementById(`flag-${code}`);
+        if (flagEl) flagEl.classList.toggle('hidden', currentLang !== code);
+    }
+    
     const homeLabel = document.getElementById('home-label');
     if (homeLabel) homeLabel.innerText = t('homeLabel');
     if (homeBtn) {
@@ -173,8 +174,8 @@ function setupLanguage() {
     if (SUPPORTED_LANGS.includes(saved)) {
         applyLanguage(saved);
     } else {
-        const browserLang = (navigator.language || '').toLowerCase();
-        applyLanguage(browserLang.startsWith('it') ? 'it' : 'en');
+        const browserPrefix = (navigator.language || '').toLowerCase().slice(0, 2);
+        applyLanguage(SUPPORTED_LANGS.includes(browserPrefix) ? browserPrefix : 'en');
     }
 
     const langBtn = document.getElementById('lang-btn');
