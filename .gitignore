@@ -1,6 +1,5 @@
 # Generatore di livelli
-generate_levels.py
-evolve_levels.py
+*.py
 
 # File di sicurezza creati dal generatore
 *.bak

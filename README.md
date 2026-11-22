@@ -37,5 +37,5 @@ Controls adapt automatically to your device:
 
 ## Levels & versioning
 
-- **Level Order:** Levels are organized into 10-level thematic blocks (`parking`, `traffic`, `endurance`) following a progressive **Boss-peak curve**, where every 10th level acts as the toughest finale of its block. Level order may shift between updates as new levels are generated.
+- **Level Order:** Levels are organized into 10-level thematic blocks (`parking`, `traffic`, `endurance`) following a progressive boss-peak curve, where every 10th level acts as the toughest finale of its block. Level order may shift between updates as new levels are generated.
 - **Versioning:** Release numbers match the total count of playable levels (e.g., `v1.0.0` = 100 levels).

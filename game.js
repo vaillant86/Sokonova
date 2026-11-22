@@ -9,11 +9,12 @@
  * ' ' = Empty
  */
 
-// Levels and locales are defined in levels.js, locale-en.js, and locale-it.js.
+// Levels are defined in levels.js
+// Languages are defined in locales folder.
 
 let currentLevelIndex = 0;
 
-// Quick start system via URL (?level=N or ?livello=N)
+// Quick start system via URL (?level=N)
 const urlParams = new URLSearchParams(window.location.search);
 const requestedLevel = parseInt(urlParams.get('level') || urlParams.get('livello'), 10);
 const hasDirectLevelParam = !isNaN(requestedLevel) && requestedLevel > 0 && requestedLevel <= levels.length;
@@ -21,14 +22,14 @@ if (hasDirectLevelParam) {
     currentLevelIndex = requestedLevel - 1;
 }
 
-// Game State
+// Game atate
 let grid = [];
 let player = { x: 0, y: 0 };
 let playerDir = 'down';
 let pushCount = 0;
 let lastMove = null;
 
-// Undo State (max 3 per normal level, disabled on Boss levels)
+// Undo atate (max 3 per normal level, disabled on Boss levels)
 const MAX_UNDOS = 3;
 let moveHistory = [];
 let undosRemaining = MAX_UNDOS;
@@ -37,7 +38,7 @@ let undosRemaining = MAX_UNDOS;
 let inputLocked = false;
 let gameStarted = false;
 
-// Timer Variables
+// Timer variables
 let timerInterval = null;
 let timeLimit = 0;
 let timeLeft = 0;
@@ -113,7 +114,7 @@ function applyLanguage(lang) {
         const flagEl = document.getElementById(`flag-${code}`);
         if (flagEl) flagEl.classList.toggle('hidden', currentLang !== code);
     }
-    
+
     const homeLabel = document.getElementById('home-label');
     if (homeLabel) homeLabel.innerText = t('homeLabel');
     if (homeBtn) {
@@ -204,7 +205,7 @@ const SOUND_STORAGE_KEY = 'sokonova_sound';
 let soundEnabled = true;
 let audioCtx = null;
 
-// UI Elements
+// UI elements
 const boardEl = document.getElementById('game-board');
 const levelDisplay = document.getElementById('level-display');
 const pushesDisplay = document.getElementById('pushes-display');
@@ -214,7 +215,7 @@ const codeBadge = document.getElementById('code-badge');
 const homeBtn = document.getElementById('home-btn');
 const undoBtn = document.getElementById('undo-btn');
 
-// Modal Elements
+// Modal elements
 const modalOverlay = document.getElementById('modal-overlay');
 const modalContent = document.getElementById('modal-content');
 const modalTitle = document.getElementById('modal-title');
@@ -407,7 +408,7 @@ function playSound(type) {
     }
 }
 
-// Undo State Management
+// Undo state management
 function updateUndoUI() {
     if (!undoBtn) return;
     const boss = isBossLevel(currentLevelIndex + 1);
@@ -827,13 +828,13 @@ function handleKeyDown(e) {
     }
 }
 
-// Mobile continuous swipe handling with auto-recovery
+// Mobile continuous swipe handling.
+// Uses Pointer Events with pointer capture on <body>, which is never re-rendered,
+// so moves keep reaching window even though the board cells are rebuilt on each move.
 function setupSwipeControls() {
     let lastX = 0;
     let lastY = 0;
-    let activeTouchId = null;
-    let lastStepTime = 0;
-    const STEP_COOLDOWN_MS = 70;
+    let activePointerId = null;
 
     // Proportional step distance (clamped between 30px and 44px)
     const getStepThreshold = () => {
@@ -841,95 +842,53 @@ function setupSwipeControls() {
         return Math.max(30, Math.min(44, Math.round(cellVal * 0.95)));
     };
 
-    const resetTouch = () => {
-        activeTouchId = null;
-    };
-
-    window.addEventListener('touchstart', (e) => {
+    window.addEventListener('pointerdown', (e) => {
+        if (e.pointerType !== 'touch') return;
         if (!gameStarted || inputLocked) {
-            resetTouch();
+            activePointerId = null;
             return;
         }
         if (e.target.closest('button, input, #password-box, #modal-content')) return;
 
-        const touch = e.touches[0];
-        if (touch) {
-            activeTouchId = touch.identifier;
-            lastX = touch.clientX;
-            lastY = touch.clientY;
+        activePointerId = e.pointerId;
+        lastX = e.clientX;
+        lastY = e.clientY;
+        try {
+            document.body.setPointerCapture(e.pointerId);
+        } catch (err) {
+            // Capture not supported: events still arrive through the original target
         }
-    }, { passive: false });
+    });
 
-    window.addEventListener('touchmove', (e) => {
-        if (gameStarted && !inputLocked) {
-            e.preventDefault();
-        }
+    window.addEventListener('pointermove', (e) => {
+        if (e.pointerType !== 'touch' || e.pointerId !== activePointerId) return;
         if (!gameStarted || inputLocked) {
-            resetTouch();
+            activePointerId = null;
             return;
         }
-
-        // Find tracked finger, or auto-recover to the primary finger if only one is on screen
-        let touch = null;
-        for (let i = 0; i < e.touches.length; i++) {
-            if (e.touches[i].identifier === activeTouchId) {
-                touch = e.touches[i];
-                break;
-            }
-        }
-        if (!touch && e.touches.length === 1) {
-            touch = e.touches[0];
-            activeTouchId = touch.identifier;
-            lastX = touch.clientX;
-            lastY = touch.clientY;
-            return;
-        }
-        if (!touch) return;
-
-        const now = performance.now();
-        if (now - lastStepTime < STEP_COOLDOWN_MS) return;
 
         const step = getStepThreshold();
-        const dx = touch.clientX - lastX;
-        const dy = touch.clientY - lastY;
+        const dx = e.clientX - lastX;
+        const dy = e.clientY - lastY;
 
         if (Math.abs(dx) < step && Math.abs(dy) < step) return;
 
         if (Math.abs(dx) > Math.abs(dy)) {
             move(dx > 0 ? 1 : -1, 0);
-            lastX = dx > 0 ? Math.min(touch.clientX, lastX + step) : Math.max(touch.clientX, lastX - step);
-            lastY = touch.clientY;
+            lastX = dx > 0 ? Math.min(e.clientX, lastX + step) : Math.max(e.clientX, lastX - step);
+            lastY = e.clientY;
         } else {
             move(0, dy > 0 ? 1 : -1);
-            lastY = dy > 0 ? Math.min(touch.clientY, lastY + step) : Math.max(touch.clientY, lastY - step);
-            lastX = touch.clientX;
+            lastY = dy > 0 ? Math.min(e.clientY, lastY + step) : Math.max(e.clientY, lastY - step);
+            lastX = e.clientX;
         }
+    }, { passive: true });
 
-        lastStepTime = now;
-    }, { passive: false });
-
-    const handleTouchEnd = (e) => {
-        if (e.touches.length === 0) {
-            resetTouch();
-            return;
-        }
-        let stillActive = false;
-        for (let i = 0; i < e.touches.length; i++) {
-            if (e.touches[i].identifier === activeTouchId) {
-                stillActive = true;
-                break;
-            }
-        }
-        if (!stillActive) {
-            const fallback = e.touches[0];
-            activeTouchId = fallback.identifier;
-            lastX = fallback.clientX;
-            lastY = fallback.clientY;
-        }
+    const endPointer = (e) => {
+        if (e.pointerId === activePointerId) activePointerId = null;
     };
-
-    window.addEventListener('touchend', handleTouchEnd, { passive: false });
-    window.addEventListener('touchcancel', handleTouchEnd, { passive: false });
+    window.addEventListener('pointerup', endPointer);
+    window.addEventListener('pointercancel', endPointer);
 }
 
 function updatePlayerDirection(dx, dy) {
@@ -1061,7 +1020,7 @@ function restartCurrentLevel() {
     loadLevel(currentLevelIndex);
 }
 
-// Modal Logic
+// Modal logic
 function showModal(title, message, callback) {
     modalTitle.innerText = title;
     modalMessage.innerText = message;
