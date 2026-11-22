@@ -452,14 +452,13 @@ const levels = [
         challenge: "traffic",
         minPushes: 17,
         map: [
-            "#########",
-            "#       #",
-            "#* $$ $ #",
-            "#+ #   ##",
-            "#*.#    #",
-            "#. #  # #",
-            "#  #    #",
-            "#########"
+            "##########",
+            "#        #",
+            "#    #   #",
+            "# $ ## ..#",
+            "#  $@$*. #",
+            "#        #",
+            "##########"
         ]
     },
     // Level 31 (score: 110, challenge: traffic, minimum 16 pushes)
@@ -750,13 +749,14 @@ const levels = [
         challenge: "traffic",
         minPushes: 17,
         map: [
-            "##########",
-            "#        #",
-            "#    #   #",
-            "# $ ## ..#",
-            "#  $@$*. #",
-            "#        #",
-            "##########"
+            "#########",
+            "#       #",
+            "#* $$ $ #",
+            "#+ #   ##",
+            "#*.#    #",
+            "#. #  # #",
+            "#  #    #",
+            "#########"
         ]
     },
     // Level 50 [BOSS] (score: 136, challenge: traffic, minimum 20 pushes)
@@ -766,12 +766,12 @@ const levels = [
         minPushes: 20,
         map: [
             "#########",
-            "# @     #",
-            "#    $  #",
-            "#  $    #",
-            "# $ $  .#",
-            "####  ..#",
-            "####   .#",
+            "#..#    #",
+            "#.*#    #",
+            "#       #",
+            "#  #  $ #",
+            "#  $@$  #",
+            "#  #    #",
             "#########"
         ]
     },
@@ -1066,29 +1066,28 @@ const levels = [
         minPushes: 20,
         map: [
             "#########",
-            "#..#    #",
-            "#.*#    #",
-            "#       #",
-            "#  #  $ #",
-            "#  $@$  #",
-            "#  #    #",
+            "# @     #",
+            "#    $  #",
+            "#  $    #",
+            "# $ $  .#",
+            "####  ..#",
+            "####   .#",
             "#########"
         ]
     },
-    // Level 70 [BOSS] (score: 152, challenge: traffic, minimum 23 pushes)
+    // Level 70 [BOSS] (score: 148, challenge: traffic, minimum 24 pushes)
     {
-        score: 152,
+        score: 148,
         challenge: "traffic",
-        minPushes: 23,
+        minPushes: 24,
         map: [
-            "##########",
-            "#   @    #",
-            "# #.$  $ #",
-            "#  . $#  #",
-            "## .  #  #",
-            "#  ##$#  #",
-            "#   . # ##",
-            "##########"
+            "#########",
+            "#...#   #",
+            "#  .# $ #",
+            "#  .#$  #",
+            "#$$$    #",
+            "#@  #   #",
+            "#########"
         ]
     },
     // Level 71 (score: 137, challenge: traffic, minimum 22 pushes)
@@ -1236,20 +1235,21 @@ const levels = [
             "###########"
         ]
     },
-    // Level 80 [BOSS] (score: 184, challenge: traffic, minimum 32 pushes)
+    // Level 80 [BOSS] (score: 159, challenge: traffic, minimum 28 pushes)
     {
-        score: 184,
+        score: 159,
         challenge: "traffic",
-        minPushes: 32,
+        minPushes: 28,
         map: [
-            "#########",
-            "#   #   #",
-            "#.    $ #",
-            "#.##$   #",
-            "#. #  ###",
-            "#. ##$$ #",
-            "#* # @  #",
-            "#########"
+            "############",
+            "#  # # #   #",
+            "# $        #",
+            "#          #",
+            "#  $  $    #",
+            "#          #",
+            "#        $.#",
+            "# @# #  ...#",
+            "############"
         ]
     },
     // Level 81 (score: 141, challenge: traffic, minimum 21 pushes)
@@ -1312,7 +1312,22 @@ const levels = [
             "##########"
         ]
     },
-    // Level 85 (score: 144, challenge: traffic, minimum 26 pushes)
+    // Level 85 (score: 144, challenge: traffic, minimum 21 pushes)
+    {
+        score: 144,
+        challenge: "traffic",
+        minPushes: 21,
+        map: [
+            "##########",
+            "#  .#... #",
+            "#   . #* #",
+            "#    $@$ #",
+            "#   #$$$ #",
+            "#   #    #",
+            "##########"
+        ]
+    },
+    // Level 86 (score: 144, challenge: traffic, minimum 26 pushes)
     {
         score: 144,
         challenge: "traffic",
@@ -1329,7 +1344,7 @@ const levels = [
             "#########"
         ]
     },
-    // Level 86 (score: 146, challenge: traffic, minimum 27 pushes)
+    // Level 87 (score: 146, challenge: traffic, minimum 27 pushes)
     {
         score: 146,
         challenge: "traffic",
@@ -1345,7 +1360,7 @@ const levels = [
             "###########"
         ]
     },
-    // Level 87 (score: 148, challenge: traffic, minimum 20 pushes)
+    // Level 88 (score: 148, challenge: traffic, minimum 20 pushes)
     {
         score: 148,
         challenge: "traffic",
@@ -1361,22 +1376,39 @@ const levels = [
             "#########"
         ]
     },
-    // Level 88 (score: 148, challenge: traffic, minimum 24 pushes)
+    // Level 89 (score: 148, challenge: traffic, minimum 23 pushes)
     {
         score: 148,
         challenge: "traffic",
-        minPushes: 24,
+        minPushes: 23,
+        map: [
+            "###########",
+            "#  .....  #",
+            "# $ #     #",
+            "# $ #   $ #",
+            "# $ #   @ #",
+            "# $ # #   #",
+            "#   #     #",
+            "###########"
+        ]
+    },
+    // Level 90 [BOSS] (score: 184, challenge: traffic, minimum 32 pushes)
+    {
+        score: 184,
+        challenge: "traffic",
+        minPushes: 32,
         map: [
             "#########",
-            "#...#   #",
-            "#  .# $ #",
-            "#  .#$  #",
-            "#$$$    #",
-            "#@  #   #",
+            "#   #   #",
+            "#.    $ #",
+            "#.##$   #",
+            "#. #  ###",
+            "#. ##$$ #",
+            "#* # @  #",
             "#########"
         ]
     },
-    // Level 89 (score: 148, challenge: traffic, minimum 26 pushes)
+    // Level 91 (score: 148, challenge: traffic, minimum 26 pushes)
     {
         score: 148,
         challenge: "traffic",
@@ -1393,22 +1425,55 @@ const levels = [
             "###########"
         ]
     },
-    // Level 90 [BOSS] (score: 203, challenge: traffic, minimum 31 pushes)
+    // Level 92 (score: 150, challenge: traffic, minimum 24 pushes)
     {
-        score: 203,
+        score: 150,
         challenge: "traffic",
-        minPushes: 31,
+        minPushes: 24,
+        map: [
+            "##########",
+            "#   #    #",
+            "#        #",
+            "# $ #    #",
+            "#   #  $@#",
+            "#...#$   #",
+            "# $.#    #",
+            "##########"
+        ]
+    },
+    // Level 93 (score: 151, challenge: traffic, minimum 25 pushes)
+    {
+        score: 151,
+        challenge: "traffic",
+        minPushes: 25,
         map: [
             "#########",
-            "#.#   # #",
-            "#.# $ $ #",
-            "#.  # # #",
-            "#.  $$#@#",
-            "##  #   #",
+            "#  @#   #",
+            "# $$#   #",
+            "#       #",
+            "#.$ #   #",
+            "#.. # $ #",
+            "#.* #   #",
             "#########"
         ]
     },
-    // Level 91 (score: 152, challenge: traffic, minimum 23 pushes)
+    // Level 94 (score: 152, challenge: traffic, minimum 23 pushes)
+    {
+        score: 152,
+        challenge: "traffic",
+        minPushes: 23,
+        map: [
+            "##########",
+            "#   @    #",
+            "# #.$  $ #",
+            "#  . $#  #",
+            "## .  #  #",
+            "#  ##$#  #",
+            "#   . # ##",
+            "##########"
+        ]
+    },
+    // Level 95 (score: 152, challenge: traffic, minimum 23 pushes)
     {
         score: 152,
         challenge: "traffic",
@@ -1425,7 +1490,7 @@ const levels = [
             "##########"
         ]
     },
-    // Level 92 (score: 155, challenge: traffic, minimum 23 pushes)
+    // Level 96 (score: 155, challenge: traffic, minimum 23 pushes)
     {
         score: 155,
         challenge: "traffic",
@@ -1441,7 +1506,7 @@ const levels = [
             "##########"
         ]
     },
-    // Level 93 (score: 156, challenge: traffic, minimum 25 pushes)
+    // Level 97 (score: 156, challenge: traffic, minimum 25 pushes)
     {
         score: 156,
         challenge: "traffic",
@@ -1456,7 +1521,7 @@ const levels = [
             "############"
         ]
     },
-    // Level 94 (score: 156, challenge: traffic, minimum 31 pushes)
+    // Level 98 (score: 156, challenge: traffic, minimum 31 pushes)
     {
         score: 156,
         challenge: "traffic",
@@ -1471,24 +1536,68 @@ const levels = [
             "##########"
         ]
     },
-    // Level 95 (score: 159, challenge: traffic, minimum 28 pushes)
+    // Level 99 (score: 158, challenge: traffic, minimum 23 pushes)
     {
-        score: 159,
+        score: 158,
         challenge: "traffic",
-        minPushes: 28,
+        minPushes: 23,
         map: [
-            "############",
-            "#  # # #   #",
-            "# $        #",
-            "#          #",
-            "#  $  $    #",
-            "#          #",
-            "#        $.#",
-            "# @# #  ...#",
-            "############"
+            "#########",
+            "#.  #   #",
+            "#.  # $ #",
+            "#.*@#   #",
+            "#  $#   #",
+            "# $     #",
+            "##      #",
+            "#########"
         ]
     },
-    // Level 96 (score: 165, challenge: traffic, minimum 25 pushes)
+    // Level 100 [BOSS] (score: 202, challenge: traffic, minimum 32 pushes)
+    {
+        score: 202,
+        challenge: "traffic",
+        minPushes: 32,
+        map: [
+            "##########",
+            "#   ##   #",
+            "#   $@$  #",
+            "# $#.#   #",
+            "#  *.# $ #",
+            "#  ..#   #",
+            "##########"
+        ]
+    },
+    // Level 101 (score: 163, challenge: traffic, minimum 24 pushes)
+    {
+        score: 163,
+        challenge: "traffic",
+        minPushes: 24,
+        map: [
+            "###########",
+            "#         #",
+            "# ...     #",
+            "# ..## $  #",
+            "# #$ $$@$ #",
+            "#      #  #",
+            "###########"
+        ]
+    },
+    // Level 102 (score: 164, challenge: traffic, minimum 31 pushes)
+    {
+        score: 164,
+        challenge: "traffic",
+        minPushes: 31,
+        map: [
+            "##########",
+            "#   #..  #",
+            "# $ #. @.#",
+            "#  $     #",
+            "# $$# #  #",
+            "#   #    #",
+            "##########"
+        ]
+    },
+    // Level 103 (score: 165, challenge: traffic, minimum 25 pushes)
     {
         score: 165,
         challenge: "traffic",
@@ -1504,7 +1613,7 @@ const levels = [
             "#########"
         ]
     },
-    // Level 97 (score: 166, challenge: traffic, minimum 30 pushes)
+    // Level 104 (score: 166, challenge: traffic, minimum 30 pushes)
     {
         score: 166,
         challenge: "traffic",
@@ -1519,7 +1628,7 @@ const levels = [
             "#########"
         ]
     },
-    // Level 98 (score: 166, challenge: traffic, minimum 33 pushes)
+    // Level 105 (score: 166, challenge: traffic, minimum 33 pushes)
     {
         score: 166,
         challenge: "traffic",
@@ -1534,7 +1643,38 @@ const levels = [
             "##########"
         ]
     },
-    // Level 99 (score: 178, challenge: traffic, minimum 25 pushes)
+    // Level 106 (score: 168, challenge: traffic, minimum 26 pushes)
+    {
+        score: 168,
+        challenge: "traffic",
+        minPushes: 26,
+        map: [
+            "##########",
+            "# @      #",
+            "# $$   $ #",
+            "# ..##   #",
+            "# ...#$  #",
+            "# ###  $ #",
+            "#       ##",
+            "##########"
+        ]
+    },
+    // Level 107 (score: 175, challenge: traffic, minimum 30 pushes)
+    {
+        score: 175,
+        challenge: "traffic",
+        minPushes: 30,
+        map: [
+            "###########",
+            "#  ....   #",
+            "# $##  @  #",
+            "#  #   $# #",
+            "# $#    $ #",
+            "#  #      #",
+            "###########"
+        ]
+    },
+    // Level 108 (score: 178, challenge: traffic, minimum 25 pushes)
     {
         score: 178,
         challenge: "traffic",
@@ -1547,6 +1687,37 @@ const levels = [
             "#   $## #",
             "# $ $@$ #",
             "#       #",
+            "#########"
+        ]
+    },
+    // Level 109 (score: 181, challenge: traffic, minimum 29 pushes)
+    {
+        score: 181,
+        challenge: "traffic",
+        minPushes: 29,
+        map: [
+            "#########",
+            "#   #   #",
+            "#   # $ #",
+            "##      #",
+            "#   # #.#",
+            "# $ #$*.#",
+            "#   #@*.#",
+            "#########"
+        ]
+    },
+    // Level 110 [BOSS] (score: 203, challenge: traffic, minimum 31 pushes)
+    {
+        score: 203,
+        challenge: "traffic",
+        minPushes: 31,
+        map: [
+            "#########",
+            "#.#   # #",
+            "#.# $ $ #",
+            "#.  # # #",
+            "#.  $$#@#",
+            "##  #   #",
             "#########"
         ]
     }
