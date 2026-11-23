@@ -1,5 +1,5 @@
 const levels = [
-    // Livello 1
+    // Level 1
     {
         minPushes: 4,
         map: [
@@ -10,7 +10,7 @@ const levels = [
             "######"
         ]
     },
-    // Livello 2
+    // Level 2
     {
         minPushes: 10,
         map: [
@@ -23,7 +23,7 @@ const levels = [
             "##########"
         ]
     },
-    // Livello 3
+    // Level 3
     {
         minPushes: 2,
         map: [
@@ -35,7 +35,7 @@ const levels = [
             "#######"
         ]
     },
-    // Livello 4
+    // Level 4
     {
         minPushes: 10,
         map: [
@@ -47,7 +47,7 @@ const levels = [
             "########"
         ]
     },
-    // Livello 5
+    // Level 5
     {
         minPushes: 9,
         map: [
@@ -59,7 +59,7 @@ const levels = [
             "########"
         ]
     },
-    // Livello 6
+    // Level 6
     {
         minPushes: 11,
         map: [
@@ -72,7 +72,7 @@ const levels = [
             "#########"
         ]
     },
-    // Livello 7
+    // Level 7
     {
         minPushes: 12,
         map: [
@@ -85,7 +85,7 @@ const levels = [
             "#########"
         ]
     },
-    // Livello 8
+    // Level 8
     {
         minPushes: 12,
         map: [
@@ -98,7 +98,7 @@ const levels = [
             "########"
         ]
     },
-    // Livello 9
+    // Level 9
     {
         minPushes: 8,
         map: [
@@ -110,7 +110,7 @@ const levels = [
             "#########"
         ]
     },
-    // Livello 10
+    // Level 10
     {
         minPushes: 11,
         map: [
@@ -123,7 +123,7 @@ const levels = [
             "########"
         ]
     },
-    // Livello 11
+    // Level 11
     {
         minPushes: 12,
         map: [
@@ -136,7 +136,7 @@ const levels = [
             "########"
         ]
     },
-    // Livello 12
+    // Level 12
     {
         minPushes: 12,
         map: [
@@ -149,7 +149,7 @@ const levels = [
             "########"
         ]
     },
-    // Livello 13
+    // Level 13
     {
         minPushes: 11,
         map: [
@@ -162,7 +162,7 @@ const levels = [
             "#########"
         ]
     },
-    // Livello 14
+    // Level 14
     {
         minPushes: 10,
         map: [
@@ -175,7 +175,7 @@ const levels = [
             "#########"
         ]
     },
-    // Livello 15
+    // Level 15
     {
         minPushes: 9,
         map: [
@@ -188,7 +188,7 @@ const levels = [
             "#########"
         ]
     },
-    // Livello 16
+    // Level 16
     {
         minPushes: 10,
         map: [
@@ -201,7 +201,7 @@ const levels = [
             "########"
         ]
     },
-    // Livello 17
+    // Level 17
     {
         minPushes: 10,
         map: [
@@ -214,7 +214,7 @@ const levels = [
             "########"
         ]
     },
-    // Livello 18
+    // Level 18
     {
         minPushes: 11,
         map: [
@@ -227,7 +227,7 @@ const levels = [
             "#########"
         ]
     },
-    // Livello 19
+    // Level 19
     {
         minPushes: 11,
         map: [
@@ -240,7 +240,7 @@ const levels = [
             "#########"
         ]
     },
-    // Livello 20
+    // Level 20
     {
         minPushes: 17,
         map: [
@@ -254,7 +254,7 @@ const levels = [
             "#########"
         ]
     },
-    // Livello 21
+    // Level 21
     {
         minPushes: 11,
         map: [
@@ -267,7 +267,7 @@ const levels = [
             "#########"
         ]
     },
-    // Livello 22
+    // Level 22
     {
         minPushes: 10,
         map: [
@@ -280,7 +280,7 @@ const levels = [
             "#########"
         ]
     },
-    // Livello 23
+    // Level 23
     {
         minPushes: 14,
         map: [
@@ -292,7 +292,7 @@ const levels = [
             "#########"
         ]
     },
-    // Livello 24
+    // Level 24
     {
         minPushes: 14,
         map: [
@@ -304,7 +304,7 @@ const levels = [
             "#########"
         ]
     },
-    // Livello 25
+    // Level 25
     {
         minPushes: 12,
         map: [
@@ -316,7 +316,7 @@ const levels = [
             "#########"
         ]
     },
-    // Livello 26
+    // Level 26
     {
         minPushes: 12,
         map: [
@@ -329,7 +329,7 @@ const levels = [
             "#########"
         ]
     },
-    // Livello 27
+    // Level 27
     {
         minPushes: 12,
         map: [
@@ -342,7 +342,7 @@ const levels = [
             "#########"
         ]
     },
-    // Livello 28
+    // Level 28
     {
         minPushes: 14,
         map: [
@@ -355,7 +355,7 @@ const levels = [
             "##########"
         ]
     },
-    // Livello 29
+    // Level 29
     {
         minPushes: 12,
         map: [
@@ -368,7 +368,7 @@ const levels = [
             "#########"
         ]
     },
-    // Livello 30
+    // Level 30
     {
         minPushes: 14,
         map: [
@@ -381,7 +381,7 @@ const levels = [
             "#########"
         ]
     },
-    // Livello 31
+    // Level 31
     {
         minPushes: 15,
         map: [
@@ -394,7 +394,7 @@ const levels = [
             "#########"
         ]
     },
-    // Livello 32
+    // Level 32
     {
         minPushes: 15,
         map: [
@@ -409,7 +409,7 @@ const levels = [
             "##########"
         ]
     },
-    // Livello 33
+    // Level 33
     {
         minPushes: 15,
         map: [
@@ -422,7 +422,7 @@ const levels = [
             "#########"
         ]
     },
-    // Livello 34
+    // Level 34
     {
         minPushes: 16,
         map: [
@@ -436,7 +436,7 @@ const levels = [
             "##########"
         ]
     },
-    // Livello 35
+    // Level 35
     {
         minPushes: 15,
         map: [
@@ -450,7 +450,7 @@ const levels = [
             "##########"
         ]
     },
-    // Livello 36
+    // Level 36
     {
         minPushes: 14,
         map: [
@@ -463,7 +463,7 @@ const levels = [
             "##########"
         ]
     },
-    // Livello 37
+    // Level 37
     {
         minPushes: 18,
         map: [
@@ -477,7 +477,7 @@ const levels = [
             "#########"
         ]
     },
-    // Livello 38
+    // Level 38
     {
         minPushes: 13,
         map: [
@@ -491,7 +491,7 @@ const levels = [
             "##########"
         ]
     },
-    // Livello 39
+    // Level 39
     {
         minPushes: 14,
         map: [
@@ -505,7 +505,7 @@ const levels = [
             "##########"
         ]
     },
-    // Livello 40
+    // Level 40
     {
         minPushes: 18,
         map: [
@@ -519,7 +519,7 @@ const levels = [
             "##########"
         ]
     },
-    // Livello 41
+    // Level 41
     {
         minPushes: 14,
         map: [
@@ -532,7 +532,7 @@ const levels = [
             "###########"
         ]
     },
-    // Livello 42
+    // Level 42
     {
         minPushes: 14,
         map: [
@@ -547,7 +547,7 @@ const levels = [
             "##########"
         ]
     },
-    // Livello 43
+    // Level 43
     {
         minPushes: 14,
         map: [
@@ -560,7 +560,7 @@ const levels = [
             "##########"
         ]
     },
-    // Livello 44
+    // Level 44
     {
         minPushes: 17,
         map: [
@@ -575,7 +575,7 @@ const levels = [
             "###########"
         ]
     },
-    // Livello 45
+    // Level 45
     {
         minPushes: 15,
         map: [
@@ -589,7 +589,7 @@ const levels = [
             "#########"
         ]
     },
-    // Livello 46
+    // Level 46
     {
         minPushes: 14,
         map: [
@@ -604,7 +604,7 @@ const levels = [
             "#########"
         ]
     },
-    // Livello 47
+    // Level 47
     {
         minPushes: 19,
         map: [
@@ -619,7 +619,7 @@ const levels = [
             "#########"
         ]
     },
-    // Livello 48
+    // Level 48
     {
         minPushes: 14,
         map: [
@@ -633,7 +633,7 @@ const levels = [
             "##########"
         ]
     },
-    // Livello 49
+    // Level 49
     {
         minPushes: 14,
         map: [
@@ -647,7 +647,7 @@ const levels = [
             "###########"
         ]
     },
-    // Livello 50
+    // Level 50
     {
         minPushes: 13,
         map: [
@@ -661,7 +661,7 @@ const levels = [
             "##########"
         ]
     },
-    // Livello 51
+    // Level 51
     {
         minPushes: 14,
         map: [
@@ -674,7 +674,7 @@ const levels = [
             "###########"
         ]
     },
-    // Livello 52
+    // Level 52
     {
         minPushes: 14,
         map: [
@@ -687,7 +687,7 @@ const levels = [
             "###########"
         ]
     },
-    // Livello 53
+    // Level 53
     {
         minPushes: 15,
         map: [
@@ -700,7 +700,7 @@ const levels = [
             "###########"
         ]
     },
-    // Livello 54
+    // Level 54
     {
         minPushes: 18,
         map: [
@@ -713,7 +713,7 @@ const levels = [
             "##########"
         ]
     },
-    // Livello 55
+    // Level 55
     {
         minPushes: 22,
         map: [
@@ -726,7 +726,7 @@ const levels = [
             "#########"
         ]
     },
-    // Livello 56
+    // Level 56
     {
         minPushes: 14,
         map: [
@@ -739,7 +739,7 @@ const levels = [
             "##########"
         ]
     },
-    // Livello 57
+    // Level 57
     {
         minPushes: 17,
         map: [
@@ -754,7 +754,7 @@ const levels = [
             "#########"
         ]
     },
-    // Livello 58
+    // Level 58
     {
         minPushes: 16,
         map: [
@@ -767,7 +767,7 @@ const levels = [
             "###########"
         ]
     },
-    // Livello 59
+    // Level 59
     {
         minPushes: 26,
         map: [
@@ -781,7 +781,7 @@ const levels = [
             "#########"
         ]
     },
-    // Livello 60
+    // Level 60
     {
         minPushes: 27,
         map: [
@@ -795,7 +795,7 @@ const levels = [
             "#########"
         ]
     },
-    // Livello 61
+    // Level 61
     {
         minPushes: 14,
         map: [
@@ -808,7 +808,7 @@ const levels = [
             "#########"
         ]
     },
-    // Livello 62
+    // Level 62
     {
         minPushes: 16,
         map: [
@@ -823,7 +823,7 @@ const levels = [
             "#########"
         ]
     },
-    // Livello 63
+    // Level 63
     {
         minPushes: 15,
         map: [
@@ -836,7 +836,7 @@ const levels = [
             "##########"
         ]
     },
-    // Livello 64
+    // Level 64
     {
         minPushes: 14,
         map: [
@@ -850,7 +850,7 @@ const levels = [
             "#########"
         ]
     },
-    // Livello 65
+    // Level 65
     {
         minPushes: 18,
         map: [
@@ -863,7 +863,7 @@ const levels = [
             "##########"
         ]
     },
-    // Livello 66
+    // Level 66
     {
         minPushes: 17,
         map: [
@@ -877,7 +877,7 @@ const levels = [
             "#########"
         ]
     },
-    // Livello 67
+    // Level 67
     {
         minPushes: 14,
         map: [
@@ -890,7 +890,7 @@ const levels = [
             "###########"
         ]
     },
-    // Livello 68
+    // Level 68
     {
         minPushes: 14,
         map: [
@@ -904,7 +904,7 @@ const levels = [
             "##########"
         ]
     },
-    // Livello 69
+    // Level 69
     {
         minPushes: 16,
         map: [
@@ -918,7 +918,7 @@ const levels = [
             "###########"
         ]
     },
-    // Livello 70
+    // Level 70
     {
         minPushes: 17,
         map: [
@@ -931,7 +931,7 @@ const levels = [
             "###########"
         ]
     },
-    // Livello 71
+    // Level 71
     {
         minPushes: 17,
         map: [
@@ -945,7 +945,7 @@ const levels = [
             "##########"
         ]
     },
-    // Livello 72
+    // Level 72
     {
         minPushes: 15,
         map: [
@@ -959,7 +959,7 @@ const levels = [
             "###########"
         ]
     },
-    // Livello 73
+    // Level 73
     {
         minPushes: 18,
         map: [
@@ -973,7 +973,7 @@ const levels = [
             "#########"
         ]
     },
-    // Livello 74
+    // Level 74
     {
         minPushes: 16,
         map: [
@@ -988,7 +988,7 @@ const levels = [
             "#########"
         ]
     },
-    // Livello 75
+    // Level 75
     {
         minPushes: 16,
         map: [
@@ -1001,7 +1001,7 @@ const levels = [
             "##########"
         ]
     },
-    // Livello 76
+    // Level 76
     {
         minPushes: 18,
         map: [
@@ -1015,7 +1015,7 @@ const levels = [
             "#########"
         ]
     },
-    // Livello 77
+    // Level 77
     {
         minPushes: 17,
         map: [
@@ -1028,7 +1028,7 @@ const levels = [
             "##########"
         ]
     },
-    // Livello 78
+    // Level 78
     {
         minPushes: 19,
         map: [
@@ -1042,7 +1042,7 @@ const levels = [
             "###########"
         ]
     },
-    // Livello 79
+    // Level 79
     {
         minPushes: 17,
         map: [
@@ -1055,7 +1055,7 @@ const levels = [
             "###########"
         ]
     },
-    // Livello 80
+    // Level 80
     {
         minPushes: 29,
         map: [
@@ -1066,6 +1066,275 @@ const levels = [
             "# $$ ##  #",
             "# #  .. .#",
             "##########"
+        ]
+    },
+    // Level 81
+    {
+        minPushes: 16,
+        map: [
+            "#########",
+            "#    .. #",
+            "# # #$# #",
+            "# $    .#",
+            "#  $$# ##",
+            "#   @$. #",
+            "#    .  #",
+            "#########"
+        ]
+    },
+    // Level 82
+    {
+        minPushes: 17,
+        map: [
+            "#########",
+            "#.   #  #",
+            "#.$$ #  #",
+            "#  $.# .#",
+            "# #  #  #",
+            "#    D  #",
+            "#_$  #  #",
+            "# @  #  #",
+            "#########"
+        ]
+    },
+    // Level 83
+    {
+        minPushes: 14,
+        map: [
+            "###########",
+            "#     #   #",
+            "#   *  $  #",
+            "#  $  #   #",
+            "# * # #@  #",
+            "#..   #  ##",
+            "#     #   #",
+            "###########"
+        ]
+    },
+    // Level 84
+    {
+        minPushes: 14,
+        map: [
+            "#########",
+            "#    .. #",
+            "# $$.####",
+            "#.   ## #",
+            "#  $@$  #",
+            "# #     #",
+            "#########"
+        ]
+    },
+    // Level 85
+    {
+        minPushes: 18,
+        map: [
+            "#########",
+            "#    # @#",
+            "#  .  *$#",
+            "##$  #$ #",
+            "#.  $#  #",
+            "#    #  #",
+            "#    #..#",
+            "#    #  #",
+            "#########"
+        ]
+    },
+    // Level 86
+    {
+        minPushes: 13,
+        map: [
+            "##########",
+            "#  . #  .#",
+            "#  . D   #",
+            "# $*$#   #",
+            "#  _ #   #",
+            "#@$  #   #",
+            "#    #   #",
+            "##########"
+        ]
+    },
+    // Level 87
+    {
+        minPushes: 15,
+        map: [
+            "##########",
+            "#  @ #   #",
+            "# $$ #  .#",
+            "#  _ #   #",
+            "#.   #   #",
+            "# $.$D   #",
+            "#  . #   #",
+            "##########"
+        ]
+    },
+    // Level 88
+    {
+        minPushes: 15,
+        map: [
+            "##########",
+            "#   #    #",
+            "#.  #.*# #",
+            "#   #  *@#",
+            "#   # $  #",
+            "#   D $$_#",
+            "#   #   .#",
+            "##########"
+        ]
+    },
+    // Level 89
+    {
+        minPushes: 14,
+        map: [
+            "###########",
+            "#.    #   #",
+            "#.  $*#   #",
+            "#   $.#   #",
+            "#$_   #   #",
+            "# # $ D.  #",
+            "#   @ #   #",
+            "###########"
+        ]
+    },
+    // Level 90
+    {
+        minPushes: 14,
+        map: [
+            "##########",
+            "#. . #  .#",
+            "# $$ D   #",
+            "#_$ .#   #",
+            "# $  #   #",
+            "# @  #   #",
+            "##########"
+        ]
+    },
+    // Level 91
+    {
+        minPushes: 15,
+        map: [
+            "###########",
+            "#  .#     #",
+            "#   D  $  #",
+            "#   #   $@#",
+            "#   # #   #",
+            "#   # $   #",
+            "#   # $ . #",
+            "#   #._.  #",
+            "###########"
+        ]
+    },
+    // Level 92
+    {
+        minPushes: 14,
+        map: [
+            "##########",
+            "#  .#    #",
+            "#   D    #",
+            "#   #  $@#",
+            "#   #..# #",
+            "#   # _$ #",
+            "#   # $$ #",
+            "#   #  . #",
+            "##########"
+        ]
+    },
+    // Level 93
+    {
+        minPushes: 14,
+        map: [
+            "###########",
+            "#   #     #",
+            "#   # $   #",
+            "#   # # $ #",
+            "#   #  @ .#",
+            "#.  #..$  #",
+            "#   D$ _  #",
+            "#   #     #",
+            "###########"
+        ]
+    },
+    // Level 94
+    {
+        minPushes: 16,
+        map: [
+            "###########",
+            "#  .#     #",
+            "#   D *   #",
+            "#   # $ $ #",
+            "#   #$  @.#",
+            "#   #  _ .#",
+            "###########"
+        ]
+    },
+    // Level 95
+    {
+        minPushes: 18,
+        map: [
+            "#########",
+            "#    #  #",
+            "# $# # .#",
+            "#    #  #",
+            "#  .   .#",
+            "# *$$#  #",
+            "#  #@#  #",
+            "#########"
+        ]
+    },
+    // Level 96
+    {
+        minPushes: 18,
+        map: [
+            "###########",
+            "# #@  ..  #",
+            "#         #",
+            "#  $## #* #",
+            "#     $ # #",
+            "#  # $ #  #",
+            "#     $   #",
+            "# .      .#",
+            "###########"
+        ]
+    },
+    // Level 97
+    {
+        minPushes: 17,
+        map: [
+            "##########",
+            "#   #    #",
+            "#   #$$$ #",
+            "#   D    #",
+            "#   #@$_ #",
+            "#   # .  #",
+            "#  .# .. #",
+            "##########"
+        ]
+    },
+    // Level 98
+    {
+        minPushes: 14,
+        map: [
+            "###########",
+            "# .   #   #",
+            "# *   #   #",
+            "#     #  .#",
+            "# $   D   #",
+            "# _.$$#   #",
+            "# . $@#   #",
+            "###########"
+        ]
+    },
+    // Level 99
+    {
+        minPushes: 15,
+        map: [
+            "###########",
+            "#  .#+$_  #",
+            "#   D$  $ #",
+            "#   #. #  #",
+            "#   #     #",
+            "#   # $   #",
+            "#   #   . #",
+            "###########"
         ]
     }
 ];
