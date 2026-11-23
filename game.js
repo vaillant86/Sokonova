@@ -7,29 +7,41 @@
  * '*' = Box on Target
  * '+' = Player on Target
  * ' ' = Empty
+ *
+ * OPTIONAL MECHANICS:
+ * '_' / 'p' / 'P' = Pressure plate
+ * 'D' / 'd'       = Door controlled by pressure plate
+ * 'N' / 'S' / 'E' / 'W' = Perimeter room gateway (multi-room levels)
  */
 
-// Levels are defined in levels.js
+// Levels are defined in levels.js (supports both `const levels = [...]` and `const LEVELS = [...]`)
 // Languages are defined in locales folder.
+const levelsList = (typeof levels !== 'undefined')
+    ? levels
+    : ((typeof LEVELS !== 'undefined') ? LEVELS : []);
 
 let currentLevelIndex = 0;
 
 // Quick start system via URL (?level=N)
 const urlParams = new URLSearchParams(window.location.search);
 const requestedLevel = parseInt(urlParams.get('level') || urlParams.get('livello'), 10);
-const hasDirectLevelParam = !isNaN(requestedLevel) && requestedLevel > 0 && requestedLevel <= levels.length;
+const hasDirectLevelParam = !isNaN(requestedLevel) && requestedLevel > 0 && requestedLevel <= levelsList.length;
 if (hasDirectLevelParam) {
     currentLevelIndex = requestedLevel - 1;
 }
 
-// Game state
-let grid = [];
+// Game state (supports single-room `map` and multi-room `rooms` + `links`)
+let roomsGrid = [];          // Array of 2D char grids, one per room
+let activeRoom = 0;          // Currently displayed room index
+let grid = [];               // Alias to roomsGrid[activeRoom]
+let roomPortals = [];        // Per-room Map("x,y" -> portal metadata)
 let player = { x: 0, y: 0 };
-let plate = null;
-let door = null;
+let plate = null;            // { room, x, y }
+let door = null;             // { room, x, y }
 let playerDir = 'down';
 let pushCount = 0;
 let lastMove = null;
+let roomTransitionDir = null;
 
 // Undo state (max 3 per normal level, disabled on Boss levels)
 const MAX_UNDOS = 3;
@@ -67,15 +79,45 @@ const CHECKPOINT_CODES = (typeof LEVEL_CODES !== 'undefined') ? LEVEL_CODES : {
     81:  'DZWCG',
     91:  'RYVNH',
     101: 'SLKJP',
-//    111: 'AUTQE',
-//    121: 'WFMXB',
-//    131: 'CGRZD',
-//    141: 'HVKYN',
-//    151: 'PJLTC',
-//    161: 'XQWSE',
-//    171: 'MNBKU',
-//    181: 'TRGFA',
-//    191: 'ZYLHD',
+    111: 'AUTQE',
+    121: 'WFMXB',
+    131: 'CGRZD',
+    141: 'HVKYN',
+    151: 'PJLTC',
+    161: 'XQWSE',
+    171: 'MNBKU',
+    181: 'TRGFA',
+    191: 'ZYLHD',
+    201: 'QVNPR',
+    211: 'KDXWM',
+    221: 'HBTGC',
+    231: 'LSPYF',
+    241: 'WJRZN',
+    251: 'GCVKQ',
+    261: 'NTMXD',
+    271: 'PFLHB',
+    281: 'YKWCS',
+    291: 'RZGJT',
+    301: 'DXNVP',
+    311: 'BQMHL',
+    321: 'KCYWR',
+    331: 'TGSFN',
+    341: 'VJPZD',
+    351: 'WLRXK',
+    361: 'HMQBT',
+    371: 'ZFNVC',
+    381: 'PRGYS',
+    391: 'CWLKD',
+    401: 'JBVXN',
+    411: 'SYTQM',
+    421: 'KDPFR',
+    431: 'NZWGH',
+    441: 'XLCBJ',
+    451: 'VRTKP',
+    461: 'GMQWS',
+    471: 'FHYDN',
+    481: 'BZKLC',
+    491: 'QWPXR'
 };
 
 // Localization configuration
@@ -93,6 +135,14 @@ function t(key, vars = {}) {
         str = str.replace(new RegExp(`\\{${k}\\}`, 'g'), String(v));
     }
     return str;
+}
+
+function formatRoomLabel(roomIdx, totalRooms) {
+    const template = t('roomLabel', { current: roomIdx + 1, total: totalRooms });
+    if (template === 'roomLabel') {
+        return `Room ${roomIdx + 1}/${totalRooms}`;
+    }
+    return template;
 }
 
 function applyLanguage(lang) {
@@ -159,6 +209,7 @@ function applyLanguage(lang) {
     if (gameStarted) {
         const levelNumber = currentLevelIndex + 1;
         levelDisplay.innerText = t('levelLabel', { n: levelNumber });
+        updateRoomBadge();
         updateLevelHint(currentLevelIndex);
 
         const levelCode = getActiveLevelCode(levelNumber);
@@ -225,38 +276,148 @@ const modalMessage = document.getElementById('modal-message');
 const modalBtn = document.getElementById('modal-btn');
 let modalCallback = null;
 
+// Injects multi-room gateway & badge styles automatically so no manual CSS edit is required
+function ensureMultiRoomStyles() {
+    if (document.getElementById('sokonova-multiroom-styles')) return;
+    const style = document.createElement('style');
+    style.id = 'sokonova-multiroom-styles';
+    style.textContent = `
+        .badge-room {
+            background: rgba(56, 189, 248, 0.16);
+            color: #7dd3fc;
+            border: 1px solid rgba(56, 189, 248, 0.45);
+        }
+        body[data-theme="monument"] .badge-room {
+            background: #e3ece9;
+            color: #2f5e53;
+            border-color: #9ec2b9;
+        }
+        body[data-theme="arcade"] .badge-room {
+            background: #1d4ed8;
+            color: #fef08a;
+            border: 2px solid #090d16;
+        }
+        .wall.portal {
+            background: linear-gradient(160deg, #132a46 0%, #0c1b30 100%);
+            box-shadow: inset 0 0 0 2px var(--accent), 0 0 12px var(--accent-soft);
+            z-index: 9;
+        }
+        body[data-theme="monument"] .wall.portal {
+            background: linear-gradient(160deg, #5da393 0%, #448274 100%);
+            box-shadow: inset 0 0 0 2px #2f5e53;
+        }
+        body[data-theme="arcade"] .wall.portal {
+            background: #0284c7;
+            box-shadow: inset 0 0 0 2px #facc15;
+        }
+        .wall.portal::before {
+            content: '';
+            position: absolute;
+            inset: 18%;
+            border-radius: 5px;
+            background: var(--accent-soft);
+            border: 1.5px dashed var(--accent);
+            pointer-events: none;
+        }
+        body[data-theme="monument"] .wall.portal::before {
+            background: rgba(255, 251, 244, 0.22);
+            border-color: #fffbf4;
+        }
+        .wall.portal::after {
+            content: attr(data-arrow);
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: calc(var(--cell) * 0.48);
+            font-weight: 900;
+            line-height: 1;
+            color: var(--accent);
+            text-shadow: 0 0 8px var(--accent-soft);
+            pointer-events: none;
+        }
+        body[data-theme="monument"] .wall.portal::after {
+            color: #fffbf4;
+            text-shadow: none;
+        }
+        @keyframes room-fade-in {
+            0% { opacity: 0.35; transform: scale(0.97); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        #game-board.room-transition {
+            animation: room-fade-in 0.16s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+function getOrCreateRoomBadge() {
+    let badge = document.getElementById('room-badge');
+    if (!badge && levelDisplay && levelDisplay.parentElement) {
+        badge = document.createElement('span');
+        badge.id = 'room-badge';
+        badge.className = 'hidden text-[11px] font-mono font-bold tracking-wider uppercase px-2 py-0.5 rounded-md badge-room';
+        levelDisplay.parentElement.appendChild(badge);
+    }
+    return badge;
+}
+
+function updateRoomBadge() {
+    const badge = getOrCreateRoomBadge();
+    if (!badge) return;
+    if (roomsGrid.length > 1) {
+        badge.innerText = formatRoomLabel(activeRoom, roomsGrid.length);
+        badge.classList.remove('hidden');
+    } else {
+        badge.classList.add('hidden');
+    }
+}
+
 // Boss levels occur every 20 levels starting at level 20 (20, 40, 60, ...)
 function isBossLevel(levelNumber) {
     return levelNumber >= 20 && levelNumber % 20 === 0;
 }
 
 // Pressure plate & door helpers
-function normalizeCoord(coord) {
+function normalizeCoord(coord, defaultRoom = 0) {
     if (!coord) return null;
-    if (Array.isArray(coord) && coord.length >= 2) {
-        return { x: coord[0], y: coord[1] };
+    if (Array.isArray(coord)) {
+        if (coord.length >= 3) {
+            return { room: coord[0], x: coord[1], y: coord[2] };
+        }
+        if (coord.length >= 2) {
+            return { room: defaultRoom, x: coord[0], y: coord[1] };
+        }
     }
     if (typeof coord.x === 'number' && typeof coord.y === 'number') {
-        return { x: coord.x, y: coord.y };
+        return {
+            room: typeof coord.room === 'number' ? coord.room : defaultRoom,
+            x: coord.x,
+            y: coord.y
+        };
     }
     return null;
 }
 
 function isPlatePressed() {
-    if (!plate || !grid[plate.y]) return false;
-    const cell = grid[plate.y][plate.x];
+    if (!plate) return false;
+    const rGrid = roomsGrid[plate.room];
+    if (!rGrid || !rGrid[plate.y]) return false;
+    const cell = rGrid[plate.y][plate.x];
     return cell === '@' || cell === '+' || cell === '$' || cell === '*';
 }
 
 function isDoorOpen() {
     if (!door) return true;
     if (isPlatePressed()) return true;
-    const doorCell = grid[door.y] ? grid[door.y][door.x] : null;
+    const rGrid = roomsGrid[door.room];
+    const doorCell = (rGrid && rGrid[door.y]) ? rGrid[door.y][door.x] : null;
     return doorCell === '@' || doorCell === '+' || doorCell === '$' || doorCell === '*';
 }
 
-function isCellBlockedByDoor(x, y) {
-    return Boolean(door && door.x === x && door.y === y && !isDoorOpen());
+function isCellBlockedByDoor(roomIdx, x, y) {
+    return Boolean(door && door.room === roomIdx && door.x === x && door.y === y && !isDoorOpen());
 }
 
 // Returns the time limit in seconds based on level complexity score, or null if untimed.
@@ -297,7 +458,7 @@ function findLevelIndexByCode(rawCode) {
 
     for (const [lvlStr, code] of Object.entries(CHECKPOINT_CODES)) {
         const lvl = parseInt(lvlStr, 10);
-        if (code.toUpperCase() === clean && lvl <= levels.length) {
+        if (code.toUpperCase() === clean && lvl <= levelsList.length) {
             return lvl - 1;
         }
     }
@@ -424,6 +585,9 @@ function playSound(type) {
 
     if (type === 'move') {
         playTone(190, 130, 0.055, 'triangle', 0.07);
+    } else if (type === 'portal') {
+        playTone(340, 540, 0.085, 'sine', 0.085, 0);
+        playTone(540, 680, 0.095, 'sine', 0.075, 0.055);
     } else if (type === 'undo') {
         playTone(260, 165, 0.075, 'triangle', 0.08);
     } else if (type === 'plateOn') {
@@ -462,7 +626,8 @@ function updateUndoUI() {
 function recordMoveSnapshot() {
     if (isBossLevel(currentLevelIndex + 1)) return;
     moveHistory.push({
-        grid: grid.map(row => [...row]),
+        roomsGrid: roomsGrid.map(r => r.map(row => [...row])),
+        activeRoom,
         player: { x: player.x, y: player.y },
         playerDir,
         pushCount
@@ -480,20 +645,28 @@ function undoMove() {
     const prev = moveHistory.pop();
     undosRemaining--;
 
-    grid = prev.grid;
+    const roomChanged = activeRoom !== prev.activeRoom;
+    roomsGrid = prev.roomsGrid;
+    activeRoom = prev.activeRoom;
+    grid = roomsGrid[activeRoom];
     player = { x: prev.player.x, y: prev.player.y };
     playerDir = prev.playerDir;
     pushCount = prev.pushCount;
     pushesDisplay.innerText = pushCount;
     lastMove = null;
 
-    render();
+    if (roomChanged) {
+        applyBoardGridDimensions();
+        updateRoomBadge();
+    }
+    render(roomChanged);
     playSound('undo');
     updateUndoUI();
 }
 
 // Initialize the game
 function init() {
+    ensureMultiRoomStyles();
     setupInputMode();
     setupTheme();
     setupSound();
@@ -606,6 +779,15 @@ function startGame() {
     }, 500);
 }
 
+function applyBoardGridDimensions() {
+    if (!grid.length || !grid[0].length) return;
+    const cols = grid[0].length;
+    const rows = grid.length;
+    boardEl.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+    boardEl.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+    updateCellSize();
+}
+
 function updateCellSize() {
     if (!grid.length || !grid[0].length) return;
     const cols = grid[0].length;
@@ -634,7 +816,7 @@ function updateCellSize() {
     }
 }
 
-// Updates the contextual hint below the board (shown only on tutorials T0/T1, first Boss level 10, and Plate intro 16)
+// Updates the contextual hint below the board
 function updateLevelHint(index) {
     const hintBox = document.getElementById('hint-box');
     const hintKb = document.getElementById('hint-keyboard');
@@ -662,8 +844,37 @@ function updateLevelHint(index) {
     }
 }
 
+// Resolves the interior landing cell and direction for a perimeter gateway
+function resolveGatewayGeometry(rGrid, gx, gy) {
+    const h = rGrid.length;
+    const w = rGrid[0].length;
+    const candidates = [
+        { ix: gx - 1, iy: gy, outDx: 1, outDy: 0, arrow: '→' },
+        { ix: gx + 1, iy: gy, outDx: -1, outDy: 0, arrow: '←' },
+        { ix: gx, iy: gy - 1, outDx: 0, outDy: 1, arrow: '↓' },
+        { ix: gx, iy: gy + 1, outDx: 0, outDy: -1, arrow: '↑' }
+    ];
+    for (const c of candidates) {
+        if (c.iy >= 0 && c.iy < h && c.ix >= 0 && c.ix < w) {
+            const cell = rGrid[c.iy][c.ix];
+            if (cell !== '#' && cell !== 'N' && cell !== 'S' && cell !== 'E' && cell !== 'W') {
+                return {
+                    innerX: c.ix,
+                    innerY: c.iy,
+                    outDx: c.outDx,
+                    outDy: c.outDy,
+                    inDx: -c.outDx,
+                    inDy: -c.outDy,
+                    arrow: c.arrow
+                };
+            }
+        }
+    }
+    return null;
+}
+
 function loadLevel(index) {
-    if (index >= levels.length) {
+    if (index >= levelsList.length) {
         document.body.classList.remove('boss-level');
         showModal(t('victoryTitle'), t('victoryMsg'), () => {
             currentLevelIndex = 0;
@@ -672,14 +883,21 @@ function loadLevel(index) {
         return;
     }
 
-    const levelEntry = levels[index];
-    const rawData = Array.isArray(levelEntry) ? levelEntry : levelEntry.map;
+    const levelEntry = levelsList[index];
+    const rawRooms = Array.isArray(levelEntry)
+        ? [levelEntry]
+        : (Array.isArray(levelEntry.rooms) && levelEntry.rooms.length > 0
+            ? levelEntry.rooms
+            : [levelEntry.map]);
+
     const levelNumber = index + 1;
     const boss = isBossLevel(levelNumber);
 
-    grid = [];
-    plate = Array.isArray(levelEntry) ? null : normalizeCoord(levelEntry.plate);
-    door = Array.isArray(levelEntry) ? null : normalizeCoord(levelEntry.door);
+    roomsGrid = [];
+    roomPortals = rawRooms.map(() => new Map());
+    activeRoom = 0;
+    plate = Array.isArray(levelEntry) ? null : normalizeCoord(levelEntry.plate, 0);
+    door = Array.isArray(levelEntry) ? null : normalizeCoord(levelEntry.door, 0);
     inputLocked = false;
     playerDir = 'down';
     pushCount = 0;
@@ -688,52 +906,101 @@ function loadLevel(index) {
     undosRemaining = boss ? 0 : MAX_UNDOS;
     pushesDisplay.innerText = '0';
 
-    // Maximum width for padding and CSS Grid
-    let maxWidth = 0;
-    rawData.forEach(row => {
-        if (row.length > maxWidth) maxWidth = row.length;
-    });
+    // Build all rooms' grids
+    for (let r = 0; r < rawRooms.length; r++) {
+        const rawData = rawRooms[r];
+        let maxWidth = 0;
+        rawData.forEach(row => {
+            if (row.length > maxWidth) maxWidth = row.length;
+        });
 
-    // Build the game grid and locate the player (and optional inline plate/door markers)
-    for (let y = 0; y < rawData.length; y++) {
-        const rowArray = [];
-        for (let x = 0; x < maxWidth; x++) {
-            let char = rawData[y][x] || ' ';
-            if (char === '@' || char === '+') {
-                player.x = x;
-                player.y = y;
-            } else if (char === '_' || char === 'p' || char === 'P') {
-                plate = { x, y };
-                char = ' ';
-            } else if (char === 'D' || char === 'd') {
-                door = { x, y };
-                char = ' ';
-            } else if (char === '%') {
-                plate = { x, y };
-                player.x = x;
-                player.y = y;
-                char = '@';
-            } else if (char === '&') {
-                plate = { x, y };
-                char = '$';
-            } else if (char === 'o') {
-                door = { x, y };
-                player.x = x;
-                player.y = y;
-                char = '@';
-            } else if (char === '0') {
-                door = { x, y };
-                char = '$';
+        const rGrid = [];
+        for (let y = 0; y < rawData.length; y++) {
+            const rowArray = [];
+            for (let x = 0; x < maxWidth; x++) {
+                let char = rawData[y][x] || ' ';
+                if (char === '@' || char === '+') {
+                    activeRoom = r;
+                    player.x = x;
+                    player.y = y;
+                } else if (char === '_' || char === 'p' || char === 'P') {
+                    plate = { room: r, x, y };
+                    char = ' ';
+                } else if (char === 'D' || char === 'd') {
+                    door = { room: r, x, y };
+                    char = ' ';
+                } else if (char === '%') {
+                    plate = { room: r, x, y };
+                    activeRoom = r;
+                    player.x = x;
+                    player.y = y;
+                    char = '@';
+                } else if (char === '&') {
+                    plate = { room: r, x, y };
+                    char = '$';
+                } else if (char === 'o') {
+                    door = { room: r, x, y };
+                    activeRoom = r;
+                    player.x = x;
+                    player.y = y;
+                    char = '@';
+                } else if (char === '0') {
+                    door = { room: r, x, y };
+                    char = '$';
+                } else if (char === 'N' || char === 'S' || char === 'E' || char === 'W') {
+                    char = '#';
+                }
+                rowArray.push(char);
             }
-            rowArray.push(char);
+            rGrid.push(rowArray);
         }
-        grid.push(rowArray);
+        roomsGrid.push(rGrid);
     }
 
-    // Set up CSS Grid based on map dimensions
-    boardEl.style.gridTemplateColumns = `repeat(${maxWidth}, 1fr)`;
-    boardEl.style.gridTemplateRows = `repeat(${grid.length}, 1fr)`;
-    updateCellSize();
+    // Register bidirectional links between rooms
+    const links = (!Array.isArray(levelEntry) && Array.isArray(levelEntry.links))
+        ? levelEntry.links
+        : [];
+
+    for (const link of links) {
+        if (!link || !link.a || !link.b) continue;
+        const aRoom = link.a.room ?? 0;
+        const bRoom = link.b.room ?? 0;
+        if (!roomsGrid[aRoom] || !roomsGrid[bRoom]) continue;
+
+        const geomA = resolveGatewayGeometry(roomsGrid[aRoom], link.a.x, link.a.y);
+        const geomB = resolveGatewayGeometry(roomsGrid[bRoom], link.b.x, link.b.y);
+        if (!geomA || !geomB) continue;
+
+        roomPortals[aRoom].set(`${link.a.x},${link.a.y}`, {
+            x: link.a.x,
+            y: link.a.y,
+            arrow: geomA.arrow,
+            outDx: geomA.outDx,
+            outDy: geomA.outDy,
+            targetRoom: bRoom,
+            targetInnerX: geomB.innerX,
+            targetInnerY: geomB.innerY,
+            targetInDx: geomB.inDx,
+            targetInDy: geomB.inDy
+        });
+
+        roomPortals[bRoom].set(`${link.b.x},${link.b.y}`, {
+            x: link.b.x,
+            y: link.b.y,
+            arrow: geomB.arrow,
+            outDx: geomB.outDx,
+            outDy: geomB.outDy,
+            targetRoom: aRoom,
+            targetInnerX: geomA.innerX,
+            targetInnerY: geomA.innerY,
+            targetInDx: geomA.inDx,
+            targetInDy: geomA.inDy
+        });
+    }
+
+    grid = roomsGrid[activeRoom];
+    applyBoardGridDimensions();
 
     // Update UI & Boss milestone styling
     document.body.classList.toggle('boss-level', boss);
@@ -742,6 +1009,7 @@ function loadLevel(index) {
     }
 
     levelDisplay.innerText = t('levelLabel', { n: levelNumber });
+    updateRoomBadge();
     updateLevelHint(index);
 
     const levelCode = getActiveLevelCode(levelNumber);
@@ -817,8 +1085,17 @@ function updateTimerUI() {
     }
 }
 
-function render() {
+function render(withRoomTransition = false) {
+    grid = roomsGrid[activeRoom];
     boardEl.innerHTML = '';
+
+    if (withRoomTransition) {
+        boardEl.classList.remove('room-transition');
+        void boardEl.offsetWidth;
+        boardEl.classList.add('room-transition');
+    }
+
+    const portalsMap = roomPortals[activeRoom] || new Map();
 
     for (let y = 0; y < grid.length; y++) {
         for (let x = 0; x < grid[y].length; x++) {
@@ -832,6 +1109,12 @@ function render() {
                 if (y < grid.length - 1 && grid[y + 1][x] === '#') cell.classList.add('wall-bottom');
                 if (x > 0 && grid[y][x - 1] === '#') cell.classList.add('wall-left');
                 if (x < grid[y].length - 1 && grid[y][x + 1] === '#') cell.classList.add('wall-right');
+
+                const portal = portalsMap.get(`${x},${y}`);
+                if (portal) {
+                    cell.classList.add('portal');
+                    cell.dataset.arrow = portal.arrow;
+                }
             } else if (char === ' ') {
                 cell.classList.add('floor');
             } else if (char === '.') {
@@ -850,17 +1133,17 @@ function render() {
                 cell.classList.add('empty');
             }
 
-            if (plate && plate.x === x && plate.y === y) {
+            if (plate && plate.room === activeRoom && plate.x === x && plate.y === y) {
                 cell.classList.add('plate');
                 if (isPlatePressed()) cell.classList.add('plate-active');
             }
-            if (door && door.x === x && door.y === y) {
+            if (door && door.room === activeRoom && door.x === x && door.y === y) {
                 cell.classList.add('door', isDoorOpen() ? 'door-open' : 'door-closed');
             }
 
-            if (lastMove) {
-                const isMovedPlayer = lastMove.playerTo.x === x && lastMove.playerTo.y === y;
-                const isMovedBox = lastMove.boxTo && lastMove.boxTo.x === x && lastMove.boxTo.y === y;
+            if (lastMove && lastMove.room === activeRoom) {
+                const isMovedPlayer = lastMove.playerTo && lastMove.playerTo.x === x && lastMove.playerTo.y === y;
+                const isMovedBox = lastMove.boxTo && lastMove.boxTo.room === activeRoom && lastMove.boxTo.x === x && lastMove.boxTo.y === y;
 
                 if (isMovedPlayer || isMovedBox) {
                     cell.style.setProperty('--dx', lastMove.dx);
@@ -900,14 +1183,11 @@ function handleKeyDown(e) {
 }
 
 // Mobile continuous swipe handling.
-// Uses Pointer Events with pointer capture on <body>, which is never re-rendered,
-// so moves keep reaching window even though the board cells are rebuilt on each move.
 function setupSwipeControls() {
     let lastX = 0;
     let lastY = 0;
     let activePointerId = null;
 
-    // Proportional step distance (clamped between 30px and 44px)
     const getStepThreshold = () => {
         const cellVal = parseFloat(boardEl.style.getPropertyValue('--cell')) || 36;
         return Math.max(30, Math.min(44, Math.round(cellVal * 0.95)));
@@ -926,9 +1206,7 @@ function setupSwipeControls() {
         lastY = e.clientY;
         try {
             document.body.setPointerCapture(e.pointerId);
-        } catch (err) {
-            // Capture not supported: events still arrive through the original target
-        }
+        } catch (_) {}
     });
 
     window.addEventListener('pointermove', (e) => {
@@ -972,23 +1250,95 @@ function updatePlayerDirection(dx, dy) {
     if (playerEl) playerEl.dataset.dir = playerDir;
 }
 
+function dirNameFromDelta(dx, dy) {
+    if (dy === -1) return 'up';
+    if (dy === 1) return 'down';
+    if (dx === -1) return 'left';
+    return 'right';
+}
+
 function move(dx, dy) {
     updatePlayerDirection(dx, dy);
 
+    const curGrid = roomsGrid[activeRoom];
+    const portalsMap = roomPortals[activeRoom] || new Map();
     const newX = player.x + dx;
     const newY = player.y + dy;
 
     // Out of bounds
-    if (newY < 0 || newY >= grid.length || newX < 0 || newX >= grid[newY].length) return;
+    if (newY < 0 || newY >= curGrid.length || newX < 0 || newX >= curGrid[newY].length) return;
 
-    const targetCell = grid[newY][newX];
+    // Case A: Player steps directly into a room gateway
+    const directPortal = portalsMap.get(`${newX},${newY}`);
+    if (directPortal) {
+        const dstRoom = directPortal.targetRoom;
+        const dstGrid = roomsGrid[dstRoom];
+        const dstX = directPortal.targetInnerX;
+        const dstY = directPortal.targetInnerY;
+        const dstCell = dstGrid[dstY][dstX];
+
+        if (dstCell === ' ' || dstCell === '.') {
+            applyStateTransition({
+                px: player.x,
+                py: player.y,
+                pDestRoom: dstRoom,
+                pDestX: dstX,
+                pDestY: dstY,
+                pushedBox: false,
+                portalUsed: true,
+                arrivalDir: dirNameFromDelta(directPortal.targetInDx, directPortal.targetInDy)
+            });
+            return;
+        }
+
+        // Box sitting right at the landing cell of the connected room -> push it deeper into dstRoom
+        if (dstCell === '$' || dstCell === '*') {
+            const beyondX = dstX + directPortal.targetInDx;
+            const beyondY = dstY + directPortal.targetInDy;
+            if (
+                beyondY >= 0 && beyondY < dstGrid.length &&
+                beyondX >= 0 && beyondX < dstGrid[beyondY].length
+            ) {
+                const beyondCell = dstGrid[beyondY][beyondX];
+                if ((beyondCell === ' ' || beyondCell === '.') && !isCellBlockedByDoor(dstRoom, beyondX, beyondY)) {
+                    applyStateTransition({
+                        px: player.x,
+                        py: player.y,
+                        pDestRoom: dstRoom,
+                        pDestX: dstX,
+                        pDestY: dstY,
+                        pushedBox: true,
+                        bSrcRoom: dstRoom,
+                        bSrcX: dstX,
+                        bSrcY: dstY,
+                        bDestRoom: dstRoom,
+                        bDestX: beyondX,
+                        bDestY: beyondY,
+                        portalUsed: true,
+                        arrivalDir: dirNameFromDelta(directPortal.targetInDx, directPortal.targetInDy)
+                    });
+                }
+            }
+        }
+        return;
+    }
+
+    const targetCell = curGrid[newY][newX];
 
     // Wall or closed door
-    if (targetCell === '#' || isCellBlockedByDoor(newX, newY)) return;
+    if (targetCell === '#' || isCellBlockedByDoor(activeRoom, newX, newY)) return;
 
-    // Empty cell or bare target -> move player
+    // Empty cell or bare target -> move player within activeRoom
     if (targetCell === ' ' || targetCell === '.') {
-        updateGrid(player.x, player.y, newX, newY, false);
+        applyStateTransition({
+            px: player.x,
+            py: player.y,
+            pDestRoom: activeRoom,
+            pDestX: newX,
+            pDestY: newY,
+            pushedBox: false,
+            portalUsed: false
+        });
         return;
     }
 
@@ -997,63 +1347,131 @@ function move(dx, dy) {
         const beyondX = newX + dx;
         const beyondY = newY + dy;
 
-        if (beyondY >= 0 && beyondY < grid.length && beyondX >= 0 && beyondX < grid[beyondY].length) {
-            const beyondCell = grid[beyondY][beyondX];
+        if (beyondY >= 0 && beyondY < curGrid.length && beyondX >= 0 && beyondX < curGrid[beyondY].length) {
+            // Case B: Box is pushed into a room gateway -> box transfers to connected room!
+            const boxPortal = portalsMap.get(`${beyondX},${beyondY}`);
+            if (boxPortal) {
+                const dstRoom = boxPortal.targetRoom;
+                const dstGrid = roomsGrid[dstRoom];
+                const dstX = boxPortal.targetInnerX;
+                const dstY = boxPortal.targetInnerY;
+                const dstCell = dstGrid[dstY][dstX];
 
-            if ((beyondCell === ' ' || beyondCell === '.') && !isCellBlockedByDoor(beyondX, beyondY)) {
-                updateGrid(player.x, player.y, newX, newY, true, beyondX, beyondY);
+                if ((dstCell === ' ' || dstCell === '.') && !isCellBlockedByDoor(dstRoom, dstX, dstY)) {
+                    applyStateTransition({
+                        px: player.x,
+                        py: player.y,
+                        pDestRoom: activeRoom,
+                        pDestX: newX,
+                        pDestY: newY,
+                        pushedBox: true,
+                        bSrcRoom: activeRoom,
+                        bSrcX: newX,
+                        bSrcY: newY,
+                        bDestRoom: dstRoom,
+                        bDestX: dstX,
+                        bDestY: dstY,
+                        portalUsed: true
+                    });
+                }
+                return;
+            }
+
+            const beyondCell = curGrid[beyondY][beyondX];
+            if ((beyondCell === ' ' || beyondCell === '.') && !isCellBlockedByDoor(activeRoom, beyondX, beyondY)) {
+                applyStateTransition({
+                    px: player.x,
+                    py: player.y,
+                    pDestRoom: activeRoom,
+                    pDestX: newX,
+                    pDestY: newY,
+                    pushedBox: true,
+                    bSrcRoom: activeRoom,
+                    bSrcX: newX,
+                    bSrcY: newY,
+                    bDestRoom: activeRoom,
+                    bDestX: beyondX,
+                    bDestY: beyondY,
+                    portalUsed: false
+                });
             }
         }
     }
 }
 
-function updateGrid(px, py, nx, ny, pushedBox, bx, by) {
+function applyStateTransition(tr) {
     recordMoveSnapshot();
     startLevelTimer();
 
     const wasDoorOpen = isDoorOpen();
+    const prevRoom = activeRoom;
+    const srcGrid = roomsGrid[prevRoom];
 
-    // Remove player from the old position
-    grid[py][px] = (grid[py][px] === '+') ? '.' : ' ';
+    // Clear player from source cell
+    srcGrid[tr.py][tr.px] = (srcGrid[tr.py][tr.px] === '+') ? '.' : ' ';
 
-    if (pushedBox) {
+    if (tr.pushedBox) {
         pushCount++;
         pushesDisplay.innerText = pushCount;
 
-        // Move the box to the new position
-        const beyondWasTarget = (grid[by][bx] === '.');
-        grid[by][bx] = beyondWasTarget ? '*' : '$';
+        // Clear box from its source cell if distinct from player destination
+        const bSrcGrid = roomsGrid[tr.bSrcRoom];
+        if (!(tr.bSrcRoom === tr.pDestRoom && tr.bSrcX === tr.pDestX && tr.bSrcY === tr.pDestY)) {
+            bSrcGrid[tr.bSrcY][tr.bSrcX] = (bSrcGrid[tr.bSrcY][tr.bSrcX] === '*') ? '.' : ' ';
+        }
 
-        // The player takes the box's previous spot
-        const boxWasOnTarget = (grid[ny][nx] === '*');
-        grid[ny][nx] = boxWasOnTarget ? '+' : '@';
-    } else {
-        // Simple player movement
-        grid[ny][nx] = (grid[ny][nx] === '.') ? '+' : '@';
+        // Place box at destination
+        const bDestGrid = roomsGrid[tr.bDestRoom];
+        const beyondWasTarget = (bDestGrid[tr.bDestY][tr.bDestX] === '.');
+        bDestGrid[tr.bDestY][tr.bDestX] = beyondWasTarget ? '*' : '$';
     }
 
-    player.x = nx;
-    player.y = ny;
+    // Place player at destination
+    const pDestGrid = roomsGrid[tr.pDestRoom];
+    const destWasTarget = (pDestGrid[tr.pDestY][tr.pDestX] === '.');
+    pDestGrid[tr.pDestY][tr.pDestX] = destWasTarget ? '+' : '@';
 
+    activeRoom = tr.pDestRoom;
+    grid = roomsGrid[activeRoom];
+    player.x = tr.pDestX;
+    player.y = tr.pDestY;
+    if (tr.arrivalDir) {
+        playerDir = tr.arrivalDir;
+    }
+
+    const roomChanged = (prevRoom !== activeRoom);
     const nowDoorOpen = isDoorOpen();
+    const boxLandedOnTarget = tr.pushedBox && (roomsGrid[tr.bDestRoom][tr.bDestY][tr.bDestX] === '*');
 
-    lastMove = {
-        dx: nx - px,
-        dy: ny - py,
-        playerTo: { x: nx, y: ny },
-        boxTo: pushedBox ? { x: bx, y: by } : null,
-        boxLanded: pushedBox && (grid[by][bx] === '*')
-    };
+    if (!roomChanged) {
+        lastMove = {
+            room: activeRoom,
+            dx: tr.pDestX - tr.px,
+            dy: tr.pDestY - tr.py,
+            playerTo: { x: tr.pDestX, y: tr.pDestY },
+            boxTo: tr.pushedBox
+                ? { room: tr.bDestRoom, x: tr.bDestX, y: tr.bDestY }
+                : null,
+            boxLanded: boxLandedOnTarget
+        };
+    } else {
+        lastMove = null;
+        applyBoardGridDimensions();
+        updateRoomBadge();
+    }
 
-    render();
+    render(roomChanged);
 
-    if (lastMove.boxLanded) {
+    if (boxLandedOnTarget) {
         playSound('target');
+    } else if (tr.portalUsed) {
+        playSound('portal');
     } else if (door && wasDoorOpen !== nowDoorOpen) {
         playSound(nowDoorOpen ? 'plateOn' : 'plateOff');
     } else {
         playSound('move');
     }
+
     lastMove = null;
     updateUndoUI();
     checkWinCondition();
@@ -1062,12 +1480,16 @@ function updateGrid(px, py, nx, ny, pushedBox, bx, by) {
 function checkWinCondition() {
     let isComplete = true;
 
-    for (let y = 0; y < grid.length; y++) {
-        for (let x = 0; x < grid[y].length; x++) {
-            if (grid[y][x] === '$') {
-                isComplete = false;
-                break;
+    for (let r = 0; r < roomsGrid.length; r++) {
+        const rGrid = roomsGrid[r];
+        for (let y = 0; y < rGrid.length; y++) {
+            for (let x = 0; x < rGrid[y].length; x++) {
+                if (rGrid[y][x] === '$') {
+                    isComplete = false;
+                    break;
+                }
             }
+            if (!isComplete) break;
         }
         if (!isComplete) break;
     }
