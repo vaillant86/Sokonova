@@ -3,6 +3,7 @@
 
 # File di sicurezza creati dal generatore
 *.bak
+*.pre-run
 
 # Cache di Python
 __pycache__/
