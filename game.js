@@ -22,14 +22,16 @@ if (hasDirectLevelParam) {
     currentLevelIndex = requestedLevel - 1;
 }
 
-// Game atate
+// Game state
 let grid = [];
 let player = { x: 0, y: 0 };
+let plate = null;
+let door = null;
 let playerDir = 'down';
 let pushCount = 0;
 let lastMove = null;
 
-// Undo atate (max 3 per normal level, disabled on Boss levels)
+// Undo state (max 3 per normal level, disabled on Boss levels)
 const MAX_UNDOS = 3;
 let moveHistory = [];
 let undosRemaining = MAX_UNDOS;
@@ -223,9 +225,38 @@ const modalMessage = document.getElementById('modal-message');
 const modalBtn = document.getElementById('modal-btn');
 let modalCallback = null;
 
-// Boss levels occur every 10 levels starting at level 10 (10, 20, 30, ...)
+// Boss levels occur every 20 levels starting at level 20 (20, 40, 60, ...)
 function isBossLevel(levelNumber) {
-    return levelNumber >= 10 && levelNumber % 10 === 0;
+    return levelNumber >= 20 && levelNumber % 20 === 0;
+}
+
+// Pressure plate & door helpers
+function normalizeCoord(coord) {
+    if (!coord) return null;
+    if (Array.isArray(coord) && coord.length >= 2) {
+        return { x: coord[0], y: coord[1] };
+    }
+    if (typeof coord.x === 'number' && typeof coord.y === 'number') {
+        return { x: coord.x, y: coord.y };
+    }
+    return null;
+}
+
+function isPlatePressed() {
+    if (!plate || !grid[plate.y]) return false;
+    const cell = grid[plate.y][plate.x];
+    return cell === '@' || cell === '+' || cell === '$' || cell === '*';
+}
+
+function isDoorOpen() {
+    if (!door) return true;
+    if (isPlatePressed()) return true;
+    const doorCell = grid[door.y] ? grid[door.y][door.x] : null;
+    return doorCell === '@' || doorCell === '+' || doorCell === '$' || doorCell === '*';
+}
+
+function isCellBlockedByDoor(x, y) {
+    return Boolean(door && door.x === x && door.y === y && !isDoorOpen());
 }
 
 // Returns the time limit in seconds based on level complexity score, or null if untimed.
@@ -395,6 +426,10 @@ function playSound(type) {
         playTone(190, 130, 0.055, 'triangle', 0.07);
     } else if (type === 'undo') {
         playTone(260, 165, 0.075, 'triangle', 0.08);
+    } else if (type === 'plateOn') {
+        playTone(330, 460, 0.065, 'sine', 0.08);
+    } else if (type === 'plateOff') {
+        playTone(390, 260, 0.065, 'sine', 0.07);
     } else if (type === 'target') {
         playTone(523.25, 523.25, 0.09, 'sine', 0.11, 0);      // C5
         playTone(783.99, 783.99, 0.16, 'sine', 0.12, 0.065);  // G5
@@ -599,7 +634,7 @@ function updateCellSize() {
     }
 }
 
-// Updates the contextual hint below the board (shown only on tutorials T0/T1 and first Boss level 10)
+// Updates the contextual hint below the board (shown only on tutorials T0/T1, first Boss level 10, and Plate intro 16)
 function updateLevelHint(index) {
     const hintBox = document.getElementById('hint-box');
     const hintKb = document.getElementById('hint-keyboard');
@@ -614,10 +649,14 @@ function updateLevelHint(index) {
         hintBox.classList.remove('hidden');
         hintKb.innerHTML = t('hintT1Keyboard');
         hintTouch.innerHTML = t('hintT1Touch');
-    } else if (index === 9) {
+    } else if (index === 19) {
         hintBox.classList.remove('hidden');
-        hintKb.innerHTML = t('hintBoss10');
-        hintTouch.innerHTML = t('hintBoss10');
+        hintKb.innerHTML = t('hintBoss20');
+        hintTouch.innerHTML = t('hintBoss20');
+    } else if (index === 2) {
+        hintBox.classList.remove('hidden');
+        hintKb.innerHTML = t('hintPlate3Keyboard');
+        hintTouch.innerHTML = t('hintPlate3Touch');
     } else {
         hintBox.classList.add('hidden');
     }
@@ -639,6 +678,8 @@ function loadLevel(index) {
     const boss = isBossLevel(levelNumber);
 
     grid = [];
+    plate = Array.isArray(levelEntry) ? null : normalizeCoord(levelEntry.plate);
+    door = Array.isArray(levelEntry) ? null : normalizeCoord(levelEntry.door);
     inputLocked = false;
     playerDir = 'down';
     pushCount = 0;
@@ -653,14 +694,36 @@ function loadLevel(index) {
         if (row.length > maxWidth) maxWidth = row.length;
     });
 
-    // Build the game grid and locate the player
+    // Build the game grid and locate the player (and optional inline plate/door markers)
     for (let y = 0; y < rawData.length; y++) {
         const rowArray = [];
         for (let x = 0; x < maxWidth; x++) {
-            const char = rawData[y][x] || ' ';
+            let char = rawData[y][x] || ' ';
             if (char === '@' || char === '+') {
                 player.x = x;
                 player.y = y;
+            } else if (char === '_' || char === 'p' || char === 'P') {
+                plate = { x, y };
+                char = ' ';
+            } else if (char === 'D' || char === 'd') {
+                door = { x, y };
+                char = ' ';
+            } else if (char === '%') {
+                plate = { x, y };
+                player.x = x;
+                player.y = y;
+                char = '@';
+            } else if (char === '&') {
+                plate = { x, y };
+                char = '$';
+            } else if (char === 'o') {
+                door = { x, y };
+                player.x = x;
+                player.y = y;
+                char = '@';
+            } else if (char === '0') {
+                door = { x, y };
+                char = '$';
             }
             rowArray.push(char);
         }
@@ -785,6 +848,14 @@ function render() {
                 cell.dataset.dir = playerDir;
             } else {
                 cell.classList.add('empty');
+            }
+
+            if (plate && plate.x === x && plate.y === y) {
+                cell.classList.add('plate');
+                if (isPlatePressed()) cell.classList.add('plate-active');
+            }
+            if (door && door.x === x && door.y === y) {
+                cell.classList.add('door', isDoorOpen() ? 'door-open' : 'door-closed');
             }
 
             if (lastMove) {
@@ -912,8 +983,8 @@ function move(dx, dy) {
 
     const targetCell = grid[newY][newX];
 
-    // Wall
-    if (targetCell === '#') return;
+    // Wall or closed door
+    if (targetCell === '#' || isCellBlockedByDoor(newX, newY)) return;
 
     // Empty cell or bare target -> move player
     if (targetCell === ' ' || targetCell === '.') {
@@ -929,7 +1000,7 @@ function move(dx, dy) {
         if (beyondY >= 0 && beyondY < grid.length && beyondX >= 0 && beyondX < grid[beyondY].length) {
             const beyondCell = grid[beyondY][beyondX];
 
-            if (beyondCell === ' ' || beyondCell === '.') {
+            if ((beyondCell === ' ' || beyondCell === '.') && !isCellBlockedByDoor(beyondX, beyondY)) {
                 updateGrid(player.x, player.y, newX, newY, true, beyondX, beyondY);
             }
         }
@@ -939,6 +1010,8 @@ function move(dx, dy) {
 function updateGrid(px, py, nx, ny, pushedBox, bx, by) {
     recordMoveSnapshot();
     startLevelTimer();
+
+    const wasDoorOpen = isDoorOpen();
 
     // Remove player from the old position
     grid[py][px] = (grid[py][px] === '+') ? '.' : ' ';
@@ -962,6 +1035,8 @@ function updateGrid(px, py, nx, ny, pushedBox, bx, by) {
     player.x = nx;
     player.y = ny;
 
+    const nowDoorOpen = isDoorOpen();
+
     lastMove = {
         dx: nx - px,
         dy: ny - py,
@@ -971,7 +1046,14 @@ function updateGrid(px, py, nx, ny, pushedBox, bx, by) {
     };
 
     render();
-    playSound(lastMove.boxLanded ? 'target' : 'move');
+
+    if (lastMove.boxLanded) {
+        playSound('target');
+    } else if (door && wasDoorOpen !== nowDoorOpen) {
+        playSound(nowDoorOpen ? 'plateOn' : 'plateOff');
+    } else {
+        playSound('move');
+    }
     lastMove = null;
     updateUndoUI();
     checkWinCondition();

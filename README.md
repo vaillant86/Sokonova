@@ -19,7 +19,7 @@ Controls adapt automatically to your device:
 
 - **Time limits:** no limit for levels 1–10 (tutorials and warm-up); from level 11 onwards, a score-based timer starts on your first move.
 - **Undo system:** rewind up to 3 moves per level via the HUD button or `Z` / `Backspace`.
-- **Boss levels:** every 10th level starting at level 10 (`10, 20, 30...`) features dedicated visual styling, a higher difficulty spike, and **undo disabled**.
+- **Boss levels:** features dedicated visual styling, a higher difficulty spike, and undo button disabled.
 - **Checkpoint codes:** every ten levels, from level 11 onwards, you receive a 5-letter code. Enter it in the bottom-left box on the start screen to pick up right where you left off.
 - **Visual themes:** switch anytime between 4 themes (`Classic`, `Sci-Fi`, `Arcade`, and `Monument`).
 - **Multilingual support:** switch between five languages via the top-right flag toggle.
@@ -33,7 +33,7 @@ Controls adapt automatically to your device:
 | `style.css` | Styling, themes, and animations |
 | `game.js` | Game engine, input handling, and Web Audio synthesizer |
 | `levels.js` | Level definitions, difficulty scores, and checkpoint codes |
-| `locale*.js` | Languages dictionary |
+| `locales` | Languages dictionary folder |
 
 ## Levels & versioning
 

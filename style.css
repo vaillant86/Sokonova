@@ -642,6 +642,192 @@ body[data-theme="monument"] .box-on-target::before {
 }
 
 /* =========================================================
+   PRESSURE PLATES & DOORS
+   ========================================================= */
+.plate {
+    background-color: var(--floor);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.035);
+}
+
+.plate:not(.player):not(.box):not(.box-on-target)::before {
+    content: '';
+    position: absolute;
+    inset: 17%;
+    border-radius: 6px;
+    border: 2px solid #f59e0b;
+    background:
+        radial-gradient(circle at 50% 50%, #fbbf24 0 22%, rgba(245, 158, 11, 0.25) 26% 62%, transparent 65%),
+        rgba(245, 158, 11, 0.14);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.22),
+        0 2px 4px rgba(0, 0, 0, 0.35);
+    transition: transform 0.12s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    pointer-events: none;
+}
+
+.plate.plate-active {
+    box-shadow:
+        inset 0 0 0 2px #34d399,
+        0 0 12px rgba(52, 211, 153, 0.45);
+}
+
+body[data-theme="scifi"] .plate:not(.player):not(.box):not(.box-on-target)::before {
+    border-color: #38bdf8;
+    background:
+        radial-gradient(circle at 50% 50%, #7dd3fc 0 22%, rgba(56, 189, 248, 0.25) 26% 62%, transparent 65%),
+        rgba(56, 189, 248, 0.14);
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.45);
+}
+
+body[data-theme="scifi"] .plate.plate-active {
+    box-shadow:
+        inset 0 0 0 2px #34d399,
+        0 0 16px rgba(52, 211, 153, 0.65);
+}
+
+body[data-theme="arcade"] .plate:not(.player):not(.box):not(.box-on-target)::before {
+    border-radius: 2px;
+    border-width: 2px;
+    border-color: #facc15;
+    box-shadow: none;
+}
+
+body[data-theme="monument"] .plate {
+    background-color: #efe5d5;
+    box-shadow: inset 0 0 0 0.5px rgba(176, 158, 134, 0.35);
+}
+
+body[data-theme="monument"] .plate:not(.player):not(.box):not(.box-on-target)::before {
+    border-radius: 5px;
+    border: 2px solid #d97706;
+    background:
+        radial-gradient(circle at 50% 50%, #d97706 0 22%, rgba(217, 119, 6, 0.2) 26% 62%, transparent 65%),
+        #e6d7c1;
+    box-shadow: inset 0 1px 3px rgba(74, 58, 42, 0.22);
+}
+
+body[data-theme="monument"] .plate.plate-active {
+    box-shadow:
+        inset 0 0 0 2px #448274,
+        0 0 8px rgba(68, 130, 116, 0.35);
+}
+
+/* Doors */
+.door {
+    background-color: var(--floor);
+    position: relative;
+}
+
+.door.door-closed {
+    background: linear-gradient(160deg, #451a1a 0%, #2b1111 100%);
+    box-shadow:
+        inset 0 0 0 2px #ef4444,
+        0 0 10px rgba(239, 68, 68, 0.32);
+    z-index: 8;
+}
+
+.door.door-closed::before {
+    content: '';
+    position: absolute;
+    inset: 12%;
+    border-radius: 4px;
+    border: 1.5px solid rgba(248, 113, 113, 0.75);
+    background:
+        repeating-linear-gradient(
+            90deg,
+            rgba(239, 68, 68, 0.85) 0 3px,
+            rgba(127, 29, 29, 0.35) 3px 8px
+        );
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.55);
+    pointer-events: none;
+}
+
+.door.door-open {
+    box-shadow:
+        inset 3px 0 0 #34d399,
+        inset -3px 0 0 #34d399,
+        inset 0 0 10px rgba(52, 211, 153, 0.28);
+}
+
+.door.door-open:not(.player):not(.box):not(.box-on-target)::before {
+    content: '';
+    position: absolute;
+    inset: 14% 8%;
+    border-left: 3px solid #34d399;
+    border-right: 3px solid #34d399;
+    border-radius: 3px;
+    background: linear-gradient(90deg, rgba(52, 211, 153, 0.22), transparent 22%, transparent 78%, rgba(52, 211, 153, 0.22));
+    pointer-events: none;
+}
+
+body[data-theme="scifi"] .door.door-closed {
+    background: linear-gradient(160deg, #2e1036 0%, #190924 100%);
+    box-shadow:
+        inset 0 0 0 2px #f43f5e,
+        0 0 14px rgba(244, 63, 94, 0.5);
+}
+
+body[data-theme="scifi"] .door.door-closed::before {
+    border-color: #fb7185;
+    background:
+        repeating-linear-gradient(
+            0deg,
+            rgba(244, 63, 94, 0.9) 0 2px,
+            rgba(244, 63, 94, 0.15) 2px 7px
+        );
+    box-shadow: 0 0 10px rgba(244, 63, 94, 0.65);
+}
+
+body[data-theme="arcade"] .door.door-closed {
+    border-radius: 2px;
+    background: #991b1b;
+    box-shadow: inset 0 0 0 2px #090d16;
+}
+
+body[data-theme="arcade"] .door.door-closed::before {
+    border-radius: 0;
+    border: 2px solid #fca5a5;
+    background:
+        repeating-linear-gradient(
+            90deg,
+            #f87171 0 4px,
+            #7f1d1d 4px 8px
+        );
+    box-shadow: none;
+}
+
+body[data-theme="monument"] .door.door-closed {
+    background: linear-gradient(160deg, #c85a43 0%, #993c28 100%);
+    box-shadow:
+        inset 0 0 0 2px #7c2d12,
+        0 2px 5px rgba(74, 42, 32, 0.25);
+}
+
+body[data-theme="monument"] .door.door-closed::before {
+    border-color: #f4c7bc;
+    background:
+        repeating-linear-gradient(
+            90deg,
+            rgba(255, 245, 238, 0.85) 0 3px,
+            rgba(124, 45, 18, 0.35) 3px 8px
+        );
+    box-shadow: none;
+}
+
+body[data-theme="monument"] .door.door-open {
+    box-shadow:
+        inset 3px 0 0 #448274,
+        inset -3px 0 0 #448274,
+        inset 0 0 8px rgba(68, 130, 116, 0.22);
+}
+
+body[data-theme="monument"] .door.door-open:not(.player):not(.box):not(.box-on-target)::before {
+    border-left-color: #448274;
+    border-right-color: #448274;
+    background: linear-gradient(90deg, rgba(68, 130, 116, 0.22), transparent 22%, transparent 78%, rgba(68, 130, 116, 0.22));
+}
+
+/* =========================================================
    PLAYER & DIRECTIONAL EYES
    ========================================================= */
 .player {
