@@ -30,11 +30,15 @@ window.SOKONOVA_LOCALES.en = {
     hintPlate3Touch: 'Stand on a pressure plate or park a crate on it to keep the door open.',
     levelCompleteTitle: 'Level Complete!',
     bossDefeatedTitle: 'Boss Defeated!',
-    levelCompleteMsg: 'Great job! Get ready for the next challenge.',
-    levelCompleteCodeMsg: 'Great job! Level {n} code: {code}',
+    levelCompleteMsg: 'Get ready for the next challenge.',
+    levelCompleteCodeMsg: 'Level {n} code: {code}',
     timesUpTitle: "Time's Up!",
     timesUpMsg: 'You ran out of time.',
     victoryTitle: 'Victory!',
     victoryMsg: 'You completed all levels. You are a Sokonova master!',
+    starsPushesOptimal: 'Pushes: {pushes} (Best: {min})',
+    starsPushesOnly: 'Pushes: {pushes}',
+    starsNewRecord: 'New best!',
     modalOk: 'OK'
+
 };

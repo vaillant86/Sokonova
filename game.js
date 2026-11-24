@@ -14,11 +14,9 @@
  * 'N' / 'S' / 'E' / 'W' = Perimeter room gateway (multi-room levels)
  */
 
-// Levels are defined in levels.js (supports both `const levels = [...]` and `const LEVELS = [...]`)
+// Levels are defined in levels.js as `const levels = [...]`
 // Languages are defined in locales folder.
-const levelsList = (typeof levels !== 'undefined')
-    ? levels
-    : ((typeof LEVELS !== 'undefined') ? LEVELS : []);
+const levelsList = (typeof levels !== 'undefined') ? levels : [];
 
 let currentLevelIndex = 0;
 
@@ -47,6 +45,45 @@ let roomTransitionDir = null;
 const MAX_UNDOS = 3;
 let moveHistory = [];
 let undosRemaining = MAX_UNDOS;
+
+// 3-Star rating system (persisted in localStorage)
+const STARS_STORAGE_KEY = 'sokonova_stars';
+
+function loadSavedStars() {
+    try {
+        const raw = localStorage.getItem(STARS_STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : {};
+        return (parsed && typeof parsed === 'object') ? parsed : {};
+    } catch (_) {
+        return {};
+    }
+}
+
+function saveLevelStars(levelNumber, stars) {
+    const saved = loadSavedStars();
+    const prev = saved[levelNumber] || 0;
+    const isNewBest = stars > prev;
+    if (isNewBest) {
+        saved[levelNumber] = stars;
+        try {
+            localStorage.setItem(STARS_STORAGE_KEY, JSON.stringify(saved));
+        } catch (_) {}
+    }
+    return { best: Math.max(prev, stars), isNewBest };
+}
+
+function calculateEarnedStars(pushes, levelEntry) {
+    const minPushes = (levelEntry && typeof levelEntry.minPushes === 'number')
+        ? levelEntry.minPushes
+        : null;
+
+    if (minPushes === null || pushes <= minPushes) return 3;
+
+    const twoStarLimit = minPushes + Math.max(2, Math.ceil(minPushes * 0.2));
+    if (pushes <= twoStarLimit) return 2;
+
+    return 1;
+}
 
 // Lock controls during transitions/modals
 let inputLocked = false;
@@ -80,44 +117,44 @@ const CHECKPOINT_CODES = (typeof LEVEL_CODES !== 'undefined') ? LEVEL_CODES : {
     91:  'RYVNH',
     101: 'SLKJP',
     111: 'AUTQE',
-    121: 'WFMXB',
-    131: 'CGRZD',
-    141: 'HVKYN',
-    151: 'PJLTC',
-    161: 'XQWSE',
-    171: 'MNBKU',
-    181: 'TRGFA',
-    191: 'ZYLHD',
-    201: 'QVNPR',
-    211: 'KDXWM',
-    221: 'HBTGC',
-    231: 'LSPYF',
-    241: 'WJRZN',
-    251: 'GCVKQ',
-    261: 'NTMXD',
-    271: 'PFLHB',
-    281: 'YKWCS',
-    291: 'RZGJT',
-    301: 'DXNVP',
-    311: 'BQMHL',
-    321: 'KCYWR',
-    331: 'TGSFN',
-    341: 'VJPZD',
-    351: 'WLRXK',
-    361: 'HMQBT',
-    371: 'ZFNVC',
-    381: 'PRGYS',
-    391: 'CWLKD',
-    401: 'JBVXN',
-    411: 'SYTQM',
-    421: 'KDPFR',
-    431: 'NZWGH',
-    441: 'XLCBJ',
-    451: 'VRTKP',
-    461: 'GMQWS',
-    471: 'FHYDN',
-    481: 'BZKLC',
-    491: 'QWPXR'
+ // 121: 'WFMXB',
+ // 131: 'CGRZD',
+ // 141: 'HVKYN',
+ // 151: 'PJLTC',
+ // 161: 'XQWSE',
+ // 171: 'MNBKU',
+ // 181: 'TRGFA',
+ // 191: 'ZYLHD',
+ // 201: 'QVNPR',
+ // 211: 'KDXWM',
+ // 221: 'HBTGC',
+ // 231: 'LSPYF',
+ // 241: 'WJRZN',
+ // 251: 'GCVKQ',
+ // 261: 'NTMXD',
+ // 271: 'PFLHB',
+ // 281: 'YKWCS',
+ // 291: 'RZGJT',
+ // 301: 'DXNVP',
+ // 311: 'BQMHL',
+ // 321: 'KCYWR',
+ // 331: 'TGSFN',
+ // 341: 'VJPZD',
+ // 351: 'WLRXK',
+ // 361: 'HMQBT',
+ // 371: 'ZFNVC',
+ // 381: 'PRGYS',
+ // 391: 'CWLKD',
+ // 401: 'JBVXN',
+ // 411: 'SYTQM',
+ // 421: 'KDPFR',
+ // 431: 'NZWGH',
+ // 441: 'XLCBJ',
+ // 451: 'VRTKP',
+ // 461: 'GMQWS',
+ // 471: 'FHYDN',
+ // 481: 'BZKLC',
+ // 491: 'QWPXR'
 };
 
 // Localization configuration
@@ -275,82 +312,6 @@ const modalTitle = document.getElementById('modal-title');
 const modalMessage = document.getElementById('modal-message');
 const modalBtn = document.getElementById('modal-btn');
 let modalCallback = null;
-
-// Injects multi-room gateway & badge styles automatically so no manual CSS edit is required
-function ensureMultiRoomStyles() {
-    if (document.getElementById('sokonova-multiroom-styles')) return;
-    const style = document.createElement('style');
-    style.id = 'sokonova-multiroom-styles';
-    style.textContent = `
-        .badge-room {
-            background: rgba(56, 189, 248, 0.16);
-            color: #7dd3fc;
-            border: 1px solid rgba(56, 189, 248, 0.45);
-        }
-        body[data-theme="monument"] .badge-room {
-            background: #e3ece9;
-            color: #2f5e53;
-            border-color: #9ec2b9;
-        }
-        body[data-theme="arcade"] .badge-room {
-            background: #1d4ed8;
-            color: #fef08a;
-            border: 2px solid #090d16;
-        }
-        .wall.portal {
-            background: linear-gradient(160deg, #132a46 0%, #0c1b30 100%);
-            box-shadow: inset 0 0 0 2px var(--accent), 0 0 12px var(--accent-soft);
-            z-index: 9;
-        }
-        body[data-theme="monument"] .wall.portal {
-            background: linear-gradient(160deg, #5da393 0%, #448274 100%);
-            box-shadow: inset 0 0 0 2px #2f5e53;
-        }
-        body[data-theme="arcade"] .wall.portal {
-            background: #0284c7;
-            box-shadow: inset 0 0 0 2px #facc15;
-        }
-        .wall.portal::before {
-            content: '';
-            position: absolute;
-            inset: 18%;
-            border-radius: 5px;
-            background: var(--accent-soft);
-            border: 1.5px dashed var(--accent);
-            pointer-events: none;
-        }
-        body[data-theme="monument"] .wall.portal::before {
-            background: rgba(255, 251, 244, 0.22);
-            border-color: #fffbf4;
-        }
-        .wall.portal::after {
-            content: attr(data-arrow);
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: calc(var(--cell) * 0.48);
-            font-weight: 900;
-            line-height: 1;
-            color: var(--accent);
-            text-shadow: 0 0 8px var(--accent-soft);
-            pointer-events: none;
-        }
-        body[data-theme="monument"] .wall.portal::after {
-            color: #fffbf4;
-            text-shadow: none;
-        }
-        @keyframes room-fade-in {
-            0% { opacity: 0.35; transform: scale(0.97); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-        #game-board.room-transition {
-            animation: room-fade-in 0.16s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-    `;
-    document.head.appendChild(style);
-}
 
 function getOrCreateRoomBadge() {
     let badge = document.getElementById('room-badge');
@@ -666,7 +627,6 @@ function undoMove() {
 
 // Initialize the game
 function init() {
-    ensureMultiRoomStyles();
     setupInputMode();
     setupTheme();
     setupSound();
@@ -823,7 +783,7 @@ function updateLevelHint(index) {
     const hintTouch = document.getElementById('hint-touch');
     if (!hintBox || !hintKb || !hintTouch) return;
 
-if (index === 0) {
+    if (index === 0) {
         hintBox.classList.remove('hidden');
         hintKb.innerHTML = t('hintT0Keyboard');
         hintTouch.innerHTML = t('hintT0Touch');
@@ -849,10 +809,10 @@ function resolveGatewayGeometry(rGrid, gx, gy) {
     const h = rGrid.length;
     const w = rGrid[0].length;
     const candidates = [
-        { ix: gx - 1, iy: gy, outDx: 1, outDy: 0, arrow: '→' },
-        { ix: gx + 1, iy: gy, outDx: -1, outDy: 0, arrow: '←' },
-        { ix: gx, iy: gy - 1, outDx: 0, outDy: 1, arrow: '↓' },
-        { ix: gx, iy: gy + 1, outDx: 0, outDy: -1, arrow: '↑' }
+        { ix: gx - 1, iy: gy, outDx: 1, outDy: 0, arrow: '\u2192' },
+        { ix: gx + 1, iy: gy, outDx: -1, outDy: 0, arrow: '\u2190' },
+        { ix: gx, iy: gy - 1, outDx: 0, outDy: 1, arrow: '\u2193' },
+        { ix: gx, iy: gy + 1, outDx: 0, outDy: -1, arrow: '\u2191' }
     ];
     for (const c of candidates) {
         if (c.iy >= 0 && c.iy < h && c.ix >= 0 && c.ix < w) {
@@ -1035,7 +995,7 @@ function setupTimer(index, levelEntry) {
     if (limit === null) {
         timeLimit = 0;
         timeLeft = 0;
-        timerDisplay.innerText = "∞";
+        timerDisplay.innerText = "\u221E";
         timerDisplay.classList.remove('text-red-400');
         timerDisplay.classList.add('text-emerald-400');
     } else {
@@ -1430,7 +1390,8 @@ function applyStateTransition(tr) {
     pDestGrid[tr.pDestY][tr.pDestX] = destWasTarget ? '+' : '@';
 
     activeRoom = tr.pDestRoom;
-    grid = roomsGrid[activeRoom];    player.x = tr.pDestX;
+    grid = roomsGrid[activeRoom];
+    player.x = tr.pDestX;
     player.y = tr.pDestY;
     if (tr.arrivalDir) {
         playerDir = tr.arrivalDir;
@@ -1497,8 +1458,15 @@ function checkWinCondition() {
         updateUndoUI();
         playSound('win');
 
+        const completedLevel = currentLevelIndex + 1;
+        const levelEntry = levelsList[currentLevelIndex];
+        const earnedStars = calculateEarnedStars(pushCount, levelEntry);
+        const { isNewBest } = saveLevelStars(completedLevel, earnedStars);
+        const minPushes = (levelEntry && typeof levelEntry.minPushes === 'number')
+            ? levelEntry.minPushes
+            : null;
+
         setTimeout(() => {
-            const completedLevel = currentLevelIndex + 1;
             const wasBoss = isBossLevel(completedLevel);
             const nextLevel = completedLevel + 1;
             const isNewCheckpoint = nextLevel >= 11 && (nextLevel - 1) % 10 === 0;
@@ -1512,6 +1480,11 @@ function checkWinCondition() {
             showModal(title, msg, () => {
                 currentLevelIndex++;
                 loadLevel(currentLevelIndex);
+            }, {
+                earned: earnedStars,
+                pushes: pushCount,
+                minPushes,
+                isNewBest
             });
         }, 200);
     }
@@ -1521,11 +1494,62 @@ function restartCurrentLevel() {
     loadLevel(currentLevelIndex);
 }
 
+// Modal stars rendering
+function renderModalStars(starsInfo) {
+    let box = document.getElementById('modal-stars-box');
+    if (!box) {
+        box = document.createElement('div');
+        box.id = 'modal-stars-box';
+        modalMessage.parentElement.insertBefore(box, modalMessage);
+    }
+
+    if (!starsInfo) {
+        box.classList.add('hidden');
+        box.innerHTML = '';
+        return;
+    }
+
+    const starPath = 'M12 2.4l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.3l-5.9 3.1 1.2-6.5-4.8-4.6 6.6-.9L12 2.4z';
+    const delays = ['0.18s', '0.44s', '0.70s'];
+
+    const starsHtml = [1, 2, 3].map((idx) => {
+        const earned = idx <= starsInfo.earned;
+        return `
+            <span class="star-slot ${earned ? 'earned' : ''}" style="--star-delay: ${delays[idx - 1]}">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path class="star-empty" d="${starPath}" stroke-linejoin="round" />
+                </svg>
+                <svg class="star-fill" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="${starPath}" stroke-linejoin="round" />
+                </svg>
+            </span>
+        `;
+    }).join('');
+
+    const statsText = starsInfo.minPushes !== null
+        ? t('starsPushesOptimal', { pushes: starsInfo.pushes, min: starsInfo.minPushes })
+        : t('starsPushesOnly', { pushes: starsInfo.pushes });
+    const recordHtml = starsInfo.isNewBest
+        ? `<span class="modal-stars-record">${t('starsNewRecord')}</span>`
+        : '';
+
+    box.innerHTML = `
+        <div class="modal-stars-row" aria-label="${starsInfo.earned}/3">${starsHtml}</div>
+        <div class="modal-stars-stats">
+            <span>${statsText}</span>
+            ${recordHtml}
+        </div>
+    `;
+    box.classList.remove('hidden');
+}
+
 // Modal logic
-function showModal(title, message, callback) {
+function showModal(title, message, callback, starsInfo = null) {
     modalTitle.innerText = title;
     modalMessage.innerText = message;
     modalCallback = callback;
+
+    renderModalStars(starsInfo);
 
     modalOverlay.classList.remove('modal-hidden');
     modalOverlay.classList.add('modal-active');

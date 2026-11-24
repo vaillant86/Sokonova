@@ -30,11 +30,14 @@ window.SOKONOVA_LOCALES.it = {
     hintPlate3Touch: 'Resta su una piastra o parcheggiaci sopra una cassa per tenere aperta la porta.',
     levelCompleteTitle: 'Livello completato!',
     bossDefeatedTitle: 'Boss sconfitto!',
-    levelCompleteMsg: 'Ottimo lavoro! Preparati per la prossima sfida.',
-    levelCompleteCodeMsg: 'Ottimo lavoro! Codice livello {n}: {code}',
+    levelCompleteMsg: 'Preparati per la prossima sfida.',
+    levelCompleteCodeMsg: 'Codice livello {n}: {code}',
     timesUpTitle: 'Tempo scaduto!',
     timesUpMsg: 'Hai esaurito il tempo a disposizione.',
     victoryTitle: 'Vittoria!',
     victoryMsg: 'Hai completato tutti i livelli. Sei un maestro di Sokonova!',
+    starsPushesOptimal: 'Spinte: {pushes} (Ottimale: {min})',
+    starsPushesOnly: 'Spinte: {pushes}',
+    starsNewRecord: 'Nuovo record!',
     modalOk: 'OK'
 };

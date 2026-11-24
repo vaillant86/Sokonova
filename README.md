@@ -37,5 +37,6 @@ Controls adapt automatically to your device:
 
 ## Levels & versioning
 
-- **Level Order:** Levels are organized into 10-level thematic blocks (`parking`, `traffic`, `endurance`) following a progressive boss-peak curve, where every 10th level acts as the toughest finale of its block. Level order may shift between updates as new levels are generated.
+- **Level order:** Levels are organized thematic blocks (`parking`, `traffic`, `endurance`) following a progressive boss-peak curve, where every 20th level acts as the toughest finale of its block. Level order may shift between updates as new levels are generated.
+- **Star rating system:** Every level has an optimal push count. Complete a stage to earn 3, 2 or 1 star, depending on how many pushes you used. Your best score for each level is automatically saved locally.
 - **Versioning:** Release numbers match the total count of playable levels (e.g., `v1.0.0` = 100 levels).
