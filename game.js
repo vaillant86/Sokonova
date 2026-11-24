@@ -1414,11 +1414,9 @@ function applyStateTransition(tr) {
         pushCount++;
         pushesDisplay.innerText = pushCount;
 
-        // Clear box from its source cell if distinct from player destination
+        // Clear box from its source cell (also when it equals the player's destination)
         const bSrcGrid = roomsGrid[tr.bSrcRoom];
-        if (!(tr.bSrcRoom === tr.pDestRoom && tr.bSrcX === tr.pDestX && tr.bSrcY === tr.pDestY)) {
-            bSrcGrid[tr.bSrcY][tr.bSrcX] = (bSrcGrid[tr.bSrcY][tr.bSrcX] === '*') ? '.' : ' ';
-        }
+        bSrcGrid[tr.bSrcY][tr.bSrcX] = (bSrcGrid[tr.bSrcY][tr.bSrcX] === '*') ? '.' : ' ';
 
         // Place box at destination
         const bDestGrid = roomsGrid[tr.bDestRoom];
@@ -1432,8 +1430,7 @@ function applyStateTransition(tr) {
     pDestGrid[tr.pDestY][tr.pDestX] = destWasTarget ? '+' : '@';
 
     activeRoom = tr.pDestRoom;
-    grid = roomsGrid[activeRoom];
-    player.x = tr.pDestX;
+    grid = roomsGrid[activeRoom];    player.x = tr.pDestX;
     player.y = tr.pDestY;
     if (tr.arrivalDir) {
         playerDir = tr.arrivalDir;
