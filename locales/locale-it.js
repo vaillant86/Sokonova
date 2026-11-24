@@ -32,11 +32,14 @@ window.SOKONOVA_LOCALES.it = {
     hintBoss20: 'Livello Boss: il tasto Annulla è disabilitato. Pianifica ogni spinta con attenzione!',
     levelCompleteTitle: 'Livello completato!',
     bossDefeatedTitle: 'Boss sconfitto!',
-    levelCompleteMsg: 'Ottimo lavoro! Preparati per la prossima sfida.',
-    levelCompleteCodeMsg: 'Ottimo lavoro! Codice livello {n}: {code}',
+    levelCompleteMsg: 'Preparati per la prossima sfida.',
+    levelCompleteCodeMsg: 'Codice livello {n}: {code}',
     timesUpTitle: 'Tempo scaduto!',
     timesUpMsg: 'Hai esaurito il tempo a disposizione.',
     victoryTitle: 'Vittoria!',
     victoryMsg: 'Hai completato tutti i livelli. Sei un maestro di Sokonova!',
+    starsPushesOptimal: 'Spinte: {pushes} (Ottimale: {min})',
+    starsPushesOnly: 'Spinte: {pushes}',
+    starsNewRecord: 'Nuovo record!',
     modalOk: 'OK'
 };

@@ -32,11 +32,14 @@ window.SOKONOVA_LOCALES.de = {
     hintBoss20: 'Boss-Level: Rückgängig ist deaktiviert. Plane jeden Schub sorgfältig!',
     levelCompleteTitle: 'Level abgeschlossen!',
     bossDefeatedTitle: 'Boss besiegt!',
-    levelCompleteMsg: 'Gute Arbeit! Mach dich bereit für die nächste Herausforderung.',
-    levelCompleteCodeMsg: 'Gute Arbeit! Code für Level {n}: {code}',
+    levelCompleteMsg: 'Mach dich bereit für die nächste Herausforderung.',
+    levelCompleteCodeMsg: 'Code für Level {n}: {code}',
     timesUpTitle: 'Zeit abgelaufen!',
     timesUpMsg: 'Die Zeit ist abgelaufen.',
     victoryTitle: 'Sieg!',
     victoryMsg: 'Du hast alle Level abgeschlossen. Du bist ein Sokonova-Meister!',
+    starsPushesOptimal: 'Schübe: {pushes} (Optimal: {min})',
+    starsPushesOnly: 'Schübe: {pushes}',
+    starsNewRecord: 'Neuer Rekord!',
     modalOk: 'OK'
 };
