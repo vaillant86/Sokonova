@@ -1,15 +1,12 @@
-# Generatore di livelli
-*.py
+# Rust generator
+/src/
+/target/
+Cargo.toml
+Cargo.lock
 
-# File di sicurezza creati dal generatore
+# Backup
 *.bak
-*.pre-run
 
-# Cache di Python
-__pycache__/
-*.pyc
-
-# Sistema
+# System files
 .DS_Store
 Thumbs.db
-
