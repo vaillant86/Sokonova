@@ -823,7 +823,7 @@ function updateLevelHint(index) {
     const hintTouch = document.getElementById('hint-touch');
     if (!hintBox || !hintKb || !hintTouch) return;
 
-    if (index === 0) {
+if (index === 0) {
         hintBox.classList.remove('hidden');
         hintKb.innerHTML = t('hintT0Keyboard');
         hintTouch.innerHTML = t('hintT0Touch');
@@ -831,14 +831,14 @@ function updateLevelHint(index) {
         hintBox.classList.remove('hidden');
         hintKb.innerHTML = t('hintT1Keyboard');
         hintTouch.innerHTML = t('hintT1Touch');
-    } else if (index === 19) {
-        hintBox.classList.remove('hidden');
-        hintKb.innerHTML = t('hintBoss20');
-        hintTouch.innerHTML = t('hintBoss20');
     } else if (index === 2) {
         hintBox.classList.remove('hidden');
         hintKb.innerHTML = t('hintPlate3Keyboard');
         hintTouch.innerHTML = t('hintPlate3Touch');
+    } else if (index === 19) {
+        hintBox.classList.remove('hidden');
+        hintKb.innerHTML = t('hintBoss20');
+        hintTouch.innerHTML = t('hintBoss20');
     } else {
         hintBox.classList.add('hidden');
     }
