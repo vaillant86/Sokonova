@@ -11,6 +11,7 @@
  * OPTIONAL MECHANICS:
  * '_' / 'p' / 'P' = Pressure plate
  * 'D' / 'd'       = Door controlled by pressure plate
+ * 'T'             = Player-only teleporter pad (paired)
  * 'N' / 'S' / 'E' / 'W' = Perimeter room gateway (multi-room levels)
  */
 
@@ -32,7 +33,8 @@ if (hasDirectLevelParam) {
 let roomsGrid = [];          // Array of 2D char grids, one per room
 let activeRoom = 0;          // Currently displayed room index
 let grid = [];               // Alias to roomsGrid[activeRoom]
-let roomPortals = [];        // Per-room Map("x,y" -> portal metadata)
+let roomPortals = [];        // Per-room Map("x,y" -> perimeter gateway metadata)
+let roomTeleporters = [];    // Per-room Map("x,y" -> { room, x, y } destination pad)
 let player = { x: 0, y: 0 };
 let plate = null;            // { room, x, y }
 let door = null;             // { room, x, y }
@@ -117,7 +119,7 @@ const CHECKPOINT_CODES = (typeof LEVEL_CODES !== 'undefined') ? LEVEL_CODES : {
     91:  'RYVNH',
     101: 'SLKJP',
     111: 'AUTQE',
- // 121: 'WFMXB',
+    121: 'WFMXB',
  // 131: 'CGRZD',
  // 141: 'HVKYN',
  // 151: 'PJLTC',
@@ -549,6 +551,9 @@ function playSound(type) {
     } else if (type === 'portal') {
         playTone(340, 540, 0.085, 'sine', 0.085, 0);
         playTone(540, 680, 0.095, 'sine', 0.075, 0.055);
+    } else if (type === 'teleport') {
+        playTone(420, 760, 0.075, 'sine', 0.085, 0);
+        playTone(620, 980, 0.10, 'triangle', 0.075, 0.045);
     } else if (type === 'undo') {
         playTone(260, 165, 0.075, 'triangle', 0.08);
     } else if (type === 'plateOn') {
@@ -795,6 +800,10 @@ function updateLevelHint(index) {
         hintBox.classList.remove('hidden');
         hintKb.innerHTML = t('hintPlate3Keyboard');
         hintTouch.innerHTML = t('hintPlate3Touch');
+    } else if (index === 3) {
+        hintBox.classList.remove('hidden');
+        hintKb.innerHTML = t('hintTeleport4Keyboard');
+        hintTouch.innerHTML = t('hintTeleport4Touch');
     } else if (index === 19) {
         hintBox.classList.remove('hidden');
         hintKb.innerHTML = t('hintBoss20');
@@ -855,6 +864,7 @@ function loadLevel(index) {
 
     roomsGrid = [];
     roomPortals = rawRooms.map(() => new Map());
+    roomTeleporters = rawRooms.map(() => new Map());
     activeRoom = 0;
     plate = Array.isArray(levelEntry) ? null : normalizeCoord(levelEntry.plate, 0);
     door = Array.isArray(levelEntry) ? null : normalizeCoord(levelEntry.door, 0);
@@ -865,6 +875,8 @@ function loadLevel(index) {
     moveHistory = [];
     undosRemaining = boss ? 0 : MAX_UNDOS;
     pushesDisplay.innerText = '0';
+
+    const asciiTeleports = [];
 
     // Build all rooms' grids
     for (let r = 0; r < rawRooms.length; r++) {
@@ -888,6 +900,9 @@ function loadLevel(index) {
                     char = ' ';
                 } else if (char === 'D' || char === 'd') {
                     door = { room: r, x, y };
+                    char = ' ';
+                } else if (char === 'T' || char === 't') {
+                    asciiTeleports.push({ room: r, x, y });
                     char = ' ';
                 } else if (char === '%') {
                     plate = { room: r, x, y };
@@ -915,6 +930,26 @@ function loadLevel(index) {
             rGrid.push(rowArray);
         }
         roomsGrid.push(rGrid);
+    }
+
+    // Register paired ASCII 'T' teleporters (player-only transport)
+    if (asciiTeleports.length === 2) {
+        const [tpA, tpB] = asciiTeleports;
+        roomTeleporters[tpA.room].set(`${tpA.x},${tpA.y}`, { room: tpB.room, x: tpB.x, y: tpB.y });
+        roomTeleporters[tpB.room].set(`${tpB.x},${tpB.y}`, { room: tpA.room, x: tpA.x, y: tpA.y });
+    }
+
+    // Register explicit teleporter pairs if defined on levelEntry
+    const explicitTeleports = (!Array.isArray(levelEntry) && Array.isArray(levelEntry.teleports))
+        ? levelEntry.teleports
+        : [];
+    for (const tp of explicitTeleports) {
+        if (!tp || !tp.a || !tp.b) continue;
+        const aRoom = tp.a.room ?? 0;
+        const bRoom = tp.b.room ?? 0;
+        if (!roomsGrid[aRoom] || !roomsGrid[bRoom]) continue;
+        roomTeleporters[aRoom].set(`${tp.a.x},${tp.a.y}`, { room: bRoom, x: tp.b.x, y: tp.b.y });
+        roomTeleporters[bRoom].set(`${tp.b.x},${tp.b.y}`, { room: aRoom, x: tp.a.x, y: tp.a.y });
     }
 
     // Register bidirectional links between rooms
@@ -1056,6 +1091,7 @@ function render(withRoomTransition = false) {
     }
 
     const portalsMap = roomPortals[activeRoom] || new Map();
+    const teleportersMap = roomTeleporters[activeRoom] || new Map();
 
     for (let y = 0; y < grid.length; y++) {
         for (let x = 0; x < grid[y].length; x++) {
@@ -1093,6 +1129,9 @@ function render(withRoomTransition = false) {
                 cell.classList.add('empty');
             }
 
+            if (teleportersMap.has(`${x},${y}`)) {
+                cell.classList.add('teleporter');
+            }
             if (plate && plate.room === activeRoom && plate.x === x && plate.y === y) {
                 cell.classList.add('plate');
                 if (isPlatePressed()) cell.classList.add('plate-active');
@@ -1302,7 +1341,7 @@ function move(dx, dy) {
         return;
     }
 
-    // Box to push
+    // Box to push (boxes never trigger player-only teleporters)
     if (targetCell === '$' || targetCell === '*') {
         const beyondX = newX + dx;
         const beyondY = newY + dy;
@@ -1378,21 +1417,41 @@ function applyStateTransition(tr) {
         const bSrcGrid = roomsGrid[tr.bSrcRoom];
         bSrcGrid[tr.bSrcY][tr.bSrcX] = (bSrcGrid[tr.bSrcY][tr.bSrcX] === '*') ? '.' : ' ';
 
-        // Place box at destination
+        // Place box at destination (boxes stay on teleporter pads without teleporting)
         const bDestGrid = roomsGrid[tr.bDestRoom];
         const beyondWasTarget = (bDestGrid[tr.bDestY][tr.bDestX] === '.');
         bDestGrid[tr.bDestY][tr.bDestX] = beyondWasTarget ? '*' : '$';
     }
 
-    // Place player at destination
-    const pDestGrid = roomsGrid[tr.pDestRoom];
-    const destWasTarget = (pDestGrid[tr.pDestY][tr.pDestX] === '.');
-    pDestGrid[tr.pDestY][tr.pDestX] = destWasTarget ? '+' : '@';
+    // Resolve player-only teleporter if the player stepped onto a teleporter pad
+    let finalPRoom = tr.pDestRoom;
+    let finalPX = tr.pDestX;
+    let finalPY = tr.pDestY;
+    let teleported = false;
 
-    activeRoom = tr.pDestRoom;
+    const tpMap = roomTeleporters[tr.pDestRoom];
+    if (tpMap) {
+        const tpDest = tpMap.get(`${tr.pDestX},${tr.pDestY}`);
+        if (tpDest) {
+            const tpCell = roomsGrid[tpDest.room][tpDest.y][tpDest.x];
+            if ((tpCell === ' ' || tpCell === '.') && !isCellBlockedByDoor(tpDest.room, tpDest.x, tpDest.y)) {
+                finalPRoom = tpDest.room;
+                finalPX = tpDest.x;
+                finalPY = tpDest.y;
+                teleported = true;
+            }
+        }
+    }
+
+    // Place player at final destination
+    const pDestGrid = roomsGrid[finalPRoom];
+    const destWasTarget = (pDestGrid[finalPY][finalPX] === '.');
+    pDestGrid[finalPY][finalPX] = destWasTarget ? '+' : '@';
+
+    activeRoom = finalPRoom;
     grid = roomsGrid[activeRoom];
-    player.x = tr.pDestX;
-    player.y = tr.pDestY;
+    player.x = finalPX;
+    player.y = finalPY;
     if (tr.arrivalDir) {
         playerDir = tr.arrivalDir;
     }
@@ -1401,17 +1460,28 @@ function applyStateTransition(tr) {
     const nowDoorOpen = isDoorOpen();
     const boxLandedOnTarget = tr.pushedBox && (roomsGrid[tr.bDestRoom][tr.bDestY][tr.bDestX] === '*');
 
-    if (!roomChanged) {
+    if (!roomChanged && !teleported) {
         lastMove = {
             room: activeRoom,
-            dx: tr.pDestX - tr.px,
-            dy: tr.pDestY - tr.py,
-            playerTo: { x: tr.pDestX, y: tr.pDestY },
+            dx: finalPX - tr.px,
+            dy: finalPY - tr.py,
+            playerTo: { x: finalPX, y: finalPY },
             boxTo: tr.pushedBox
                 ? { room: tr.bDestRoom, x: tr.bDestX, y: tr.bDestY }
                 : null,
             boxLanded: boxLandedOnTarget
         };
+    } else if (!roomChanged && teleported) {
+        lastMove = tr.pushedBox
+            ? {
+                room: activeRoom,
+                dx: tr.bDestX - tr.bSrcX,
+                dy: tr.bDestY - tr.bSrcY,
+                playerTo: null,
+                boxTo: { room: tr.bDestRoom, x: tr.bDestX, y: tr.bDestY },
+                boxLanded: boxLandedOnTarget
+            }
+            : null;
     } else {
         lastMove = null;
         applyBoardGridDimensions();
@@ -1422,6 +1492,8 @@ function applyStateTransition(tr) {
 
     if (boxLandedOnTarget) {
         playSound('target');
+    } else if (teleported) {
+        playSound('teleport');
     } else if (tr.portalUsed) {
         playSound('portal');
     } else if (door && wasDoorOpen !== nowDoorOpen) {

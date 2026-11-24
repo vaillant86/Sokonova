@@ -1,42 +1,44 @@
 # Sokonova
 
-Sokonova is a challenging puzzle game (inspired by Sokoban): push the boxes onto the targets, beware of tricks, boss milestones, and time limits.
+Sokonova is a challenging grid-based puzzle game inspired by Sokoban: push every crate onto its target while navigating pressure plates, teleporters, multi-room layouts, boss milestones, and time limits.
 
 ## How to play
 
-### Via web link
-Open **[https://vaillant86.github.io/Sokonova](https://vaillant86.github.io/Sokonova)** directly in your browser.
+### Online
+Play directly in your browser at **[https://vaillant86.github.io/Sokonova](https://vaillant86.github.io/Sokonova)**.
 
-### Local
-Open `index.html` in your browser. Since Tailwind is loaded via CDN, an internet connection is required.
+### Locally
+Open `index.html` in any modern browser (an internet connection is required to load Tailwind CSS via CDN).
 
 Controls adapt automatically to your device:
 
-- **PC:** Arrow keys or `WASD` to move, `Z` or `Backspace` to undo a move, `R` to restart the current level.
-- **Mobile:** Continuous swipe anywhere on the screen, with HUD buttons for undo and restart.
+- **Desktop:** `arrow keys` or `WASD` to move, `Z` or `Backspace` to undo a move, `R` to restart the current level.
+- **Mobile & Touch:** swipe anywhere on the screen, with on-screen HUD buttons for undo and restart.
 
 ## Features
 
-- **Time limits:** no limit for levels 1–10 (tutorials and warm-up); from level 11 onwards, a score-based timer starts on your first move.
-- **Undo system:** rewind up to 3 moves per level via the HUD button or `Z` / `Backspace`.
-- **Boss levels:** features dedicated visual styling, a higher difficulty spike, and undo button disabled.
-- **Checkpoint codes:** every ten levels, from level 11 onwards, you receive a 5-letter code. Enter it in the bottom-left box on the start screen to pick up right where you left off.
-- **Visual themes:** switch anytime between 4 themes (`Classic`, `Sci-Fi`, `Arcade`, and `Monument`).
-- **Multilingual support:** switch between five languages via the top-right flag toggle.
-- **Procedural sound effects:** synthesized web audio feedback for movement, crate placement, undo, countdown ticks, and level completion, toggleable at any time.
+- **Boss levels:** every 20th level features dedicated visual styling, a higher difficulty spike, and the undo button disabled.
+- **Checkpoint codes:** every ten levels from level 11 onwards, you receive a 5-letter code. Enter it in the bottom-left input on the start screen to resume from that milestone.
+- **Multilingual support:** switch on the fly between five languages (`English`, `Italiano`, `Español`, `Français`, and `Deutsch`) via the flag toggle.
+- **Pressure plates & doors:** step onto a pressure plate or park a crate on it to hold linked doors open.
+- **Procedural sound effects:** synthesized web audio feedback for movement, crate placement, teleportation, undo, countdown ticks, and level completion, toggleable at any time.
+- **Teleporters & linked rooms:** step onto teleporter tiles to warp across split chambers or cross perimeter portals to travel between connected rooms.
+- **Time limits:** untimed for levels 1–10 (tutorials and warm-up); from level 11 onwards a countdown starts on your first move.
+- **Undo system:** rewind up to 3 moves per level.
+- **Visual themes:** switch anytime between 4 distinct themes (`Classic`, `Sci-Fi`, `Arcade`, and `Monument`).
 
 ## Structure
 
-| File | Contents |
+| Path | Contents |
 | --- | --- |
 | `index.html` | Page structure and HUD layout |
 | `style.css` | Styling, themes, and animations |
-| `game.js` | Game engine, input handling, and Web Audio synthesizer |
-| `levels.js` | Level definitions, difficulty scores, and checkpoint codes |
-| `locales` | Languages dictionary folder |
+| `game.js` | Game engine, input handling, and web audio synthesizer |
+| `levels.js` | Level definitions, optimal push counts, difficulty scores, and checkpoint codes |
+| `locales/` | Translation dictionaries (`en`, `it`, `es`, `fr`, `de`) |
 
 ## Levels & versioning
 
-- **Level order:** Levels are organized thematic blocks (`parking`, `traffic`, `endurance`) following a progressive boss-peak curve, where every 20th level acts as the toughest finale of its block. Level order may shift between updates as new levels are generated.
-- **Star rating system:** Every level has an optimal push count. Complete a stage to earn 3, 2 or 1 star, depending on how many pushes you used. Your best score for each level is automatically saved locally.
-- **Versioning:** Release numbers match the total count of playable levels (e.g., `v1.0.0` = 100 levels).
+- **Level progression:** Levels are arranged along a progressive sawtooth difficulty curve, where every 20th level acts as the toughest finale of its block. Level order may shift between updates as new stages are generated and rebalanced.
+- **Star rating system:** Every level tracks an optimal push count (`minPushes`). Clear a stage to earn 1 to 3 stars based on your efficiency; your best ratings are saved automatically in local storage.
+- **Versioning:** Release numbers reflect the total count of playable levels (e.g., `v1.0.0` = 100 levels, `v1.2.0` = 120 levels).
