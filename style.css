@@ -980,6 +980,26 @@ body[data-theme="monument"] .player::before {
 .player[data-dir="down"]::before  { transform: translate(-50%, -50%) rotate(180deg); }
 .player[data-dir="left"]::before  { transform: translate(-50%, -50%) rotate(-90deg); }
 
+@keyframes player-teleport-out {
+    0%   { opacity: 1; filter: brightness(1.4); }
+    100% { opacity: 0; filter: brightness(2); }
+}
+
+@keyframes player-teleport-in {
+    0%   { opacity: 0; filter: brightness(2); }
+    100% { opacity: 1; filter: brightness(1); }
+}
+
+.player-teleport-out::after,
+.player-teleport-out::before {
+    animation: player-teleport-out 0.10s ease-in forwards;
+}
+
+.player-teleport-in::after,
+.player-teleport-in::before {
+    animation: player-teleport-in 0.13s ease-out forwards;
+}
+
 .empty {
     background: transparent;
 }

@@ -526,26 +526,163 @@ function playSound(type) {
     if (!ctx) return;
 
     const now = ctx.currentTime;
+    const themeId = (THEMES[currentThemeIndex] && THEMES[currentThemeIndex].id) || 'classic';
 
-    const playTone = (freqStart, freqEnd, duration, wave, gainPeak, delay = 0) => {
+    const playTone = (freqStart, freqEnd, duration, wave, gainPeak, delay = 0, attack = 0.008) => {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = wave;
         osc.frequency.setValueAtTime(freqStart, now + delay);
         if (freqEnd !== freqStart) {
-            osc.frequency.exponentialRampToValueAtTime(freqEnd, now + delay + duration);
+            osc.frequency.exponentialRampToValueAtTime(Math.max(1, freqEnd), now + delay + duration);
         }
 
-        gain.gain.setValueAtTime(0.0001, now + delay);
-        gain.gain.linearRampToValueAtTime(gainPeak, now + delay + 0.008);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + delay + duration);
+        const startAt = now + delay;
+        const safeAttack = Math.min(attack, duration * 0.45);
+        gain.gain.setValueAtTime(0.0001, startAt);
+        gain.gain.linearRampToValueAtTime(gainPeak, startAt + safeAttack);
+        gain.gain.exponentialRampToValueAtTime(0.0001, startAt + duration);
 
         osc.connect(gain);
         gain.connect(ctx.destination);
-        osc.start(now + delay);
-        osc.stop(now + delay + duration + 0.01);
+        osc.start(startAt);
+        osc.stop(startAt + duration + 0.015);
     };
 
+    const playFilteredTone = (freqStart, freqEnd, filterStart, filterEnd, duration, wave, gainPeak, delay = 0, q = 3) => {
+        const osc = ctx.createOscillator();
+        const filter = ctx.createBiquadFilter();
+        const gain = ctx.createGain();
+
+        const startAt = now + delay;
+        osc.type = wave;
+        osc.frequency.setValueAtTime(freqStart, startAt);
+        if (freqEnd !== freqStart) {
+            osc.frequency.exponentialRampToValueAtTime(Math.max(1, freqEnd), startAt + duration);
+        }
+
+        filter.type = 'lowpass';
+        filter.Q.setValueAtTime(q, startAt);
+        filter.frequency.setValueAtTime(filterStart, startAt);
+        if (filterEnd !== filterStart) {
+            filter.frequency.exponentialRampToValueAtTime(Math.max(20, filterEnd), startAt + duration);
+        }
+
+        gain.gain.setValueAtTime(0.0001, startAt);
+        gain.gain.linearRampToValueAtTime(gainPeak, startAt + 0.006);
+        gain.gain.exponentialRampToValueAtTime(0.0001, startAt + duration);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(startAt);
+        osc.stop(startAt + duration + 0.015);
+    };
+
+    // 1. SCI-FI: sweep sintetici filtrati, risonanze spaziali e accordi cristallini
+    if (themeId === 'scifi') {
+        if (type === 'move') {
+            playFilteredTone(260, 140, 1400, 380, 0.055, 'sawtooth', 0.05, 0, 4);
+        } else if (type === 'portal') {
+            playFilteredTone(320, 760, 700, 2600, 0.12, 'sawtooth', 0.06, 0, 5);
+            playTone(640, 960, 0.11, 'sine', 0.06, 0.04, 0.01);
+        } else if (type === 'teleport') {
+            playFilteredTone(480, 1280, 900, 3400, 0.14, 'sawtooth', 0.065, 0, 6);
+            playTone(960, 420, 0.12, 'triangle', 0.055, 0.05, 0.008);
+        } else if (type === 'undo') {
+            playFilteredTone(520, 190, 1800, 420, 0.085, 'sawtooth', 0.055, 0, 4);
+        } else if (type === 'plateOn') {
+            playFilteredTone(340, 680, 900, 2400, 0.08, 'triangle', 0.075, 0, 4);
+        } else if (type === 'plateOff') {
+            playFilteredTone(620, 290, 2200, 700, 0.08, 'triangle', 0.065, 0, 4);
+        } else if (type === 'target') {
+            playTone(587.33, 587.33, 0.13, 'triangle', 0.08, 0, 0.01);      // D5
+            playTone(590.50, 590.50, 0.13, 'sine', 0.06, 0, 0.01);          // D5 detuned
+            playTone(880.00, 880.00, 0.22, 'triangle', 0.09, 0.07, 0.012);  // A5
+            playTone(884.00, 884.00, 0.22, 'sine', 0.07, 0.07, 0.012);      // A5 detuned
+        } else if (type === 'win') {
+            playFilteredTone(523.25, 523.25, 1200, 2800, 0.14, 'sawtooth', 0.06, 0, 3);      // C5
+            playFilteredTone(659.25, 659.25, 1400, 3000, 0.14, 'sawtooth', 0.06, 0.08, 3);   // E5
+            playFilteredTone(783.99, 783.99, 1600, 3200, 0.15, 'sawtooth', 0.065, 0.16, 3);  // G5
+            playTone(1046.50, 1046.50, 0.34, 'sine', 0.11, 0.24, 0.015);                     // C6
+            playTone(1051.00, 1051.00, 0.34, 'triangle', 0.06, 0.24, 0.015);                 // C6 shimmer
+        } else if (type === 'tick') {
+            const isFinalSecond = timeLeft === 1;
+            playFilteredTone(isFinalSecond ? 1180 : 880, isFinalSecond ? 980 : 760, 2400, 900, 0.045, 'sawtooth', 0.055, 0, 4);
+        }
+        return;
+    }
+
+    // 2. ARCADE: chiptune 8-bit secco (onde square, attacchi istantanei, salti di frequenza)
+    if (themeId === 'arcade') {
+        if (type === 'move') {
+            playTone(165, 110, 0.038, 'square', 0.045, 0, 0.002);
+        } else if (type === 'portal') {
+            playTone(330, 330, 0.045, 'square', 0.055, 0, 0.002);
+            playTone(494, 494, 0.045, 'square', 0.055, 0.04, 0.002);
+            playTone(659, 659, 0.06, 'square', 0.06, 0.08, 0.002);
+        } else if (type === 'teleport') {
+            playTone(523, 262, 0.04, 'square', 0.055, 0, 0.002);
+            playTone(784, 1046, 0.075, 'square', 0.065, 0.038, 0.002);
+        } else if (type === 'undo') {
+            playTone(392, 392, 0.038, 'square', 0.05, 0, 0.002);
+            playTone(262, 262, 0.05, 'square', 0.05, 0.035, 0.002);
+        } else if (type === 'plateOn') {
+            playTone(440, 440, 0.038, 'square', 0.055, 0, 0.002);
+            playTone(587, 587, 0.05, 'square', 0.06, 0.035, 0.002);
+        } else if (type === 'plateOff') {
+            playTone(587, 587, 0.038, 'square', 0.05, 0, 0.002);
+            playTone(440, 440, 0.05, 'square', 0.05, 0.035, 0.002);
+        } else if (type === 'target') {
+            playTone(659.25, 659.25, 0.065, 'square', 0.07, 0, 0.002);      // E5
+            playTone(987.77, 987.77, 0.13, 'square', 0.08, 0.06, 0.002);    // B5
+        } else if (type === 'win') {
+            playTone(523.25, 523.25, 0.085, 'square', 0.075, 0, 0.002);     // C5
+            playTone(659.25, 659.25, 0.085, 'square', 0.075, 0.08, 0.002);  // E5
+            playTone(783.99, 783.99, 0.085, 'square', 0.075, 0.16, 0.002);  // G5
+            playTone(1046.50, 1046.50, 0.24, 'square', 0.085, 0.24, 0.002); // C6
+        } else if (type === 'tick') {
+            const isFinalSecond = timeLeft === 1;
+            playTone(isFinalSecond ? 1046 : 784, isFinalSecond ? 1046 : 784, 0.035, 'square', 0.055, 0, 0.002);
+        }
+        return;
+    }
+
+    // 3. MONUMENT: acustico-vetroso minimalista (marimba / campane morbide con decadimento arioso)
+    if (themeId === 'monument') {
+        if (type === 'move') {
+            playTone(220, 175, 0.07, 'sine', 0.055, 0, 0.014);
+        } else if (type === 'portal') {
+            playTone(440, 440, 0.18, 'sine', 0.07, 0, 0.018);        // A4
+            playTone(659.25, 659.25, 0.22, 'sine', 0.065, 0.06, 0.018); // E5
+        } else if (type === 'teleport') {
+            playTone(523.25, 523.25, 0.18, 'sine', 0.07, 0, 0.016);     // C5
+            playTone(783.99, 783.99, 0.24, 'sine', 0.075, 0.055, 0.018);// G5
+            playTone(1567.98, 1567.98, 0.22, 'sine', 0.025, 0.055, 0.02); // G6 armonica
+        } else if (type === 'undo') {
+            playTone(329.63, 246.94, 0.11, 'sine', 0.065, 0, 0.015);
+        } else if (type === 'plateOn') {
+            playTone(392.00, 392.00, 0.15, 'sine', 0.07, 0, 0.015);     // G4
+            playTone(783.99, 783.99, 0.15, 'sine', 0.025, 0, 0.015);    // G5 armonica
+        } else if (type === 'plateOff') {
+            playTone(293.66, 293.66, 0.15, 'sine', 0.065, 0, 0.015);    // D4
+        } else if (type === 'target') {
+            playTone(523.25, 523.25, 0.24, 'sine', 0.095, 0, 0.018);       // C5
+            playTone(1046.50, 1046.50, 0.22, 'sine', 0.03, 0, 0.02);       // C6 armonica
+            playTone(783.99, 783.99, 0.34, 'sine', 0.10, 0.08, 0.02);      // G5
+        } else if (type === 'win') {
+            playTone(523.25, 523.25, 0.32, 'sine', 0.10, 0, 0.02);         // C5
+            playTone(659.25, 659.25, 0.36, 'sine', 0.10, 0.11, 0.02);      // E5
+            playTone(783.99, 783.99, 0.44, 'sine', 0.11, 0.22, 0.02);      // G5
+            playTone(1174.66, 1174.66, 0.52, 'sine', 0.08, 0.33, 0.025);   // D6 (nona aperta)
+        } else if (type === 'tick') {
+            const isFinalSecond = timeLeft === 1;
+            playTone(isFinalSecond ? 880 : 659.25, isFinalSecond ? 880 : 659.25, 0.07, 'sine', 0.07, 0, 0.012);
+        }
+        return;
+    }
+
+    // 4. CLASSIC (default): profilo originale invariato
     if (type === 'move') {
         playTone(190, 130, 0.055, 'triangle', 0.07);
     } else if (type === 'portal') {
@@ -1460,51 +1597,79 @@ function applyStateTransition(tr) {
     const nowDoorOpen = isDoorOpen();
     const boxLandedOnTarget = tr.pushedBox && (roomsGrid[tr.bDestRoom][tr.bDestY][tr.bDestX] === '*');
 
-    if (!roomChanged && !teleported) {
-        lastMove = {
-            room: activeRoom,
-            dx: finalPX - tr.px,
-            dy: finalPY - tr.py,
-            playerTo: { x: finalPX, y: finalPY },
-            boxTo: tr.pushedBox
-                ? { room: tr.bDestRoom, x: tr.bDestX, y: tr.bDestY }
-                : null,
-            boxLanded: boxLandedOnTarget
-        };
-    } else if (!roomChanged && teleported) {
-        lastMove = tr.pushedBox
-            ? {
+    const finishMove = () => {
+        if (!roomChanged && !teleported) {
+            lastMove = {
                 room: activeRoom,
-                dx: tr.bDestX - tr.bSrcX,
-                dy: tr.bDestY - tr.bSrcY,
-                playerTo: null,
-                boxTo: { room: tr.bDestRoom, x: tr.bDestX, y: tr.bDestY },
+                dx: finalPX - tr.px,
+                dy: finalPY - tr.py,
+                playerTo: { x: finalPX, y: finalPY },
+                boxTo: tr.pushedBox
+                    ? { room: tr.bDestRoom, x: tr.bDestX, y: tr.bDestY }
+                    : null,
                 boxLanded: boxLandedOnTarget
+            };
+        } else if (!roomChanged && teleported) {
+            lastMove = tr.pushedBox
+                ? {
+                    room: activeRoom,
+                    dx: tr.bDestX - tr.bSrcX,
+                    dy: tr.bDestY - tr.bSrcY,
+                    playerTo: null,
+                    boxTo: { room: tr.bDestRoom, x: tr.bDestX, y: tr.bDestY },
+                    boxLanded: boxLandedOnTarget
+                }
+                : null;
+        } else {
+            lastMove = null;
+            applyBoardGridDimensions();
+            updateRoomBadge();
+        }
+
+        render(roomChanged);
+
+        if (teleported) {
+            const destCell = boardEl.children[finalPY * grid[0].length + finalPX];
+            if (destCell) {
+                destCell.classList.add('player-teleport-in');
+                setTimeout(() => destCell.classList.remove('player-teleport-in'), 140);
             }
-            : null;
-    } else {
+        }
+
+        if (boxLandedOnTarget) {
+            playSound('target');
+        } else if (!teleported && tr.portalUsed) {
+            playSound('portal');
+        } else if (!teleported && door && wasDoorOpen !== nowDoorOpen) {
+            playSound(nowDoorOpen ? 'plateOn' : 'plateOff');
+        } else if (!teleported) {
+            playSound('move');
+        }
+
         lastMove = null;
-        applyBoardGridDimensions();
-        updateRoomBadge();
-    }
+        inputLocked = false;
+        updateUndoUI();
+        checkWinCondition();
+    };
 
-    render(roomChanged);
-
-    if (boxLandedOnTarget) {
-        playSound('target');
-    } else if (teleported) {
+    if (teleported) {
+        inputLocked = true;
         playSound('teleport');
-    } else if (tr.portalUsed) {
-        playSound('portal');
-    } else if (door && wasDoorOpen !== nowDoorOpen) {
-        playSound(nowDoorOpen ? 'plateOn' : 'plateOff');
-    } else {
-        playSound('move');
-    }
 
-    lastMove = null;
-    updateUndoUI();
-    checkWinCondition();
+        // Mostra dissolvenza in uscita sul pad di partenza se nella stanza corrente
+        if (prevRoom === tr.pDestRoom) {
+            const cols = roomsGrid[prevRoom][0].length;
+            const entryCell = boardEl.children[tr.pDestY * cols + tr.pDestX];
+            if (entryCell) {
+                entryCell.classList.add('player', 'player-teleport-out');
+                entryCell.dataset.dir = playerDir;
+            }
+        }
+
+        setTimeout(finishMove, 95);
+    } else {
+        finishMove();
+    }
 }
 
 function checkWinCondition() {
