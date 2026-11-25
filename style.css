@@ -1,5 +1,5 @@
 /* =========================================================
-   THEME 1: CLASSIC
+   THEME 1: CLASSIC (DEFAULT)
    ========================================================= */
 :root {
     --bg-top: #1f1846;
@@ -92,7 +92,6 @@ body[data-theme="arcade"] {
     --bg-top: #151926;
     --bg-bottom: #0d1018;
     --bg-glow: transparent;
-    --bg-grid: transparent;
     --panel: #1e2436;
     --panel-border: #475569;
     --btn-top: #334155;
@@ -134,7 +133,6 @@ body[data-theme="monument"] {
     --bg-top: #ebe1d1;
     --bg-bottom: #ddd0bc;
     --bg-glow: rgba(255, 255, 255, 0.7);
-    --bg-grid: transparent;
     --text-main: #3d352e;
     --panel: #fffbf4;
     --panel-border: #dfd2c0;
@@ -172,7 +170,7 @@ body[data-theme="monument"] {
 }
 
 /* =========================================================
-   BASE LAYOUT & BACKGROUNDS
+   BASE LAYOUT & SHARED BACKGROUNDS
    ========================================================= */
 * {
     box-sizing: border-box;
@@ -189,19 +187,24 @@ body {
     justify-content: center;
     color: var(--text-main);
     font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-    background:
-        linear-gradient(var(--bg-grid) 1px, transparent 1px),
-        linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px),
-        radial-gradient(900px 500px at 50% -10%, var(--bg-glow) 0%, transparent 65%),
-        linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
-    background-size: 36px 36px, 36px 36px, 100% 100%, 100% 100%;
     overflow: hidden;
     touch-action: none;
     user-select: none;
     -webkit-user-select: none;
 }
 
-body[data-theme="arcade"] {
+body,
+#start-overlay {
+    background:
+        linear-gradient(var(--bg-grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px),
+        radial-gradient(900px 500px at 50% -10%, var(--bg-glow) 0%, transparent 65%),
+        linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+    background-size: 36px 36px, 36px 36px, 100% 100%, 100% 100%;
+}
+
+body[data-theme="arcade"],
+body[data-theme="arcade"] #start-overlay {
     background:
         repeating-linear-gradient(
             0deg,
@@ -214,26 +217,16 @@ body[data-theme="arcade"] {
     background-size: 100% 4px, 100% 100%;
 }
 
-body[data-theme="monument"] {
+body[data-theme="monument"],
+body[data-theme="monument"] #start-overlay {
     background: radial-gradient(circle at 50% 25%, var(--bg-top) 0%, var(--bg-bottom) 100%);
 }
 
 /* Light-theme text contrast overrides */
-body[data-theme="monument"] .text-slate-400 {
-    color: #7c6f63;
-}
-
-body[data-theme="monument"] .text-slate-300 {
-    color: #5c5046;
-}
-
-body[data-theme="monument"] #timer-display.text-emerald-400 {
-    color: #3d7a6c;
-}
-
-body[data-theme="monument"] #timer-display.text-red-400 {
-    color: #c84b31;
-}
+body[data-theme="monument"] .text-slate-400 { color: #7c6f63; }
+body[data-theme="monument"] .text-slate-300 { color: #5c5046; }
+body[data-theme="monument"] #timer-display.text-emerald-400 { color: #3d7a6c; }
+body[data-theme="monument"] #timer-display.text-red-400 { color: #c84b31; }
 
 /* =========================================================
    HEADER, PILLS & BUTTONS
@@ -313,24 +306,17 @@ body[data-theme="monument"] .pill {
     cursor: pointer;
 }
 
-.btn-icon:hover {
+.btn-icon:hover:not(:disabled) {
     filter: brightness(1.15);
 }
 
-.btn-icon:active {
+.btn-icon:active:not(:disabled) {
     transform: scale(0.94);
 }
 
 .btn-icon:disabled {
     opacity: 0.38;
     cursor: not-allowed;
-    filter: none;
-    transform: none;
-}
-
-body[data-theme="arcade"] .btn-icon:disabled:active {
-    transform: none;
-    box-shadow: 0 4px 0 #090d16;
 }
 
 body[data-theme="arcade"] .btn-icon {
@@ -340,7 +326,7 @@ body[data-theme="arcade"] .btn-icon {
     transition: transform 0.06s steps(2);
 }
 
-body[data-theme="arcade"] .btn-icon:active {
+body[data-theme="arcade"] .btn-icon:active:not(:disabled) {
     transform: translateY(2px);
     box-shadow: 0 2px 0 #090d16;
 }
@@ -350,7 +336,7 @@ body[data-theme="monument"] .btn-icon {
     color: #3d352e;
 }
 
-body[data-theme="monument"] .btn-icon:hover {
+body[data-theme="monument"] .btn-icon:hover:not(:disabled) {
     background: #ffffff;
     border-color: var(--accent);
     filter: none;
@@ -404,12 +390,11 @@ body[data-theme="monument"] #game-board {
     position: relative;
 }
 
-body[data-theme="arcade"] .cell {
-    border-radius: 2px;
-}
+body[data-theme="arcade"] .cell { border-radius: 2px; }
+body[data-theme="monument"] .cell { border-radius: 0; }
 
-body[data-theme="monument"] .cell {
-    border-radius: 0;
+.empty {
+    background: transparent;
 }
 
 /* =========================================================
@@ -431,13 +416,11 @@ body[data-theme="scifi"] .wall {
 }
 
 body[data-theme="arcade"] .wall {
-    background-color: var(--wall-base);
     background-image: none;
     box-shadow: inset 0 0 0 2px var(--wall-border);
 }
 
 body[data-theme="monument"] .wall {
-    background-color: var(--wall-base);
     background-image: linear-gradient(160deg, #dfd2bf 0%, #cfc0aa 100%);
     border-top: 2px solid #f7f1e7;
     border-left: 2px solid #efe6d8;
@@ -455,7 +438,9 @@ body[data-theme="monument"] .wall.wall-right  { border-right: none; }
 /* =========================================================
    FLOOR & TARGETS
    ========================================================= */
-.floor {
+.floor,
+.target,
+.plate {
     background-color: var(--floor);
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.035);
 }
@@ -464,13 +449,17 @@ body[data-theme="arcade"] .floor {
     box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.08);
 }
 
-body[data-theme="monument"] .floor {
+body[data-theme="monument"] .floor,
+body[data-theme="monument"] .box,
+body[data-theme="monument"] .box-on-target {
+    background: var(--floor);
     box-shadow: inset 0 0 0 0.5px rgba(176, 158, 134, 0.35);
 }
 
-.target {
-    background-color: var(--floor);
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.035);
+body[data-theme="monument"] .target,
+body[data-theme="monument"] .plate {
+    background-color: #efe5d5;
+    box-shadow: inset 0 0 0 0.5px rgba(176, 158, 134, 0.35);
 }
 
 .target:not(.player)::before {
@@ -494,21 +483,13 @@ body[data-theme="arcade"] .target:not(.player)::before {
     box-shadow: none;
 }
 
-body[data-theme="monument"] .target {
-    background-color: #efe5d5;
-    box-shadow: inset 0 0 0 0.5px rgba(176, 158, 134, 0.35);
-}
-
 body[data-theme="monument"] .target:not(.player)::before {
     inset: 26%;
-    left: 26%;
-    top: 26%;
     width: auto;
     height: auto;
     transform: none;
     border: none;
     border-radius: 50%;
-    background: var(--target-bg);
     box-shadow: inset 0 2px 4px rgba(74, 58, 42, 0.25), 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
@@ -526,8 +507,7 @@ body[data-theme="monument"] .target:not(.player)::before {
     z-index: 10;
 }
 
-.box::before,
-.box-on-target::before {
+.box::before {
     content: '';
     position: absolute;
     inset: 12%;
@@ -554,11 +534,6 @@ body[data-theme="arcade"] .box {
         inset -3px -3px 0 #9a3412;
 }
 
-body[data-theme="monument"] .box {
-    background: var(--floor);
-    box-shadow: inset 0 0 0 0.5px rgba(176, 158, 134, 0.35);
-}
-
 body[data-theme="monument"] .box::before {
     inset: 11%;
     border-radius: 7px;
@@ -569,7 +544,6 @@ body[data-theme="monument"] .box::before {
         0 6px 10px rgba(74, 42, 32, 0.22);
 }
 
-/* Box on target */
 .box-on-target {
     background: linear-gradient(160deg, var(--crate-done-a), var(--crate-done-b));
     box-shadow:
@@ -580,28 +554,26 @@ body[data-theme="monument"] .box::before {
 
 .box-on-target::before {
     content: '';
-    inset: auto;
+    position: absolute;
     left: 36%;
     top: 28%;
     width: 22%;
     height: 40%;
-    background: none;
-    border-radius: 0;
     border-right: 3px solid #f0fdf4;
     border-bottom: 3px solid #f0fdf4;
     transform: rotate(45deg);
     filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.4));
+    pointer-events: none;
 }
 
 body[data-theme="scifi"] .box-on-target::before {
     inset: 22%;
-    left: 22%;
-    top: 22%;
     width: auto;
     height: auto;
     border: none;
     border-radius: 50%;
     transform: none;
+    filter: none;
     background: radial-gradient(circle, #d1fae5 0%, #10b981 55%, transparent 72%);
     box-shadow: 0 0 12px rgba(52, 211, 153, 0.9);
 }
@@ -619,15 +591,8 @@ body[data-theme="arcade"] .box-on-target::before {
     filter: none;
 }
 
-body[data-theme="monument"] .box-on-target {
-    background: var(--floor);
-    box-shadow: inset 0 0 0 0.5px rgba(176, 158, 134, 0.35);
-}
-
 body[data-theme="monument"] .box-on-target::before {
     inset: 11%;
-    left: 11%;
-    top: 11%;
     width: auto;
     height: auto;
     border: none;
@@ -644,11 +609,6 @@ body[data-theme="monument"] .box-on-target::before {
 /* =========================================================
    PRESSURE PLATES & DOORS
    ========================================================= */
-.plate {
-    background-color: var(--floor);
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.035);
-}
-
 .plate:not(.player):not(.box):not(.box-on-target)::before {
     content: '';
     position: absolute;
@@ -687,19 +647,13 @@ body[data-theme="scifi"] .plate.plate-active {
 
 body[data-theme="arcade"] .plate:not(.player):not(.box):not(.box-on-target)::before {
     border-radius: 2px;
-    border-width: 2px;
     border-color: #facc15;
     box-shadow: none;
 }
 
-body[data-theme="monument"] .plate {
-    background-color: #efe5d5;
-    box-shadow: inset 0 0 0 0.5px rgba(176, 158, 134, 0.35);
-}
-
 body[data-theme="monument"] .plate:not(.player):not(.box):not(.box-on-target)::before {
     border-radius: 5px;
-    border: 2px solid #d97706;
+    border-color: #d97706;
     background:
         radial-gradient(circle at 50% 50%, #d97706 0 22%, rgba(217, 119, 6, 0.2) 26% 62%, transparent 65%),
         #e6d7c1;
@@ -715,7 +669,6 @@ body[data-theme="monument"] .plate.plate-active {
 /* Doors */
 .door {
     background-color: var(--floor);
-    position: relative;
 }
 
 .door.door-closed {
@@ -732,12 +685,11 @@ body[data-theme="monument"] .plate.plate-active {
     inset: 12%;
     border-radius: 4px;
     border: 1.5px solid rgba(248, 113, 113, 0.75);
-    background:
-        repeating-linear-gradient(
-            90deg,
-            rgba(239, 68, 68, 0.85) 0 3px,
-            rgba(127, 29, 29, 0.35) 3px 8px
-        );
+    background: repeating-linear-gradient(
+        90deg,
+        rgba(239, 68, 68, 0.85) 0 3px,
+        rgba(127, 29, 29, 0.35) 3px 8px
+    );
     box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.55);
     pointer-events: none;
 }
@@ -769,12 +721,11 @@ body[data-theme="scifi"] .door.door-closed {
 
 body[data-theme="scifi"] .door.door-closed::before {
     border-color: #fb7185;
-    background:
-        repeating-linear-gradient(
-            0deg,
-            rgba(244, 63, 94, 0.9) 0 2px,
-            rgba(244, 63, 94, 0.15) 2px 7px
-        );
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(244, 63, 94, 0.9) 0 2px,
+        rgba(244, 63, 94, 0.15) 2px 7px
+    );
     box-shadow: 0 0 10px rgba(244, 63, 94, 0.65);
 }
 
@@ -787,12 +738,11 @@ body[data-theme="arcade"] .door.door-closed {
 body[data-theme="arcade"] .door.door-closed::before {
     border-radius: 0;
     border: 2px solid #fca5a5;
-    background:
-        repeating-linear-gradient(
-            90deg,
-            #f87171 0 4px,
-            #7f1d1d 4px 8px
-        );
+    background: repeating-linear-gradient(
+        90deg,
+        #f87171 0 4px,
+        #7f1d1d 4px 8px
+    );
     box-shadow: none;
 }
 
@@ -805,12 +755,11 @@ body[data-theme="monument"] .door.door-closed {
 
 body[data-theme="monument"] .door.door-closed::before {
     border-color: #f4c7bc;
-    background:
-        repeating-linear-gradient(
-            90deg,
-            rgba(255, 245, 238, 0.85) 0 3px,
-            rgba(124, 45, 18, 0.35) 3px 8px
-        );
+    background: repeating-linear-gradient(
+        90deg,
+        rgba(255, 245, 238, 0.85) 0 3px,
+        rgba(124, 45, 18, 0.35) 3px 8px
+    );
     box-shadow: none;
 }
 
@@ -847,8 +796,7 @@ body[data-theme="monument"] .door.door-open:not(.player):not(.box):not(.box-on-t
     inset: 15%;
     border-radius: 50%;
     border: 2px dashed #c084fc;
-    background:
-        radial-gradient(circle at 50% 50%, #e9d5ff 0 18%, rgba(168, 85, 247, 0.35) 24% 62%, transparent 68%);
+    background: radial-gradient(circle at 50% 50%, #e9d5ff 0 18%, rgba(168, 85, 247, 0.35) 24% 62%, transparent 68%);
     box-shadow:
         0 0 12px rgba(168, 85, 247, 0.55),
         inset 0 0 8px rgba(192, 132, 252, 0.5);
@@ -862,8 +810,7 @@ body[data-theme="scifi"] .teleporter {
 
 body[data-theme="scifi"] .teleporter:not(.player):not(.box):not(.box-on-target)::before {
     border-color: #22d3ee;
-    background:
-        radial-gradient(circle at 50% 50%, #cffafe 0 18%, rgba(6, 182, 212, 0.38) 24% 62%, transparent 68%);
+    background: radial-gradient(circle at 50% 50%, #cffafe 0 18%, rgba(6, 182, 212, 0.38) 24% 62%, transparent 68%);
     box-shadow:
         0 0 14px rgba(34, 211, 238, 0.7),
         inset 0 0 8px rgba(103, 232, 249, 0.6);
@@ -887,14 +834,13 @@ body[data-theme="monument"] .teleporter {
 }
 
 body[data-theme="monument"] .teleporter:not(.player):not(.box):not(.box-on-target)::before {
-    border: 2px dashed #7c5d99;
-    background:
-        radial-gradient(circle at 50% 50%, #7c5d99 0 20%, rgba(124, 93, 153, 0.22) 25% 62%, #e6d7c1 66%);
+    border-color: #7c5d99;
+    background: radial-gradient(circle at 50% 50%, #7c5d99 0 20%, rgba(124, 93, 153, 0.22) 25% 62%, #e6d7c1 66%);
     box-shadow: inset 0 1px 3px rgba(74, 58, 42, 0.2);
 }
 
 /* =========================================================
-   PLAYER & DIRECTIONAL EYES
+   PLAYER, DIRECTIONAL EYES & TELEPORT FADE
    ========================================================= */
 .player {
     z-index: 20;
@@ -964,15 +910,11 @@ body[data-theme="arcade"] .player::before {
 }
 
 body[data-theme="monument"] .player::before {
-    inset: auto;
-    left: 50%;
-    top: 50%;
     width: 72%;
     height: 72%;
     background:
         radial-gradient(circle at 36% 26%, #faf6ef 0 11%, transparent 12%),
         radial-gradient(circle at 64% 26%, #faf6ef 0 11%, transparent 12%);
-    background-repeat: no-repeat;
 }
 
 .player[data-dir="up"]::before    { transform: translate(-50%, -50%) rotate(0deg); }
@@ -998,10 +940,6 @@ body[data-theme="monument"] .player::before {
 .player-teleport-in::after,
 .player-teleport-in::before {
     animation: player-teleport-in 0.13s ease-out forwards;
-}
-
-.empty {
-    background: transparent;
 }
 
 /* =========================================================
@@ -1040,17 +978,12 @@ body[data-theme="arcade"] #modal-content {
 }
 
 body[data-theme="monument"] #modal-content {
-    border: 1px solid var(--panel-border);
+    border-color: var(--panel-border);
     box-shadow: 0 20px 40px rgba(61, 53, 46, 0.22), 0 4px 0 #d5c6b2;
 }
 
-body[data-theme="monument"] #modal-title {
-    color: #3d352e;
-}
-
-body[data-theme="monument"] #modal-message {
-    color: #6b5e52;
-}
+body[data-theme="monument"] #modal-title { color: #3d352e; }
+body[data-theme="monument"] #modal-message { color: #6b5e52; }
 
 #modal-btn {
     background: var(--modal-btn-bg);
@@ -1059,13 +992,8 @@ body[data-theme="monument"] #modal-message {
     transition: transform 0.15s ease, filter 0.15s ease;
 }
 
-#modal-btn:hover {
-    filter: brightness(1.08);
-}
-
-#modal-btn:active {
-    transform: scale(0.97);
-}
+#modal-btn:hover { filter: brightness(1.08); }
+#modal-btn:active { transform: scale(0.97); }
 
 body[data-theme="arcade"] #modal-btn {
     border: 2px solid #090d16;
@@ -1075,32 +1003,6 @@ body[data-theme="arcade"] #modal-btn {
 
 body[data-theme="monument"] #modal-btn {
     box-shadow: 0 4px 0 var(--crate-line);
-}
-
-#start-overlay {
-    background:
-        linear-gradient(var(--bg-grid) 1px, transparent 1px),
-        linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px),
-        radial-gradient(900px 500px at 50% -10%, var(--bg-glow) 0%, transparent 65%),
-        linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
-    background-size: 36px 36px, 36px 36px, 100% 100%, 100% 100%;
-}
-
-body[data-theme="arcade"] #start-overlay {
-    background:
-        repeating-linear-gradient(
-            0deg,
-            rgba(0, 0, 0, 0.22) 0px,
-            rgba(0, 0, 0, 0.22) 2px,
-            transparent 2px,
-            transparent 4px
-        ),
-        linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
-    background-size: 100% 4px, 100% 100%;
-}
-
-body[data-theme="monument"] #start-overlay {
-    background: radial-gradient(circle at 50% 30%, var(--bg-top) 0%, var(--bg-bottom) 100%);
 }
 
 .logo-crate {
@@ -1154,6 +1056,96 @@ body[data-theme="monument"] .logo-crate::before {
 }
 
 /* =========================================================
+   VICTORY MODAL STARS
+   ========================================================= */
+#modal-stars-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0.75rem 0 1.25rem;
+}
+
+#modal-stars-box.hidden {
+    display: none;
+}
+
+.modal-stars-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.star-slot {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+}
+
+.star-slot svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.star-slot .star-empty {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    opacity: 0.25;
+}
+
+.star-slot .star-fill {
+    fill: #f59e0b;
+    stroke: #d97706;
+    stroke-width: 1.2;
+    transform: scale(0);
+    opacity: 0;
+    transition:
+        transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) var(--star-delay, 0ms),
+        opacity 0.25s ease var(--star-delay, 0ms);
+}
+
+.star-slot.earned .star-fill {
+    transform: scale(1);
+    opacity: 1;
+}
+
+body[data-theme="arcade"] .star-slot.earned .star-fill {
+    fill: #facc15;
+    stroke: #ca8a04;
+    filter: drop-shadow(0 0 6px rgba(250, 204, 21, 0.7));
+}
+
+.modal-stars-stats {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.85rem;
+    opacity: 0.85;
+}
+
+.modal-stars-record {
+    font-weight: 700;
+    color: #d97706;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.75rem;
+}
+
+body[data-theme="arcade"] .modal-stars-record {
+    color: #facc15;
+}
+
+/* =========================================================
    INPUT HELPERS & TACTILE MICRO-ANIMATIONS
    ========================================================= */
 body[data-mode="touch"] .only-keyboard,
@@ -1172,27 +1164,15 @@ kbd {
 }
 
 @keyframes cell-slide {
-    0% {
-        transform: translate(calc(var(--dx) * -100%), calc(var(--dy) * -100%));
-    }
-    100% {
-        transform: translate(0, 0);
-    }
+    0%   { transform: translate(calc(var(--dx) * -100%), calc(var(--dy) * -100%)); }
+    100% { transform: translate(0, 0); }
 }
 
 @keyframes box-target-lock {
-    0% {
-        transform: translate(calc(var(--dx) * -100%), calc(var(--dy) * -100%)) scale(1);
-    }
-    55% {
-        transform: translate(0, 0) scale(1.16);
-    }
-    80% {
-        transform: translate(0, 0) scale(0.94);
-    }
-    100% {
-        transform: translate(0, 0) scale(1);
-    }
+    0%   { transform: translate(calc(var(--dx) * -100%), calc(var(--dy) * -100%)) scale(1); }
+    55%  { transform: translate(0, 0) scale(1.16); }
+    80%  { transform: translate(0, 0) scale(0.94); }
+    100% { transform: translate(0, 0) scale(1); }
 }
 
 .anim-slide {
@@ -1215,7 +1195,7 @@ body[data-theme="arcade"] .anim-box-lock {
 }
 
 /* =========================================================
-   BOSS LEVELS (10, 20, 30, ...)
+   BOSS LEVELS (20, 40, 60, ...)
    ========================================================= */
 .badge-boss {
     background: linear-gradient(180deg, rgba(244, 63, 94, 0.25), rgba(225, 29, 72, 0.18));
@@ -1271,7 +1251,6 @@ body.boss-level[data-theme="monument"] #game-board {
         0 4px 0 #993c28;
 }
 
-/* Undo button locked state on Boss levels */
 body.boss-level #undo-btn {
     border-color: rgba(251, 113, 133, 0.45);
     opacity: 0.35;
@@ -1286,90 +1265,94 @@ body.boss-level[data-theme="monument"] #undo-btn {
     border-color: #c85a43;
 }
 
-/* Victory modal stars */
-#modal-stars-box {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.6rem;
-    margin: 0.75rem 0 1.25rem;
+/* =========================================================
+   MULTI-ROOM BADGE, PORTALS & ROOM TRANSITIONS
+   ========================================================= */
+.badge-room {
+    background: rgba(56, 189, 248, 0.16);
+    color: #7dd3fc;
+    border: 1px solid rgba(56, 189, 248, 0.45);
 }
 
-#modal-stars-box.hidden {
-    display: none;
+body[data-theme="monument"] .badge-room {
+    background: #e3ece9;
+    color: #2f5e53;
+    border-color: #9ec2b9;
 }
 
-.modal-stars-row {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
+body[data-theme="arcade"] .badge-room {
+    background: #1d4ed8;
+    color: #fef08a;
+    border: 2px solid #090d16;
 }
 
-.star-slot {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    flex-shrink: 0;
+.wall.portal {
+    background: linear-gradient(160deg, #132a46 0%, #0c1b30 100%);
+    box-shadow: inset 0 0 0 2px var(--accent), 0 0 12px var(--accent-soft);
+    z-index: 9;
 }
 
-.star-slot svg {
+body[data-theme="scifi"] .wall.portal {
+    background: linear-gradient(160deg, #0b3a5e 0%, #072238 100%);
+    box-shadow: inset 0 0 0 2px var(--accent), 0 0 16px var(--accent-soft);
+}
+
+body[data-theme="monument"] .wall.portal {
+    background: linear-gradient(160deg, #5da393 0%, #448274 100%);
+    box-shadow: inset 0 0 0 2px #2f5e53;
+}
+
+body[data-theme="arcade"] .wall.portal {
+    background: #0284c7;
+    box-shadow: inset 0 0 0 2px #facc15;
+}
+
+.wall.portal::before {
+    content: '';
+    position: absolute;
+    inset: 18%;
+    border-radius: 5px;
+    background: var(--accent-soft);
+    border: 1.5px dashed var(--accent);
+    pointer-events: none;
+}
+
+body[data-theme="monument"] .wall.portal::before {
+    background: rgba(255, 251, 244, 0.22);
+    border-color: #fffbf4;
+}
+
+.wall.portal::after {
+    content: attr(data-arrow);
     position: absolute;
     inset: 0;
-    width: 100%;
-    height: 100%;
-    overflow: visible;
-}
-
-.star-slot .star-empty {
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.8;
-    opacity: 0.25;
-}
-
-.star-slot .star-fill {
-    fill: #f59e0b;
-    stroke: #d97706;
-    stroke-width: 1.2;
-    transform: scale(0);
-    opacity: 0;
-    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) var(--star-delay, 0ms),
-                opacity 0.25s ease var(--star-delay, 0ms);
-}
-
-.star-slot.earned .star-fill {
-    transform: scale(1);
-    opacity: 1;
-}
-
-body[data-theme="arcade"] .star-slot.earned .star-fill {
-    fill: #facc15;
-    stroke: #ca8a04;
-    filter: drop-shadow(0 0 6px rgba(250, 204, 21, 0.7));
-}
-
-.modal-stars-stats {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 0.25rem;
-    font-size: 0.85rem;
-    opacity: 0.85;
+    justify-content: center;
+    font-size: calc(var(--cell) * 0.48);
+    font-weight: 900;
+    line-height: 1;
+    color: var(--accent);
+    text-shadow: 0 0 8px var(--accent-soft);
+    pointer-events: none;
 }
 
-.modal-stars-record {
-    font-weight: 700;
-    color: #d97706;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    font-size: 0.75rem;
+body[data-theme="monument"] .wall.portal::after {
+    color: #fffbf4;
+    text-shadow: none;
 }
 
-body[data-theme="arcade"] .modal-stars-record {
-    color: #facc15;
+@keyframes room-fade-in {
+    0% {
+        opacity: 0.35;
+        transform: scale(0.97);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+#game-board.room-transition {
+    animation: room-fade-in 0.16s cubic-bezier(0.22, 1, 0.36, 1);
 }
