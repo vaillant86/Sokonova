@@ -7,6 +7,7 @@ window.SOKONOVA_LOCALES.it = {
     homeLabel: 'Home',
     homeTitle: 'Torna alla schermata iniziale',
     levelLabel: 'Livello {n}',
+    roomLabel: 'Stanza {current}/{total}',
     codeBadge: 'Codice: {code}',
     pushesLabel: 'Spinte',
     timeLabel: 'Tempo',

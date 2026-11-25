@@ -7,6 +7,7 @@ window.SOKONOVA_LOCALES.fr = {
     homeLabel: 'Accueil',
     homeTitle: "Retour à l'accueil",
     levelLabel: 'Niveau {n}',
+    roomLabel: 'Salle {current}/{total}',
     codeBadge: 'Code : {code}',
     pushesLabel: 'Poussées',
     timeLabel: 'Temps',

@@ -7,6 +7,7 @@ window.SOKONOVA_LOCALES.en = {
     homeLabel: 'Home',
     homeTitle: 'Back to home',
     levelLabel: 'Level {n}',
+    roomLabel: 'Room {current}/{total}',
     codeBadge: 'Code: {code}',
     pushesLabel: 'Pushes',
     timeLabel: 'Time',
