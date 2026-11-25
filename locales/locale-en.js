@@ -1,7 +1,6 @@
 window.SOKONOVA_LOCALES = window.SOKONOVA_LOCALES || {};
 
 window.SOKONOVA_LOCALES.en = {
-    langName: 'English',
     switchLangTitle: 'Language: English',
     themeTitle: 'Theme: {label}',
     homeLabel: 'Home',
@@ -42,5 +41,8 @@ window.SOKONOVA_LOCALES.en = {
     starsPushesOptimal: 'Pushes: {pushes} (Optimal: {min})',
     starsPushesOnly: 'Pushes: {pushes}',
     starsNewRecord: 'New record!',
+    pauseTitle: 'Pause game',
+    pauseUntimedTitle: 'Pause available from level 11',
+    resumeTitle: 'Resume game',
     modalOk: 'OK'
 };

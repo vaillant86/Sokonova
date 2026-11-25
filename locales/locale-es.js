@@ -1,7 +1,6 @@
 window.SOKONOVA_LOCALES = window.SOKONOVA_LOCALES || {};
 
 window.SOKONOVA_LOCALES.es = {
-    langName: 'Español',
     switchLangTitle: 'Idioma: Español',
     themeTitle: 'Tema: {label}',
     homeLabel: 'Inicio',
@@ -42,5 +41,8 @@ window.SOKONOVA_LOCALES.es = {
     starsPushesOptimal: 'Empujes: {pushes} (Óptimo: {min})',
     starsPushesOnly: 'Empujes: {pushes}',
     starsNewRecord: '¡Nuevo récord!',
+    pauseTitle: 'Pausar partida',
+    pauseUntimedTitle: 'Pausa disponible desde el nivel 11',
+    resumeTitle: 'Reanudar partida',
     modalOk: 'OK'
 };

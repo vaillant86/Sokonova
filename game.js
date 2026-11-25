@@ -96,6 +96,7 @@ let timerInterval = null;
 let timeLimit = 0;
 let timeLeft = 0;
 let timerStarted = false;
+let isPaused = false;
 
 // Score-based timer rules: every 15 score points above TIMER_BASE_SCORE adds one 10s tier,
 // from 30s up to a 180s cap (reached at score 261 and above)
@@ -193,13 +194,11 @@ function applyLanguage(lang) {
     } catch (_) {}
 
     const langBtn = document.getElementById('lang-btn');
-    const langLabel = document.getElementById('lang-label');
 
     if (langBtn) {
         langBtn.title = t('switchLangTitle');
         langBtn.setAttribute('aria-label', t('switchLangTitle'));
     }
-    if (langLabel) langLabel.innerText = currentLang.toUpperCase();
 
     for (const code of SUPPORTED_LANGS) {
         const flagEl = document.getElementById(`flag-${code}`);
@@ -244,6 +243,7 @@ function applyLanguage(lang) {
 
     updateSoundUI();
     updateUndoUI();
+    updatePauseUI();
 
     if (gameStarted) {
         const levelNumber = currentLevelIndex + 1;
@@ -305,7 +305,14 @@ const timerDisplay = document.getElementById('timer-display');
 const bossBadge = document.getElementById('boss-badge');
 const codeBadge = document.getElementById('code-badge');
 const homeBtn = document.getElementById('home-btn');
+const soundBtn = document.getElementById('sound-btn');
 const undoBtn = document.getElementById('undo-btn');
+const restartBtn = document.getElementById('restart-btn');
+const pauseBtn = document.getElementById('pause-btn');
+const pauseIconPause = document.getElementById('pause-icon-pause');
+const pauseIconPlay = document.getElementById('pause-icon-play');
+const boardWrapper = document.getElementById('board-wrapper');
+const pauseOverlay = document.getElementById('pause-overlay');
 
 // Modal elements
 const modalOverlay = document.getElementById('modal-overlay');
@@ -609,6 +616,10 @@ function playSound(type) {
         } else if (type === 'tick') {
             const isFinalSecond = timeLeft === 1;
             playFilteredTone(isFinalSecond ? 1180 : 880, isFinalSecond ? 980 : 760, 2400, 900, 0.045, 'sawtooth', 0.055, 0, 4);
+        } else if (type === 'pause') {
+            playFilteredTone(620, 280, 2000, 600, 0.09, 'triangle', 0.06, 0, 3);
+        } else if (type === 'resume') {
+            playFilteredTone(300, 660, 800, 2200, 0.09, 'triangle', 0.065, 0, 3);
         }
         return;
     }
@@ -644,6 +655,12 @@ function playSound(type) {
         } else if (type === 'tick') {
             const isFinalSecond = timeLeft === 1;
             playTone(isFinalSecond ? 1046 : 784, isFinalSecond ? 1046 : 784, 0.035, 'square', 0.055, 0, 0.002);
+        } else if (type === 'pause') {
+            playTone(523, 523, 0.04, 'square', 0.055, 0, 0.002);
+            playTone(392, 392, 0.06, 'square', 0.055, 0.045, 0.002);
+        } else if (type === 'resume') {
+            playTone(392, 392, 0.04, 'square', 0.055, 0, 0.002);
+            playTone(523, 523, 0.06, 'square', 0.06, 0.045, 0.002);
         }
         return;
     }
@@ -678,6 +695,10 @@ function playSound(type) {
         } else if (type === 'tick') {
             const isFinalSecond = timeLeft === 1;
             playTone(isFinalSecond ? 880 : 659.25, isFinalSecond ? 880 : 659.25, 0.07, 'sine', 0.07, 0, 0.012);
+        } else if (type === 'pause') {
+            playTone(440, 329.63, 0.12, 'sine', 0.065, 0, 0.015);
+        } else if (type === 'resume') {
+            playTone(329.63, 440, 0.12, 'sine', 0.065, 0, 0.015);
         }
         return;
     }
@@ -707,6 +728,10 @@ function playSound(type) {
     } else if (type === 'tick') {
         const isFinalSecond = timeLeft === 1;
         playTone(isFinalSecond ? 980 : 740, isFinalSecond ? 880 : 660, 0.045, 'sine', 0.09);
+    } else if (type === 'pause') {
+        playTone(360, 240, 0.08, 'triangle', 0.075);
+    } else if (type === 'resume') {
+        playTone(240, 360, 0.08, 'triangle', 0.075);
     }
 }
 
@@ -714,7 +739,7 @@ function playSound(type) {
 function updateUndoUI() {
     if (!undoBtn) return;
     const boss = isBossLevel(currentLevelIndex + 1);
-    const canUndo = !boss && undosRemaining > 0 && moveHistory.length > 0 && !inputLocked;
+    const canUndo = !boss && !isPaused && undosRemaining > 0 && moveHistory.length > 0 && !inputLocked;
     undoBtn.disabled = !canUndo;
 
     if (boss) {
@@ -741,7 +766,7 @@ function recordMoveSnapshot() {
 }
 
 function undoMove() {
-    if (inputLocked || !gameStarted) return;
+    if (inputLocked || isPaused || !gameStarted) return;
     if (isBossLevel(currentLevelIndex + 1)) return;
     if (undosRemaining <= 0 || moveHistory.length === 0) return;
 
@@ -767,12 +792,86 @@ function undoMove() {
     updateUndoUI();
 }
 
+function syncCornerButtonsWidth() {
+    const themeBtn = document.getElementById('theme-btn');
+    const themeLabel = document.getElementById('theme-label');
+    const langBtn = document.getElementById('lang-btn');
+    const homeLabel = document.getElementById('home-label');
+    if (!themeBtn || typeof themeBtn.getBoundingClientRect !== 'function') return;
+
+    const rootStyle = document.documentElement.style;
+    rootStyle.removeProperty('--corner-btn-w');
+
+    const prevThemeWidth = themeBtn.style.width;
+    themeBtn.style.width = 'auto';
+
+    let maxW = 0;
+
+    if (themeLabel) {
+        const prevThemeText = themeLabel.innerText;
+        for (const theme of THEMES) {
+            themeLabel.innerText = theme.label;
+            maxW = Math.max(maxW, Math.ceil(themeBtn.getBoundingClientRect().width));
+        }
+        themeLabel.innerText = prevThemeText;
+    }
+
+    if (homeBtn && typeof homeBtn.getBoundingClientRect === 'function') {
+        const wasHidden = homeBtn.classList.contains('hidden');
+        const prevVisibility = homeBtn.style.visibility;
+        const prevHomeWidth = homeBtn.style.width;
+        if (wasHidden) {
+            homeBtn.style.visibility = 'hidden';
+            homeBtn.classList.remove('hidden');
+        }
+        homeBtn.style.width = 'auto';
+
+        if (homeLabel) {
+            const locales = window.SOKONOVA_LOCALES || {};
+            const prevHomeText = homeLabel.innerText;
+            for (const code of SUPPORTED_LANGS) {
+                const dict = locales[code] || {};
+                homeLabel.innerText = dict.homeLabel || prevHomeText;
+                maxW = Math.max(maxW, Math.ceil(homeBtn.getBoundingClientRect().width));
+            }
+            homeLabel.innerText = prevHomeText;
+        } else {
+            maxW = Math.max(maxW, Math.ceil(homeBtn.getBoundingClientRect().width));
+        }
+
+        homeBtn.style.width = prevHomeWidth;
+        if (wasHidden) {
+            homeBtn.classList.add('hidden');
+        }
+        homeBtn.style.visibility = prevVisibility;
+    }
+
+    for (const btn of [langBtn, soundBtn]) {
+        if (btn && typeof btn.getBoundingClientRect === 'function') {
+            const prevW = btn.style.width;
+            btn.style.width = 'auto';
+            maxW = Math.max(maxW, Math.ceil(btn.getBoundingClientRect().width));
+            btn.style.width = prevW;
+        }
+    }
+
+    themeBtn.style.width = prevThemeWidth;
+
+    if (maxW > 0) {
+        rootStyle.setProperty('--corner-btn-w', `${maxW}px`);
+    }
+}
+
 // Initialize the game
 function init() {
     setupInputMode();
     setupTheme();
     setupSound();
     setupLanguage();
+    syncCornerButtonsWidth();
+    if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(syncCornerButtonsWidth);
+    }
 
     window.addEventListener('resize', updateCellSize);
 
@@ -816,7 +915,7 @@ function init() {
     });
 
     window.addEventListener('touchstart', (e) => {
-        if (e.target.closest('#password-box, #theme-btn, #lang-btn, #home-btn')) return;
+        if (e.target.closest('#password-box, #top-right-controls, #home-btn')) return;
         if (!gameStarted) {
             startGame();
         }
@@ -826,16 +925,30 @@ function init() {
 
     // Click on the start screen (useful on PC)
     document.getElementById('start-overlay').addEventListener('click', (e) => {
-        if (e.target.closest('#password-box, #theme-btn, #lang-btn, #home-btn')) return;
+        if (e.target.closest('#password-box, #top-right-controls, #home-btn')) return;
         if (!gameStarted) {
             startGame();
         }
     });
 
+    if (soundBtn) {
+        soundBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleSound();
+        });
+    }
+
     if (homeBtn) {
         homeBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             goHome();
+        });
+    }
+
+    if (pauseBtn) {
+        pauseBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            togglePause();
         });
     }
 
@@ -855,10 +968,13 @@ function goHome() {
     gameStarted = false;
     inputLocked = true;
     clearInterval(timerInterval);
+    timerInterval = null;
     timerStarted = false;
+    clearPauseState();
     modalCallback = null;
     hideModal();
     updateUndoUI();
+    updatePauseUI();
 
     document.body.classList.remove('boss-level');
     if (homeBtn) homeBtn.classList.add('hidden');
@@ -1152,9 +1268,74 @@ function loadLevel(index) {
         codeBadge.classList.add('hidden');
     }
 
+    clearPauseState();
     setupTimer(index, levelEntry);
     updateUndoUI();
+    updatePauseUI();
     render();
+}
+
+function updatePauseUI() {
+    if (!pauseBtn) return;
+    const canPause = gameStarted && timeLimit > 0 && !inputLocked;
+    pauseBtn.disabled = !canPause;
+
+    if (pauseIconPause) pauseIconPause.classList.toggle('hidden', isPaused);
+    if (pauseIconPlay) pauseIconPlay.classList.toggle('hidden', !isPaused);
+
+    const label = (gameStarted && timeLimit <= 0)
+        ? t('pauseUntimedTitle')
+        : (isPaused ? t('resumeTitle') : t('pauseTitle'));
+    pauseBtn.title = label;
+    pauseBtn.setAttribute('aria-label', label);
+    pauseBtn.setAttribute('aria-pressed', isPaused ? 'true' : 'false');
+}
+
+function clearPauseState() {
+    isPaused = false;
+    if (boardWrapper) boardWrapper.classList.remove('is-paused');
+    if (pauseOverlay) {
+        pauseOverlay.classList.remove('pause-active');
+        pauseOverlay.classList.add('pause-hidden');
+    }
+    if (restartBtn) restartBtn.disabled = false;
+    updateUndoUI();
+    updatePauseUI();
+}
+
+function pauseGame() {
+    if (!gameStarted || inputLocked || isPaused || timeLimit <= 0) return;
+    isPaused = true;
+    clearInterval(timerInterval);
+    timerInterval = null;
+
+    if (boardWrapper) boardWrapper.classList.add('is-paused');
+    if (pauseOverlay) {
+        pauseOverlay.classList.remove('pause-hidden');
+        pauseOverlay.classList.add('pause-active');
+    }
+    if (restartBtn) restartBtn.disabled = true;
+
+    updateUndoUI();
+    updatePauseUI();
+    playSound('pause');
+}
+
+function resumeGame() {
+    if (!isPaused) return;
+    clearPauseState();
+    if (timerStarted && timeLimit > 0 && !inputLocked) {
+        runTimerInterval();
+    }
+    playSound('resume');
+}
+
+function togglePause() {
+    if (isPaused) {
+        resumeGame();
+    } else {
+        pauseGame();
+    }
 }
 
 function setupTimer(index, levelEntry) {
@@ -1175,14 +1356,13 @@ function setupTimer(index, levelEntry) {
         timeLeft = timeLimit;
         updateTimerUI();
     }
+    updatePauseUI();
 }
 
-function startLevelTimer() {
-    if (timerStarted || timeLimit <= 0) return;
-    timerStarted = true;
-
+function runTimerInterval() {
+    clearInterval(timerInterval);
     timerInterval = setInterval(() => {
-        if (inputLocked) return;
+        if (inputLocked || isPaused) return;
 
         timeLeft--;
         updateTimerUI();
@@ -1193,13 +1373,21 @@ function startLevelTimer() {
 
         if (timeLeft <= 0) {
             clearInterval(timerInterval);
+            timerInterval = null;
             inputLocked = true;
             updateUndoUI();
+            updatePauseUI();
             showModal(t('timesUpTitle'), t('timesUpMsg'), () => {
                 restartCurrentLevel();
             });
         }
     }, 1000);
+}
+
+function startLevelTimer() {
+    if (timerStarted || timeLimit <= 0) return;
+    timerStarted = true;
+    runTimerInterval();
 }
 
 function updateTimerUI() {
@@ -1296,6 +1484,16 @@ function render(withRoomTransition = false) {
 function handleKeyDown(e) {
     if (inputLocked || !gameStarted) return;
 
+    if ((e.key === 'p' || e.key === 'P' || e.key === 'Escape') && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        if (timeLimit > 0) {
+            e.preventDefault();
+            togglePause();
+        }
+        return;
+    }
+
+    if (isPaused) return;
+
     let dx = 0;
     let dy = 0;
 
@@ -1331,7 +1529,7 @@ function setupSwipeControls() {
 
     window.addEventListener('pointerdown', (e) => {
         if (e.pointerType !== 'touch') return;
-        if (!gameStarted || inputLocked) {
+        if (!gameStarted || inputLocked || isPaused) {
             activePointerId = null;
             return;
         }
@@ -1347,7 +1545,7 @@ function setupSwipeControls() {
 
     window.addEventListener('pointermove', (e) => {
         if (e.pointerType !== 'touch' || e.pointerId !== activePointerId) return;
-        if (!gameStarted || inputLocked) {
+        if (!gameStarted || inputLocked || isPaused) {
             activePointerId = null;
             return;
         }
@@ -1649,11 +1847,13 @@ function applyStateTransition(tr) {
         lastMove = null;
         inputLocked = false;
         updateUndoUI();
+        updatePauseUI();
         checkWinCondition();
     };
 
     if (teleported) {
         inputLocked = true;
+        updatePauseUI();
         playSound('teleport');
 
         // Mostra dissolvenza in uscita sul pad di partenza se nella stanza corrente
@@ -1692,7 +1892,9 @@ function checkWinCondition() {
     if (isComplete) {
         inputLocked = true;
         clearInterval(timerInterval);
+        timerInterval = null;
         updateUndoUI();
+        updatePauseUI();
         playSound('win');
 
         const completedLevel = currentLevelIndex + 1;
@@ -1728,6 +1930,7 @@ function checkWinCondition() {
 }
 
 function restartCurrentLevel() {
+    if (isPaused) return;
     loadLevel(currentLevelIndex);
 }
 
