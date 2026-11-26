@@ -322,7 +322,8 @@ body[data-theme="monument"] .pill {
 body[data-theme="arcade"] .btn-icon {
     border-width: 2px;
     border-radius: 6px;
-    box-shadow: 0 4px 0 #090d16;
+    padding: calc(0.5rem - 1px) calc(0.75rem - 1px);
+    box-shadow: 0 3px 0 #090d16;
     transition: transform 0.06s steps(2);
 }
 
@@ -1360,13 +1361,15 @@ body[data-theme="monument"] .wall.portal::after {
 /* =========================================================
    PAUSE OVERLAY & BOARD OBSCURATION (LEVEL 11+)
    ========================================================= */
-#top-right-controls,
-#home-btn {
-    width: var(--corner-btn-w, auto);
-}
+@media (min-width: 640px) {
+    #top-right-controls,
+    #home-btn {
+        width: var(--corner-btn-w, auto);
+    }
 
-#top-right-controls > button {
-    width: 100%;
+    #top-right-controls > button {
+        width: 100%;
+    }
 }
 
 #board-wrapper {

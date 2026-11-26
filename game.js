@@ -194,10 +194,14 @@ function applyLanguage(lang) {
     } catch (_) {}
 
     const langBtn = document.getElementById('lang-btn');
+    const langLabel = document.getElementById('lang-label');
 
     if (langBtn) {
         langBtn.title = t('switchLangTitle');
         langBtn.setAttribute('aria-label', t('switchLangTitle'));
+    }
+    if (langLabel) {
+        langLabel.innerText = currentLang.toUpperCase();
     }
 
     for (const code of SUPPORTED_LANGS) {
@@ -206,7 +210,7 @@ function applyLanguage(lang) {
     }
 
     const homeLabel = document.getElementById('home-label');
-    if (homeLabel) homeLabel.innerText = t('homeLabel');
+    if (homeLabel) homeLabel.innerText = 'HOME';
     if (homeBtn) {
         homeBtn.title = t('homeTitle');
         homeBtn.setAttribute('aria-label', t('homeTitle'));
@@ -460,7 +464,7 @@ function applyTheme(index) {
     const themeBtn = document.getElementById('theme-btn');
     const themeLabel = document.getElementById('theme-label');
     if (themeBtn) themeBtn.title = t('themeTitle', { label: theme.label });
-    if (themeLabel) themeLabel.innerText = theme.label;
+    if (themeLabel) themeLabel.innerText = theme.label.toUpperCase();
 
     try {
         localStorage.setItem(THEME_STORAGE_KEY, theme.id);
@@ -503,9 +507,15 @@ function updateSoundUI() {
     const btn = document.getElementById('sound-btn');
     const iconOn = document.getElementById('sound-icon-on');
     const iconOff = document.getElementById('sound-icon-off');
+    const soundLabel = document.getElementById('sound-label');
     if (btn) btn.title = soundEnabled ? t('soundOnTitle') : t('soundOffTitle');
     if (iconOn) iconOn.classList.toggle('hidden', !soundEnabled);
     if (iconOff) iconOff.classList.toggle('hidden', soundEnabled);
+    if (soundLabel) {
+        soundLabel.innerText = soundEnabled ? 'ON' : 'OFF';
+        soundLabel.classList.toggle('theme-accent', soundEnabled);
+        soundLabel.classList.toggle('text-slate-500', !soundEnabled);
+    }
 }
 
 function setupSound() {
@@ -793,14 +803,18 @@ function undoMove() {
 }
 
 function syncCornerButtonsWidth() {
+    const rootStyle = document.documentElement.style;
+    rootStyle.removeProperty('--corner-btn-w');
+
+    if (window.innerWidth < 640) return;
+
     const themeBtn = document.getElementById('theme-btn');
     const themeLabel = document.getElementById('theme-label');
     const langBtn = document.getElementById('lang-btn');
+    const langLabel = document.getElementById('lang-label');
+    const soundLabel = document.getElementById('sound-label');
     const homeLabel = document.getElementById('home-label');
     if (!themeBtn || typeof themeBtn.getBoundingClientRect !== 'function') return;
-
-    const rootStyle = document.documentElement.style;
-    rootStyle.removeProperty('--corner-btn-w');
 
     const prevThemeWidth = themeBtn.style.width;
     themeBtn.style.width = 'auto';
@@ -810,10 +824,42 @@ function syncCornerButtonsWidth() {
     if (themeLabel) {
         const prevThemeText = themeLabel.innerText;
         for (const theme of THEMES) {
-            themeLabel.innerText = theme.label;
+            themeLabel.innerText = theme.label.toUpperCase();
             maxW = Math.max(maxW, Math.ceil(themeBtn.getBoundingClientRect().width));
         }
         themeLabel.innerText = prevThemeText;
+    }
+
+    if (langBtn && typeof langBtn.getBoundingClientRect === 'function') {
+        const prevW = langBtn.style.width;
+        langBtn.style.width = 'auto';
+        if (langLabel) {
+            const prevLangText = langLabel.innerText;
+            for (const code of SUPPORTED_LANGS) {
+                langLabel.innerText = code.toUpperCase();
+                maxW = Math.max(maxW, Math.ceil(langBtn.getBoundingClientRect().width));
+            }
+            langLabel.innerText = prevLangText;
+        } else {
+            maxW = Math.max(maxW, Math.ceil(langBtn.getBoundingClientRect().width));
+        }
+        langBtn.style.width = prevW;
+    }
+
+    if (soundBtn && typeof soundBtn.getBoundingClientRect === 'function') {
+        const prevW = soundBtn.style.width;
+        soundBtn.style.width = 'auto';
+        if (soundLabel) {
+            const prevSoundText = soundLabel.innerText;
+            for (const stateText of ['ON', 'OFF']) {
+                soundLabel.innerText = stateText;
+                maxW = Math.max(maxW, Math.ceil(soundBtn.getBoundingClientRect().width));
+            }
+            soundLabel.innerText = prevSoundText;
+        } else {
+            maxW = Math.max(maxW, Math.ceil(soundBtn.getBoundingClientRect().width));
+        }
+        soundBtn.style.width = prevW;
     }
 
     if (homeBtn && typeof homeBtn.getBoundingClientRect === 'function') {
@@ -825,34 +871,14 @@ function syncCornerButtonsWidth() {
             homeBtn.classList.remove('hidden');
         }
         homeBtn.style.width = 'auto';
-
-        if (homeLabel) {
-            const locales = window.SOKONOVA_LOCALES || {};
-            const prevHomeText = homeLabel.innerText;
-            for (const code of SUPPORTED_LANGS) {
-                const dict = locales[code] || {};
-                homeLabel.innerText = dict.homeLabel || prevHomeText;
-                maxW = Math.max(maxW, Math.ceil(homeBtn.getBoundingClientRect().width));
-            }
-            homeLabel.innerText = prevHomeText;
-        } else {
-            maxW = Math.max(maxW, Math.ceil(homeBtn.getBoundingClientRect().width));
-        }
+        if (homeLabel) homeLabel.innerText = 'HOME';
+        maxW = Math.max(maxW, Math.ceil(homeBtn.getBoundingClientRect().width));
 
         homeBtn.style.width = prevHomeWidth;
         if (wasHidden) {
             homeBtn.classList.add('hidden');
         }
         homeBtn.style.visibility = prevVisibility;
-    }
-
-    for (const btn of [langBtn, soundBtn]) {
-        if (btn && typeof btn.getBoundingClientRect === 'function') {
-            const prevW = btn.style.width;
-            btn.style.width = 'auto';
-            maxW = Math.max(maxW, Math.ceil(btn.getBoundingClientRect().width));
-            btn.style.width = prevW;
-        }
     }
 
     themeBtn.style.width = prevThemeWidth;
@@ -873,7 +899,10 @@ function init() {
         document.fonts.ready.then(syncCornerButtonsWidth);
     }
 
-    window.addEventListener('resize', updateCellSize);
+    window.addEventListener('resize', () => {
+        updateCellSize();
+        syncCornerButtonsWidth();
+    });
 
     const codeInput = document.getElementById('code-input');
     const codeBtn = document.getElementById('code-btn');
@@ -1277,7 +1306,7 @@ function loadLevel(index) {
 
 function updatePauseUI() {
     if (!pauseBtn) return;
-    const canPause = gameStarted && timeLimit > 0 && !inputLocked;
+    const canPause = gameStarted && timeLimit > 0 && timerStarted && !inputLocked;
     pauseBtn.disabled = !canPause;
 
     if (pauseIconPause) pauseIconPause.classList.toggle('hidden', isPaused);
@@ -1304,7 +1333,7 @@ function clearPauseState() {
 }
 
 function pauseGame() {
-    if (!gameStarted || inputLocked || isPaused || timeLimit <= 0) return;
+    if (!gameStarted || inputLocked || isPaused || timeLimit <= 0 || !timerStarted) return;
     isPaused = true;
     clearInterval(timerInterval);
     timerInterval = null;
@@ -1483,15 +1512,13 @@ function render(withRoomTransition = false) {
 
 function handleKeyDown(e) {
     if (inputLocked || !gameStarted) return;
-
     if ((e.key === 'p' || e.key === 'P' || e.key === 'Escape') && !e.ctrlKey && !e.metaKey && !e.altKey) {
-        if (timeLimit > 0) {
+        if (timeLimit > 0 && timerStarted) {
             e.preventDefault();
             togglePause();
         }
         return;
     }
-
     if (isPaused) return;
 
     let dx = 0;
