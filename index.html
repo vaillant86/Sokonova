@@ -11,7 +11,7 @@
     <!-- Top-right controls (language, theme, sound) -->
     <div id="top-right-controls" class="fixed top-3 right-3 sm:top-5 sm:right-5 z-[70] flex flex-col items-stretch gap-2">
         <!-- Language toggle button -->
-        <button id="lang-btn" type="button" aria-label="Language: English" title="Language: English" class="btn-icon px-3 py-2 flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-wider">
+        <button id="lang-btn" type="button" aria-label="Language: English" title="Language: English" class="btn-icon px-2.5 py-2 flex items-center justify-center gap-1.5 text-xs sm:text-[11px] font-bold uppercase tracking-wide">
             <span class="h-5 flex items-center justify-center shrink-0">
                 <!-- Union Jack (EN) -->
                 <svg id="flag-en" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 36" class="h-3.5 w-5 rounded-[2px] shrink-0 shadow-sm">
@@ -66,7 +66,7 @@
         </button>
 
         <!-- Theme toggle button -->
-        <button id="theme-btn" type="button" aria-label="Change theme" title="Theme: Classic" class="btn-icon px-3 py-2 flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-wider">
+        <button id="theme-btn" type="button" aria-label="Change theme" title="Theme: Classic" class="btn-icon px-2.5 py-2 flex items-center justify-center gap-1.5 text-xs sm:text-[11px] font-bold uppercase tracking-wide">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 theme-accent shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
             </svg>
@@ -74,7 +74,7 @@
         </button>
 
         <!-- Sound toggle button -->
-        <button id="sound-btn" type="button" class="btn-icon px-3 py-2 flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-wider" title="Sound: ON" aria-label="Toggle sound">
+<button id="sound-btn" type="button" class="btn-icon px-2.5 py-2 flex items-center justify-center gap-1.5 text-xs sm:text-[11px] font-bold uppercase tracking-wide" title="Sound: ON" aria-label="Toggle sound">
             <svg id="sound-icon-on" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 theme-accent shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M11 5L6 9H3v6h3l5 4V5zm4.54 3.46a5 5 0 010 7.08m2.83-9.91a9 9 0 010 12.74" />
             </svg>
@@ -85,8 +85,8 @@
         </button>
     </div>
 
-    <!-- Home button (top-left, shown during the game) -->
-    <button id="home-btn" type="button" aria-label="Back to home" title="Back to home" class="hidden btn-icon fixed top-3 left-3 sm:top-5 sm:left-5 z-[70] px-3 py-2 flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-wider">
+    <!-- Home button -->
+    <button id="home-btn" type="button" aria-label="Back to home" title="Back to home" class="hidden btn-icon fixed top-3 left-3 sm:top-5 sm:left-5 z-[70] px-2.5 py-2 flex items-center justify-center gap-1.5 text-xs sm:text-[11px] font-bold uppercase tracking-wide">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 theme-accent shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10" />
         </svg>
@@ -176,21 +176,8 @@
         <!-- Code box (bottom-left) -->
         <div id="password-box" class="fixed bottom-3 left-3 sm:bottom-5 sm:left-5 flex flex-col items-start gap-1.5 cursor-default" onclick="event.stopPropagation()">
             <div class="flex items-center gap-2">
-                <input
-                    id="code-input"
-                    type="text"
-                    maxlength="5"
-                    placeholder="CODE"
-                    autocomplete="off"
-                    spellcheck="false"
-                    class="code-field w-28 sm:w-32 text-center font-mono font-bold uppercase tracking-[0.25em] placeholder-slate-500 rounded-xl px-3 py-2 text-sm focus:outline-none"
-                />
-                <button
-                    id="code-btn"
-                    type="button"
-                    aria-label="Send code"
-                    class="btn-icon p-2 flex items-center justify-center theme-accent"
-                >
+                <input id="code-input" type="text" maxlength="5" placeholder="CODE" autocomplete="off" spellcheck="false" class="code-field w-24 sm:w-[6.5rem] text-center font-mono font-bold uppercase tracking-[0.2em] placeholder-slate-500 rounded-xl px-2.5 py-2 text-sm focus:outline-none"/>
+                <button id="code-btn" type="button" aria-label="Send code" class="btn-icon p-2 flex items-center justify-center theme-accent">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                     </svg>
@@ -205,6 +192,49 @@
             <span id="start-touch-text" class="only-touch">Swipe to start</span>
             <span id="start-keyboard-text" class="only-keyboard">Press any key to start</span>
         </p>
+    </div>
+
+    <!-- Level selection dashboard -->
+    <div id="dashboard-overlay" class="hidden fixed inset-0 z-[58] flex flex-col items-center justify-center px-3 sm:px-6 pt-14 pb-4 sm:py-6 transition-opacity duration-300 opacity-0">
+        <div class="w-full max-w-xl flex flex-col items-center gap-3 sm:gap-4">
+            <!-- Header & global stats -->
+            <div class="text-center">
+                <h1 class="title text-3xl sm:text-4xl leading-tight">Sokonova</h1>
+                <div class="flex items-center justify-center gap-3 mt-1.5 text-xs sm:text-sm font-mono font-bold">
+                    <span id="dash-total-stars" class="px-2.5 py-0.5 rounded-md badge-accent">★ 0 / 0</span>
+                    <span id="dash-total-completed" class="text-slate-400">0 / 0</span>
+                </div>
+            </div>
+
+            <!-- Main paginated card (20 levels per page) -->
+            <div id="dashboard-card" class="pill w-full p-3 sm:p-5 flex flex-col gap-3 sm:gap-4">
+                <!-- Page navigation bar -->
+                <div class="flex items-center justify-between gap-2">
+                    <button id="dash-prev-btn" type="button" aria-label="Previous 20 levels" class="btn-icon px-3 py-2 flex items-center justify-center shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 theme-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+
+                    <div class="flex flex-col items-center text-center min-w-0">
+                        <span id="dash-range-label" class="text-sm sm:text-base font-extrabold tracking-wider uppercase">1 — 20</span>
+                        <span id="dash-page-stars" class="text-[11px] font-mono font-bold theme-accent">★ 0 / 60</span>
+                    </div>
+
+                    <button id="dash-next-btn" type="button" aria-label="Next 20 levels" class="btn-icon px-3 py-2 flex items-center justify-center shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 theme-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- 20-brick grid (4x5 on mobile, 5x4 on desktop) -->
+                <div id="dash-grid" class="grid grid-cols-4 sm:grid-cols-5 gap-2 sm:gap-2.5"></div>
+
+                <!-- Page indicator dots -->
+                <div id="dash-dots" class="flex items-center justify-center flex-wrap gap-1.5 pt-0.5"></div>
+            </div>
+        </div>
     </div>
 
     <!-- Locales, levels and game logic -->

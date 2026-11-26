@@ -3,7 +3,6 @@ window.SOKONOVA_LOCALES = window.SOKONOVA_LOCALES || {};
 window.SOKONOVA_LOCALES.it = {
     switchLangTitle: 'Lingua: Italiano',
     themeTitle: 'Tema: {label}',
-    homeLabel: 'Home',
     homeTitle: 'Torna alla schermata iniziale',
     levelLabel: 'Livello {n}',
     roomLabel: 'Stanza {current}/{total}',
@@ -38,11 +37,9 @@ window.SOKONOVA_LOCALES.it = {
     timesUpMsg: 'Hai esaurito il tempo a disposizione.',
     victoryTitle: 'Vittoria!',
     victoryMsg: 'Hai completato tutti i livelli. Sei un maestro di Sokonova!',
-    starsPushesOptimal: 'Spinte: {pushes} (Ottimale: {min})',
-    starsPushesOnly: 'Spinte: {pushes}',
-    starsNewRecord: 'Nuovo record!',
     pauseTitle: 'Metti in pausa',
     pauseUntimedTitle: 'Pausa disponibile dal livello 11',
     resumeTitle: 'Riprendi la partita',
+    dashCompleted: 'COMPLETATI',
     modalOk: 'OK'
 };

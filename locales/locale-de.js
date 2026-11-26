@@ -3,7 +3,6 @@ window.SOKONOVA_LOCALES = window.SOKONOVA_LOCALES || {};
 window.SOKONOVA_LOCALES.de = {
     switchLangTitle: 'Sprache: Deutsch',
     themeTitle: 'Design: {label}',
-    homeLabel: 'Start',
     homeTitle: 'Zurück zum Startbildschirm',
     levelLabel: 'Level {n}',
     roomLabel: 'Raum {current}/{total}',
@@ -38,11 +37,9 @@ window.SOKONOVA_LOCALES.de = {
     timesUpMsg: 'Die Zeit ist abgelaufen.',
     victoryTitle: 'Sieg!',
     victoryMsg: 'Du hast alle Level abgeschlossen. Du bist ein Sokonova-Meister!',
-    starsPushesOptimal: 'Schübe: {pushes} (Optimal: {min})',
-    starsPushesOnly: 'Schübe: {pushes}',
-    starsNewRecord: 'Neuer Rekord!',
     pauseTitle: 'Spiel pausieren',
     pauseUntimedTitle: 'Pause ab Level 11 verfügbar',
     resumeTitle: 'Spiel fortsetzen',
+    dashCompleted: 'ABGESCHLOSSEN',
     modalOk: 'OK'
 };

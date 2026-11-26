@@ -74,6 +74,23 @@ function saveLevelStars(levelNumber, stars) {
     return { best: Math.max(prev, stars), isNewBest };
 }
 
+const LEVELS_PER_PAGE = 20;
+
+function isLevelUnlocked(levelNumber, savedStars = loadSavedStars()) {
+    if (levelNumber <= 1) return true;
+    return (savedStars[levelNumber - 1] || 0) >= 1 || (savedStars[levelNumber] || 0) >= 1;
+}
+
+function getLatestUnlockedLevel(savedStars = loadSavedStars()) {
+    let latest = 1;
+    for (let lvl = 2; lvl <= levelsList.length; lvl++) {
+        if (isLevelUnlocked(lvl, savedStars)) {
+            latest = lvl;
+        }
+    }
+    return latest;
+}
+
 function calculateEarnedStars(pushes, levelEntry) {
     const minPushes = (levelEntry && typeof levelEntry.minPushes === 'number')
         ? levelEntry.minPushes
@@ -259,6 +276,10 @@ function applyLanguage(lang) {
         if (levelCode && codeBadge) {
             codeBadge.innerText = t('codeBadge', { code: levelCode });
         }
+    }
+
+    if (dashboardOpen) {
+        renderDashboard();
     }
 }
 
@@ -894,6 +915,7 @@ function init() {
     setupTheme();
     setupSound();
     setupLanguage();
+    setupDashboardControls();
     syncCornerButtonsWidth();
     if (document.fonts && document.fonts.ready) {
         document.fonts.ready.then(syncCornerButtonsWidth);
@@ -918,7 +940,7 @@ function init() {
         codeError.innerText = '';
         codeInput.value = '';
         currentLevelIndex = targetIndex;
-        startGame();
+        startLevelDirect(targetIndex);
     };
 
     codeBtn.addEventListener('click', (e) => {
@@ -936,8 +958,20 @@ function init() {
 
     window.addEventListener('keydown', (e) => {
         if (e.target.tagName === 'INPUT') return;
-        if (!gameStarted) {
-            startGame();
+        if (!gameStarted && !dashboardOpen) {
+            if (['Shift', 'Control', 'Alt', 'Meta', 'Tab'].includes(e.key)) return;
+            openDashboard();
+        } else if (dashboardOpen) {
+            if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+                e.preventDefault();
+                changeDashboardPage(-1);
+            } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+                e.preventDefault();
+                changeDashboardPage(1);
+            } else if (e.key === 'Escape') {
+                e.preventDefault();
+                goHome();
+            }
         } else {
             handleKeyDown(e);
         }
@@ -945,8 +979,9 @@ function init() {
 
     window.addEventListener('touchstart', (e) => {
         if (e.target.closest('#password-box, #top-right-controls, #home-btn')) return;
-        if (!gameStarted) {
-            startGame();
+        if (!gameStarted && !dashboardOpen) {
+            e.preventDefault();
+            openDashboard();
         }
     }, { passive: false });
 
@@ -955,8 +990,8 @@ function init() {
     // Click on the start screen (useful on PC)
     document.getElementById('start-overlay').addEventListener('click', (e) => {
         if (e.target.closest('#password-box, #top-right-controls, #home-btn')) return;
-        if (!gameStarted) {
-            startGame();
+        if (!gameStarted && !dashboardOpen) {
+            openDashboard();
         }
     });
 
@@ -987,35 +1022,54 @@ function init() {
     });
 
     if (hasDirectLevelParam) {
-        startGame();
+        startLevelDirect(currentLevelIndex);
     }
 }
 
-// Returns to the start screen, stops the timer, and closes active modals
+// Returns to the welcome screen from either the dashboard or an active level
 function goHome() {
-    if (!gameStarted) return;
-    gameStarted = false;
-    inputLocked = true;
-    clearInterval(timerInterval);
-    timerInterval = null;
-    timerStarted = false;
-    clearPauseState();
-    modalCallback = null;
-    hideModal();
-    updateUndoUI();
-    updatePauseUI();
+    if (!gameStarted && !dashboardOpen) return;
 
-    document.body.classList.remove('boss-level');
+    if (dashboardOpen) {
+        closeDashboard();
+    }
+
+    if (gameStarted) {
+        gameStarted = false;
+        inputLocked = true;
+        clearInterval(timerInterval);
+        timerInterval = null;
+        timerStarted = false;
+        clearPauseState();
+        modalCallback = null;
+        hideModal();
+        updateUndoUI();
+        updatePauseUI();
+        document.body.classList.remove('boss-level');
+    }
+
     if (homeBtn) homeBtn.classList.add('hidden');
 
     const overlay = document.getElementById('start-overlay');
     overlay.classList.remove('hidden', 'opacity-0');
 }
 
-function startGame() {
+function startLevelFromDashboard(index) {
     if (gameStarted) return;
+    currentLevelIndex = index;
     gameStarted = true;
     inputLocked = true;
+    closeDashboard();
+    if (homeBtn) homeBtn.classList.remove('hidden');
+    loadLevel(currentLevelIndex);
+}
+
+function startLevelDirect(index) {
+    if (gameStarted) return;
+    currentLevelIndex = index;
+    gameStarted = true;
+    inputLocked = true;
+    closeDashboard();
 
     const overlay = document.getElementById('start-overlay');
     overlay.classList.add('opacity-0');
@@ -1927,10 +1981,7 @@ function checkWinCondition() {
         const completedLevel = currentLevelIndex + 1;
         const levelEntry = levelsList[currentLevelIndex];
         const earnedStars = calculateEarnedStars(pushCount, levelEntry);
-        const { isNewBest } = saveLevelStars(completedLevel, earnedStars);
-        const minPushes = (levelEntry && typeof levelEntry.minPushes === 'number')
-            ? levelEntry.minPushes
-            : null;
+        saveLevelStars(completedLevel, earnedStars);
 
         setTimeout(() => {
             const wasBoss = isBossLevel(completedLevel);
@@ -1947,10 +1998,7 @@ function checkWinCondition() {
                 currentLevelIndex++;
                 loadLevel(currentLevelIndex);
             }, {
-                earned: earnedStars,
-                pushes: pushCount,
-                minPushes,
-                isNewBest
+                earned: earnedStars
             });
         }, 200);
     }
@@ -1977,7 +2025,7 @@ function renderModalStars(starsInfo) {
     }
 
     const starPath = 'M12 2.4l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.3l-5.9 3.1 1.2-6.5-4.8-4.6 6.6-.9L12 2.4z';
-    const delays = ['0.18s', '0.44s', '0.70s'];
+    const delays = ['0.10s', '0.24s', '0.38s'];
 
     const starsHtml = [1, 2, 3].map((idx) => {
         const earned = idx <= starsInfo.earned;
@@ -1993,19 +2041,8 @@ function renderModalStars(starsInfo) {
         `;
     }).join('');
 
-    const statsText = starsInfo.minPushes !== null
-        ? t('starsPushesOptimal', { pushes: starsInfo.pushes, min: starsInfo.minPushes })
-        : t('starsPushesOnly', { pushes: starsInfo.pushes });
-    const recordHtml = starsInfo.isNewBest
-        ? `<span class="modal-stars-record">${t('starsNewRecord')}</span>`
-        : '';
-
     box.innerHTML = `
         <div class="modal-stars-row" aria-label="${starsInfo.earned}/3">${starsHtml}</div>
-        <div class="modal-stars-stats">
-            <span>${statsText}</span>
-            ${recordHtml}
-        </div>
     `;
     box.classList.remove('hidden');
 }
@@ -2031,6 +2068,220 @@ function hideModal() {
     modalOverlay.classList.add('modal-hidden');
     modalContent.classList.remove('scale-100');
     modalContent.classList.add('scale-95');
+}
+
+let dashboardOpen = false;
+let dashboardPage = 0;
+
+function getTotalDashboardPages() {
+    return Math.max(1, Math.ceil(levelsList.length / LEVELS_PER_PAGE));
+}
+
+function openDashboard(targetPage = null) {
+    if (gameStarted || dashboardOpen) return;
+    dashboardOpen = true;
+
+    const latestUnlocked = getLatestUnlockedLevel();
+    const defaultPage = Math.floor((latestUnlocked - 1) / LEVELS_PER_PAGE);
+    dashboardPage = targetPage !== null
+        ? Math.max(0, Math.min(getTotalDashboardPages() - 1, targetPage))
+        : defaultPage;
+
+    renderDashboard();
+
+    const startOverlay = document.getElementById('start-overlay');
+    const dashOverlay = document.getElementById('dashboard-overlay');
+
+    if (startOverlay) {
+        startOverlay.classList.add('opacity-0');
+        setTimeout(() => {
+            if (dashboardOpen) startOverlay.classList.add('hidden');
+        }, 300);
+    }
+
+    if (dashOverlay) {
+        dashOverlay.classList.remove('hidden');
+        requestAnimationFrame(() => {
+            dashOverlay.classList.remove('opacity-0');
+        });
+    }
+
+    if (homeBtn) homeBtn.classList.remove('hidden');
+}
+
+function closeDashboard() {
+    dashboardOpen = false;
+    const dashOverlay = document.getElementById('dashboard-overlay');
+    if (dashOverlay) {
+        dashOverlay.classList.add('opacity-0', 'hidden');
+    }
+}
+
+function changeDashboardPage(delta) {
+    if (!dashboardOpen) return;
+    const totalPages = getTotalDashboardPages();
+    const next = Math.max(0, Math.min(totalPages - 1, dashboardPage + delta));
+    if (next !== dashboardPage) {
+        dashboardPage = next;
+        renderDashboard();
+        playSound('move');
+    }
+}
+
+function renderDashboard() {
+    const gridEl = document.getElementById('dash-grid');
+    const rangeEl = document.getElementById('dash-range-label');
+    const pageStarsEl = document.getElementById('dash-page-stars');
+    const totalStarsEl = document.getElementById('dash-total-stars');
+    const totalCompEl = document.getElementById('dash-total-completed');
+    const prevBtn = document.getElementById('dash-prev-btn');
+    const nextBtn = document.getElementById('dash-next-btn');
+    const dotsEl = document.getElementById('dash-dots');
+    if (!gridEl) return;
+
+    const savedStars = loadSavedStars();
+    const totalLevels = levelsList.length;
+    const totalPages = getTotalDashboardPages();
+
+    // Global counters
+    let totalStars = 0;
+    let totalCompleted = 0;
+    for (let lvl = 1; lvl <= totalLevels; lvl++) {
+        const s = savedStars[lvl] || 0;
+        if (s > 0) {
+            totalStars += Math.min(3, s);
+            totalCompleted++;
+        }
+    }
+    if (totalStarsEl) totalStarsEl.innerText = `★ ${totalStars} / ${totalLevels * 3}`;
+    if (totalCompEl) {
+        const label = t('dashCompleted');
+        const suffix = label === 'dashCompleted' ? 'COMPLETED' : label;
+        totalCompEl.innerText = `${totalCompleted} / ${totalLevels} ${suffix}`;
+    }
+
+    // Current page range (20 per page)
+    const startLevel = dashboardPage * LEVELS_PER_PAGE + 1;
+    const endLevel = Math.min(totalLevels, startLevel + LEVELS_PER_PAGE - 1);
+    const pageCapacity = (endLevel - startLevel + 1) * 3;
+    let pageStars = 0;
+
+    if (rangeEl) rangeEl.innerText = `${startLevel} — ${endLevel}`;
+    if (prevBtn) prevBtn.disabled = dashboardPage <= 0;
+    if (nextBtn) nextBtn.disabled = dashboardPage >= totalPages - 1;
+
+    const starPath = 'M12 2.4l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.3l-5.9 3.1 1.2-6.5-4.8-4.6 6.6-.9L12 2.4z';
+    const lockSvg = `
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+        </svg>
+    `;
+
+    gridEl.innerHTML = '';
+
+    for (let lvl = startLevel; lvl <= endLevel; lvl++) {
+        const stars = Math.min(3, savedStars[lvl] || 0);
+        pageStars += stars;
+        const unlocked = isLevelUnlocked(lvl, savedStars);
+        const isCurrent = unlocked && stars === 0;
+        const boss = isBossLevel(lvl);
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.disabled = !unlocked;
+        btn.className = `level-tile${isCurrent ? ' tile-current' : ''}${boss ? ' tile-boss' : ''}`;
+        btn.setAttribute('aria-label', `Level ${lvl}`);
+
+        const bossTag = boss ? `<span class="tile-boss-tag">BOSS</span>` : '';
+
+        let bottomHtml = '';
+        if (!unlocked) {
+            bottomHtml = `<div class="tile-stars">${lockSvg}</div>`;
+        } else {
+            const starsSvg = [1, 2, 3].map((i) => `
+                <svg class="tile-star ${i <= stars ? 'filled' : 'empty'}" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="${starPath}" stroke-linejoin="round" />
+                </svg>
+            `).join('');
+            bottomHtml = `<div class="tile-stars">${starsSvg}</div>`;
+        }
+
+        btn.innerHTML = `
+            ${bossTag}
+            <span class="tile-number">${lvl}</span>
+            ${bottomHtml}
+        `;
+
+        if (unlocked) {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                startLevelFromDashboard(lvl - 1);
+            });
+        }
+
+        gridEl.appendChild(btn);
+    }
+
+    if (pageStarsEl) pageStarsEl.innerText = `★ ${pageStars} / ${pageCapacity}`;
+
+    // Dots
+    if (dotsEl) {
+        dotsEl.innerHTML = '';
+        for (let p = 0; p < totalPages; p++) {
+            const dot = document.createElement('button');
+            dot.type = 'button';
+            dot.className = `dash-dot${p === dashboardPage ? ' active' : ''}`;
+            dot.setAttribute('aria-label', `Page ${p + 1}`);
+            dot.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (dashboardPage !== p) {
+                    dashboardPage = p;
+                    renderDashboard();
+                    playSound('move');
+                }
+            });
+            dotsEl.appendChild(dot);
+        }
+    }
+}
+
+function setupDashboardControls() {
+    const prevBtn = document.getElementById('dash-prev-btn');
+    const nextBtn = document.getElementById('dash-next-btn');
+    const dashOverlay = document.getElementById('dashboard-overlay');
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            changeDashboardPage(-1);
+        });
+    }
+    if (nextBtn) {
+        nextBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            changeDashboardPage(1);
+        });
+    }
+
+    // Horizontal swipe on dashboard to switch pages
+    if (dashOverlay) {
+        let touchStartX = 0;
+        let touchStartY = 0;
+        dashOverlay.addEventListener('touchstart', (e) => {
+            if (!dashboardOpen || e.touches.length !== 1) return;
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+
+        dashOverlay.addEventListener('touchend', (e) => {
+            if (!dashboardOpen || e.changedTouches.length !== 1) return;
+            const dx = e.changedTouches[0].clientX - touchStartX;
+            const dy = e.changedTouches[0].clientY - touchStartY;
+            if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.2) {
+                changeDashboardPage(dx < 0 ? 1 : -1);
+            }
+        }, { passive: true });
+    }
 }
 
 // Start
