@@ -51,7 +51,7 @@ const levels = [
     // Level 5
     {
         minPushes: 10,
-        score: 56,
+        score: 34,
         map: [
             "#########",
             "# .  #  #",
@@ -65,7 +65,7 @@ const levels = [
     // Level 6
     {
         minPushes: 10,
-        score: 61,
+        score: 39,
         map: [
             "#########",
             "#.      #",
@@ -79,7 +79,7 @@ const levels = [
     // Level 7
     {
         minPushes: 11,
-        score: 67,
+        score: 51,
         map: [
             "#########",
             "# .  # .#",
@@ -93,7 +93,7 @@ const levels = [
     // Level 8
     {
         minPushes: 10,
-        score: 68,
+        score: 59,
         map: [
             "#########",
             "#.   # .#",
@@ -106,7 +106,7 @@ const levels = [
     // Level 9
     {
         minPushes: 9,
-        score: 72,
+        score: 45,
         map: [
             "#######",
             "#.   .#",
@@ -120,7 +120,7 @@ const levels = [
     // Level 10
     {
         minPushes: 10,
-        score: 72,
+        score: 54,
         map: [
             "########",
             "###  ###",
@@ -134,7 +134,7 @@ const levels = [
     // Level 11
     {
         minPushes: 10,
-        score: 73,
+        score: 52,
         map: [
             "#########",
             "#       #",
@@ -148,7 +148,7 @@ const levels = [
     // Level 12
     {
         minPushes: 9,
-        score: 74,
+        score: 34,
         map: [
             "#########",
             "#       #",
@@ -162,7 +162,7 @@ const levels = [
     // Level 13
     {
         minPushes: 12,
-        score: 74,
+        score: 63,
         map: [
             "#########",
             "#    #  #",
@@ -176,7 +176,7 @@ const levels = [
     // Level 14
     {
         minPushes: 10,
-        score: 75,
+        score: 58,
         map: [
             "#########",
             "#  . # .#",
@@ -190,7 +190,7 @@ const levels = [
     // Level 15
     {
         minPushes: 14,
-        score: 75,
+        score: 56,
         map: [
             "#########",
             "#   #   #",
@@ -203,7 +203,7 @@ const levels = [
     // Level 16
     {
         minPushes: 11,
-        score: 79,
+        score: 42,
         map: [
             "#########",
             "#..   ###",
@@ -217,7 +217,7 @@ const levels = [
     // Level 17
     {
         minPushes: 11,
-        score: 79,
+        score: 65,
         map: [
             "#########",
             "#    #  #",
@@ -231,7 +231,7 @@ const levels = [
     // Level 18
     {
         minPushes: 16,
-        score: 82,
+        score: 68,
         map: [
             "#########",
             "#    #@ #",
@@ -245,7 +245,7 @@ const levels = [
     // Level 19
     {
         minPushes: 14,
-        score: 95,
+        score: 70,
         map: [
             "########",
             "#.   . #",
@@ -285,7 +285,7 @@ const levels = [
     // Level 21
     {
         minPushes: 11,
-        score: 55,
+        score: 50,
         map: [
             "########",
             "#  #   #",
@@ -298,7 +298,7 @@ const levels = [
     // Level 22
     {
         minPushes: 12,
-        score: 58,
+        score: 50,
         map: [
             "########",
             "#.  #  #",
@@ -312,7 +312,7 @@ const levels = [
     // Level 23
     {
         minPushes: 12,
-        score: 59,
+        score: 42,
         map: [
             "#########",
             "#  #    #",
@@ -325,7 +325,7 @@ const levels = [
     // Level 24
     {
         minPushes: 11,
-        score: 62,
+        score: 49,
         map: [
             "#########",
             "#   #   #",
@@ -339,7 +339,7 @@ const levels = [
     // Level 25
     {
         minPushes: 12,
-        score: 64,
+        score: 54,
         map: [
             "#########",
             "# @ #   #",
@@ -353,7 +353,7 @@ const levels = [
     // Level 26
     {
         minPushes: 14,
-        score: 79,
+        score: 60,
         map: [
             "#########",
             "#. #    #",
@@ -367,7 +367,7 @@ const levels = [
     // Level 27
     {
         minPushes: 11,
-        score: 82,
+        score: 42,
         map: [
             "#########",
             "###@  ###",
@@ -381,7 +381,7 @@ const levels = [
     // Level 28 [MULTI-ROOM]
     {
         minPushes: 14,
-        score: 83,
+        score: 75,
         rooms: [
             [
                 "#########",
@@ -409,7 +409,7 @@ const levels = [
     // Level 29
     {
         minPushes: 15,
-        score: 84,
+        score: 71,
         map: [
             "#########",
             "#.   # .#",
@@ -423,7 +423,7 @@ const levels = [
     // Level 30
     {
         minPushes: 13,
-        score: 86,
+        score: 70,
         map: [
             "#########",
             "#  #  . #",
@@ -438,7 +438,7 @@ const levels = [
     // Level 31
     {
         minPushes: 13,
-        score: 88,
+        score: 62,
         map: [
             "#########",
             "#  #    #",
@@ -452,7 +452,7 @@ const levels = [
     // Level 32
     {
         minPushes: 13,
-        score: 90,
+        score: 57,
         map: [
             "#########",
             "#    . ##",
@@ -465,7 +465,7 @@ const levels = [
     // Level 33
     {
         minPushes: 12,
-        score: 91,
+        score: 62,
         map: [
             "##########",
             "#      + #",
@@ -480,7 +480,7 @@ const levels = [
     // Level 34
     {
         minPushes: 13,
-        score: 94,
+        score: 51,
         map: [
             "##########",
             "#   #    #",
@@ -495,7 +495,7 @@ const levels = [
     // Level 35
     {
         minPushes: 15,
-        score: 95,
+        score: 71,
         map: [
             "##########",
             "#     .. #",
@@ -510,7 +510,7 @@ const levels = [
     // Level 36
     {
         minPushes: 14,
-        score: 98,
+        score: 57,
         map: [
             "##########",
             "#       .#",
@@ -525,7 +525,7 @@ const levels = [
     // Level 37
     {
         minPushes: 13,
-        score: 103,
+        score: 82,
         map: [
             "##########",
             "#   #   .#",
@@ -540,7 +540,7 @@ const levels = [
     // Level 38
     {
         minPushes: 15,
-        score: 111,
+        score: 46,
         map: [
             "##########",
             "#     #  #",
@@ -555,7 +555,7 @@ const levels = [
     // Level 39
     {
         minPushes: 16,
-        score: 114,
+        score: 64,
         map: [
             "##########",
             "###    ###",
@@ -570,7 +570,7 @@ const levels = [
     // Level 40 [MULTI-ROOM]
     {
         minPushes: 28,
-        score: 188,
+        score: 137,
         rooms: [
             [
                 "#######",
@@ -597,7 +597,7 @@ const levels = [
     // Level 41
     {
         minPushes: 10,
-        score: 82,
+        score: 63,
         map: [
             "##########",
             "#   .# . #",
@@ -611,7 +611,7 @@ const levels = [
     // Level 42
     {
         minPushes: 14,
-        score: 88,
+        score: 55,
         map: [
             "########",
             "#   .  #",
@@ -626,7 +626,7 @@ const levels = [
     // Level 43
     {
         minPushes: 11,
-        score: 93,
+        score: 62,
         map: [
             "##########",
             "#     #  #",
@@ -640,7 +640,7 @@ const levels = [
     // Level 44 [TELEPORT]
     {
         minPushes: 12,
-        score: 98,
+        score: 62,
         map: [
             "##########",
             "#   #    #",
@@ -655,7 +655,7 @@ const levels = [
     // Level 45
     {
         minPushes: 17,
-        score: 102,
+        score: 86,
         map: [
             "##########",
             "#   # .  #",
@@ -670,7 +670,7 @@ const levels = [
     // Level 46
     {
         minPushes: 13,
-        score: 107,
+        score: 92,
         map: [
             "#########",
             "# $ .#  #",
@@ -685,7 +685,7 @@ const levels = [
     // Level 47 [TELEPORT]
     {
         minPushes: 14,
-        score: 111,
+        score: 80,
         map: [
             "##########",
             "#    #   #",
@@ -701,7 +701,7 @@ const levels = [
     // Level 48
     {
         minPushes: 21,
-        score: 112,
+        score: 79,
         map: [
             "##########",
             "#     #  #",
@@ -715,7 +715,7 @@ const levels = [
     // Level 49
     {
         minPushes: 19,
-        score: 120,
+        score: 88,
         map: [
             "##########",
             "#. #     #",
@@ -730,7 +730,7 @@ const levels = [
     // Level 50
     {
         minPushes: 19,
-        score: 124,
+        score: 69,
         map: [
             "##########",
             "#   #   .#",
@@ -744,7 +744,7 @@ const levels = [
     // Level 51
     {
         minPushes: 20,
-        score: 128,
+        score: 95,
         map: [
             "##########",
             "#  .     #",
@@ -760,7 +760,7 @@ const levels = [
     // Level 52
     {
         minPushes: 16,
-        score: 129,
+        score: 87,
         map: [
             "#########",
             "#. #    #",
@@ -775,7 +775,7 @@ const levels = [
     // Level 53
     {
         minPushes: 20,
-        score: 131,
+        score: 74,
         map: [
             "##########",
             "#    .   #",
@@ -789,7 +789,7 @@ const levels = [
     // Level 54
     {
         minPushes: 20,
-        score: 134,
+        score: 84,
         map: [
             "###########",
             "#.  #@ .  #",
@@ -804,7 +804,7 @@ const levels = [
     // Level 55
     {
         minPushes: 25,
-        score: 134,
+        score: 95,
         map: [
             "##########",
             "# .@#    #",
@@ -820,7 +820,7 @@ const levels = [
     // Level 56
     {
         minPushes: 21,
-        score: 135,
+        score: 87,
         map: [
             "###########",
             "#  . #  . #",
@@ -836,7 +836,7 @@ const levels = [
     // Level 57
     {
         minPushes: 22,
-        score: 146,
+        score: 76,
         map: [
             "##########",
             "# . $    #",
@@ -850,7 +850,7 @@ const levels = [
     // Level 58 [MULTI-ROOM]
     {
         minPushes: 24,
-        score: 148,
+        score: 95,
         rooms: [
             [
                 "#########",
@@ -879,7 +879,7 @@ const levels = [
     // Level 59
     {
         minPushes: 26,
-        score: 157,
+        score: 109,
         map: [
             "###########",
             "##    #   #",
@@ -921,7 +921,7 @@ const levels = [
     // Level 61 [TELEPORT]
     {
         minPushes: 14,
-        score: 97,
+        score: 80,
         map: [
             "##########",
             "# . .#   #",
@@ -937,7 +937,7 @@ const levels = [
     // Level 62 [TELEPORT]
     {
         minPushes: 17,
-        score: 113,
+        score: 92,
         map: [
             "##########",
             "#. . #  .#",
@@ -952,7 +952,7 @@ const levels = [
     // Level 63 [TELEPORT]
     {
         minPushes: 16,
-        score: 114,
+        score: 78,
         map: [
             "##########",
             "#    #  +#",
@@ -967,7 +967,7 @@ const levels = [
     // Level 64
     {
         minPushes: 16,
-        score: 119,
+        score: 68,
         map: [
             "#########",
             "###   ###",
@@ -983,7 +983,7 @@ const levels = [
     // Level 65 [TELEPORT]
     {
         minPushes: 13,
-        score: 119,
+        score: 85,
         map: [
             "##########",
             "#   #    #",
@@ -999,7 +999,7 @@ const levels = [
     // Level 66
     {
         minPushes: 16,
-        score: 123,
+        score: 70,
         map: [
             "##########",
             "# .    . #",
@@ -1014,7 +1014,7 @@ const levels = [
     // Level 67
     {
         minPushes: 19,
-        score: 124,
+        score: 83,
         map: [
             "###########",
             "#   #  .  #",
@@ -1030,7 +1030,7 @@ const levels = [
     // Level 68
     {
         minPushes: 17,
-        score: 128,
+        score: 74,
         map: [
             "##########",
             "#.  +    #",
@@ -1046,7 +1046,7 @@ const levels = [
     // Level 69
     {
         minPushes: 20,
-        score: 130,
+        score: 93,
         map: [
             "##########",
             "# #      #",
@@ -1061,7 +1061,7 @@ const levels = [
     // Level 70
     {
         minPushes: 22,
-        score: 131,
+        score: 81,
         map: [
             "#########",
             "#   . # #",
@@ -1077,7 +1077,7 @@ const levels = [
     // Level 71 [TELEPORT]
     {
         minPushes: 18,
-        score: 134,
+        score: 99,
         map: [
             "############",
             "#  . #   . #",
@@ -1093,7 +1093,7 @@ const levels = [
     // Level 72
     {
         minPushes: 19,
-        score: 134,
+        score: 68,
         map: [
             "#########",
             "#.# .   #",
@@ -1109,7 +1109,7 @@ const levels = [
     // Level 73
     {
         minPushes: 18,
-        score: 137,
+        score: 100,
         map: [
             "###########",
             "#     #   #",
@@ -1124,7 +1124,7 @@ const levels = [
     // Level 74
     {
         minPushes: 21,
-        score: 137,
+        score: 90,
         map: [
             "#########",
             "# . #  .#",
@@ -1138,7 +1138,7 @@ const levels = [
     // Level 75
     {
         minPushes: 18,
-        score: 140,
+        score: 82,
         map: [
             "###########",
             "# +      .#",
@@ -1153,7 +1153,7 @@ const levels = [
     // Level 76
     {
         minPushes: 19,
-        score: 144,
+        score: 105,
         map: [
             "###########",
             "#.    #   #",
@@ -1168,7 +1168,7 @@ const levels = [
     // Level 77
     {
         minPushes: 20,
-        score: 145,
+        score: 80,
         map: [
             "##########",
             "#        #",
@@ -1184,7 +1184,7 @@ const levels = [
     // Level 78
     {
         minPushes: 21,
-        score: 148,
+        score: 102,
         map: [
             "#########",
             "#   @  ##",
@@ -1199,7 +1199,7 @@ const levels = [
     // Level 79 [MULTI-ROOM]
     {
         minPushes: 22,
-        score: 156,
+        score: 102,
         rooms: [
             [
                 "########",
@@ -1226,36 +1226,36 @@ const levels = [
     },
     // Level 80 [MULTI-ROOM]
     {
-        minPushes: 20,
-        score: 166,
+        minPushes: 26,
+        score: 137,
         rooms: [
             [
-                "########",
-                "#      #",
-                "W$   $ #",
-                "# .#   #",
-                "#   .  #",
-                "#.     #",
-                "#      #",
-                "########"
+                "#######",
+                "#     #",
+                "#   $ #",
+                "#  .  #",
+                "# . . #",
+                "###S###"
             ],
             [
-                "########",
-                "# .. ###",
-                "#@$ $###",
-                "# $  $ E",
-                "# .    #",
-                "########"
+                "####N##",
+                "# $ . #",
+                "#   + #",
+                "# $#. #",
+                "#  $  #",
+                "# $$  #",
+                "#     #",
+                "#######"
             ]
         ],
         links: [
-            { a: { room: 0, x: 0, y: 2 }, b: { room: 1, x: 7, y: 3 } }
+            { a: { room: 0, x: 3, y: 5 }, b: { room: 1, x: 4, y: 0 } }
         ]
     },
     // Level 81 [TELEPORT]
     {
         minPushes: 14,
-        score: 108,
+        score: 66,
         map: [
             "###########",
             "#    #    #",
@@ -1271,7 +1271,7 @@ const levels = [
     // Level 82
     {
         minPushes: 18,
-        score: 116,
+        score: 69,
         map: [
             "##########",
             "#   @    #",
@@ -1286,7 +1286,7 @@ const levels = [
     // Level 83 [TELEPORT]
     {
         minPushes: 16,
-        score: 117,
+        score: 76,
         map: [
             "###########",
             "#   .# ...#",
@@ -1301,7 +1301,7 @@ const levels = [
     // Level 84
     {
         minPushes: 14,
-        score: 120,
+        score: 73,
         map: [
             "#########",
             "###  .###",
@@ -1317,7 +1317,7 @@ const levels = [
     // Level 85
     {
         minPushes: 18,
-        score: 121,
+        score: 94,
         map: [
             "##########",
             "#    .   #",
@@ -1333,7 +1333,7 @@ const levels = [
     // Level 86
     {
         minPushes: 16,
-        score: 125,
+        score: 72,
         map: [
             "###########",
             "##     # ##",
@@ -1348,7 +1348,7 @@ const levels = [
     // Level 87
     {
         minPushes: 23,
-        score: 125,
+        score: 99,
         map: [
             "##########",
             "# . .# . #",
@@ -1362,7 +1362,7 @@ const levels = [
     // Level 88
     {
         minPushes: 16,
-        score: 129,
+        score: 95,
         map: [
             "###########",
             "#   .#   .#",
@@ -1378,7 +1378,7 @@ const levels = [
     // Level 89 [MULTI-ROOM]
     {
         minPushes: 16,
-        score: 130,
+        score: 73,
         rooms: [
             [
                 "####N###",
@@ -1407,7 +1407,7 @@ const levels = [
     // Level 90
     {
         minPushes: 26,
-        score: 137,
+        score: 97,
         map: [
             "###########",
             "#     # @ #",
@@ -1421,7 +1421,7 @@ const levels = [
     // Level 91
     {
         minPushes: 18,
-        score: 138,
+        score: 80,
         map: [
             "##########",
             "###    ###",
@@ -1436,7 +1436,7 @@ const levels = [
     // Level 92
     {
         minPushes: 20,
-        score: 141,
+        score: 102,
         map: [
             "###########",
             "#    .#   #",
@@ -1452,7 +1452,7 @@ const levels = [
     // Level 93
     {
         minPushes: 21,
-        score: 141,
+        score: 100,
         map: [
             "###########",
             "#         #",
@@ -1467,7 +1467,7 @@ const levels = [
     // Level 94 [MULTI-ROOM]
     {
         minPushes: 20,
-        score: 143,
+        score: 100,
         rooms: [
             [
                 "########",
@@ -1495,7 +1495,7 @@ const levels = [
     // Level 95
     {
         minPushes: 27,
-        score: 150,
+        score: 108,
         map: [
             "#########",
             "#. .#   #",
@@ -1511,7 +1511,7 @@ const levels = [
     // Level 96
     {
         minPushes: 24,
-        score: 151,
+        score: 113,
         map: [
             "############",
             "#          #",
@@ -1525,7 +1525,7 @@ const levels = [
     // Level 97 [MULTI-ROOM]
     {
         minPushes: 21,
-        score: 158,
+        score: 103,
         rooms: [
             [
                 "##N####",
@@ -1552,7 +1552,7 @@ const levels = [
     // Level 98
     {
         minPushes: 28,
-        score: 167,
+        score: 121,
         map: [
             "###########",
             "#.  #  #  #",
@@ -1566,7 +1566,7 @@ const levels = [
     // Level 99 [MULTI-ROOM]
     {
         minPushes: 22,
-        score: 180,
+        score: 110,
         rooms: [
             [
                 "###N####",
@@ -1593,7 +1593,7 @@ const levels = [
     // Level 100 [MULTI-ROOM]
     {
         minPushes: 26,
-        score: 190,
+        score: 125,
         rooms: [
             [
                 "####N####",
@@ -1619,7 +1619,7 @@ const levels = [
     // Level 101 [TELEPORT]
     {
         minPushes: 14,
-        score: 93,
+        score: 73,
         map: [
             "###########",
             "#   #     #",
@@ -1635,7 +1635,7 @@ const levels = [
     // Level 102
     {
         minPushes: 17,
-        score: 105,
+        score: 50,
         map: [
             "##########",
             "# $    . #",
@@ -1651,7 +1651,7 @@ const levels = [
     // Level 103
     {
         minPushes: 18,
-        score: 114,
+        score: 79,
         map: [
             "##########",
             "#   #    #",
@@ -1667,7 +1667,7 @@ const levels = [
     // Level 104
     {
         minPushes: 22,
-        score: 119,
+        score: 94,
         map: [
             "###########",
             "# .#  #   #",
@@ -1681,7 +1681,7 @@ const levels = [
     // Level 105
     {
         minPushes: 20,
-        score: 121,
+        score: 86,
         map: [
             "###########",
             "#.     #  #",
@@ -1696,7 +1696,7 @@ const levels = [
     // Level 106
     {
         minPushes: 18,
-        score: 127,
+        score: 90,
         map: [
             "###########",
             "#         #",
@@ -1712,7 +1712,7 @@ const levels = [
     // Level 107
     {
         minPushes: 18,
-        score: 129,
+        score: 85,
         map: [
             "###########",
             "#    #    #",
@@ -1727,7 +1727,7 @@ const levels = [
     // Level 108
     {
         minPushes: 18,
-        score: 129,
+        score: 94,
         map: [
             "##########",
             "# .      #",
@@ -1742,7 +1742,7 @@ const levels = [
     // Level 109
     {
         minPushes: 17,
-        score: 130,
+        score: 97,
         map: [
             "##########",
             "#  #.    #",
@@ -1758,7 +1758,7 @@ const levels = [
     // Level 110
     {
         minPushes: 18,
-        score: 132,
+        score: 90,
         map: [
             "##########",
             "#  @ #   #",
@@ -1774,7 +1774,7 @@ const levels = [
     // Level 111
     {
         minPushes: 22,
-        score: 132,
+        score: 92,
         map: [
             "#########",
             "#    #  #",
@@ -1790,7 +1790,7 @@ const levels = [
     // Level 112
     {
         minPushes: 21,
-        score: 135,
+        score: 94,
         map: [
             "###########",
             "#. #      #",
@@ -1805,7 +1805,7 @@ const levels = [
     // Level 113
     {
         minPushes: 24,
-        score: 137,
+        score: 109,
         map: [
             "##########",
             "#   #    #",
@@ -1821,7 +1821,7 @@ const levels = [
     // Level 114 [TELEPORT]
     {
         minPushes: 18,
-        score: 140,
+        score: 86,
         map: [
             "##########",
             "# .  # T #",
@@ -1837,7 +1837,7 @@ const levels = [
     // Level 115
     {
         minPushes: 20,
-        score: 144,
+        score: 106,
         map: [
             "###########",
             "#.  #   . #",
@@ -1853,7 +1853,7 @@ const levels = [
     // Level 116
     {
         minPushes: 22,
-        score: 144,
+        score: 107,
         map: [
             "###########",
             "#.   #    #",
@@ -1869,7 +1869,7 @@ const levels = [
     // Level 117 [MULTI-ROOM]
     {
         minPushes: 23,
-        score: 145,
+        score: 103,
         rooms: [
             [
                 "#########",
@@ -1897,7 +1897,7 @@ const levels = [
     // Level 118
     {
         minPushes: 24,
-        score: 148,
+        score: 100,
         map: [
             "###########",
             "#   #.    #",
@@ -1911,7 +1911,7 @@ const levels = [
     // Level 119
     {
         minPushes: 21,
-        score: 153,
+        score: 80,
         map: [
             "###########",
             "# #   #  @#",
@@ -1953,7 +1953,7 @@ const levels = [
     // Level 121
     {
         minPushes: 18,
-        score: 116,
+        score: 82,
         map: [
             "##########",
             "# ..     #",
@@ -1969,7 +1969,7 @@ const levels = [
     // Level 122
     {
         minPushes: 18,
-        score: 117,
+        score: 80,
         map: [
             "###########",
             "#..      ##",
@@ -1985,7 +1985,7 @@ const levels = [
     // Level 123
     {
         minPushes: 18,
-        score: 124,
+        score: 87,
         map: [
             "###########",
             "# @   #   #",
@@ -2001,7 +2001,7 @@ const levels = [
     // Level 124
     {
         minPushes: 16,
-        score: 127,
+        score: 82,
         map: [
             "#########",
             "#  .# ###",
@@ -2017,7 +2017,7 @@ const levels = [
     // Level 125
     {
         minPushes: 17,
-        score: 127,
+        score: 81,
         map: [
             "###########",
             "#       . #",
@@ -2032,7 +2032,7 @@ const levels = [
     // Level 126
     {
         minPushes: 17,
-        score: 130,
+        score: 83,
         map: [
             "##########",
             "#.       #",
@@ -2047,7 +2047,7 @@ const levels = [
     // Level 127
     {
         minPushes: 17,
-        score: 130,
+        score: 97,
         map: [
             "#########",
             "#  #    #",
@@ -2063,7 +2063,7 @@ const levels = [
     // Level 128
     {
         minPushes: 18,
-        score: 133,
+        score: 85,
         map: [
             "#########",
             "#     . #",
@@ -2079,7 +2079,7 @@ const levels = [
     // Level 129
     {
         minPushes: 20,
-        score: 136,
+        score: 96,
         map: [
             "#########",
             "#...  # #",
@@ -2094,7 +2094,7 @@ const levels = [
     // Level 130
     {
         minPushes: 25,
-        score: 141,
+        score: 91,
         map: [
             "###########",
             "#     #  .#",
@@ -2109,7 +2109,7 @@ const levels = [
     // Level 131
     {
         minPushes: 29,
-        score: 143,
+        score: 112,
         map: [
             "###########",
             "#  #  #   #",
@@ -2125,7 +2125,7 @@ const levels = [
     // Level 132
     {
         minPushes: 25,
-        score: 146,
+        score: 95,
         map: [
             "###########",
             "#    .#   #",
@@ -2141,7 +2141,7 @@ const levels = [
     // Level 133
     {
         minPushes: 28,
-        score: 146,
+        score: 100,
         map: [
             "#########",
             "#    #  #",
@@ -2157,7 +2157,7 @@ const levels = [
     // Level 134
     {
         minPushes: 20,
-        score: 148,
+        score: 98,
         map: [
             "##########",
             "#.. #.   #",
@@ -2173,7 +2173,7 @@ const levels = [
     // Level 135
     {
         minPushes: 22,
-        score: 152,
+        score: 106,
         map: [
             "###########",
             "#   $    .#",
@@ -2187,7 +2187,7 @@ const levels = [
     // Level 136
     {
         minPushes: 25,
-        score: 163,
+        score: 101,
         map: [
             "##########",
             "#   #.   #",
@@ -2202,7 +2202,7 @@ const levels = [
     // Level 137
     {
         minPushes: 30,
-        score: 165,
+        score: 116,
         map: [
             "###########",
             "#   #  #. #",
@@ -2217,7 +2217,7 @@ const levels = [
     // Level 138
     {
         minPushes: 30,
-        score: 166,
+        score: 115,
         map: [
             "##########",
             "#   .#   #",
@@ -2233,7 +2233,7 @@ const levels = [
     // Level 139 [MULTI-ROOM]
     {
         minPushes: 30,
-        score: 167,
+        score: 129,
         rooms: [
             [
                 "##N####",
@@ -2261,7 +2261,7 @@ const levels = [
     // Level 140 [MULTI-ROOM]
     {
         minPushes: 27,
-        score: 200,
+        score: 121,
         rooms: [
             [
                 "#######",
@@ -2288,7 +2288,7 @@ const levels = [
     // Level 141 [TELEPORT]
     {
         minPushes: 16,
-        score: 116,
+        score: 89,
         map: [
             "############",
             "#    .#.   #",
@@ -2302,7 +2302,7 @@ const levels = [
     // Level 142
     {
         minPushes: 17,
-        score: 118,
+        score: 93,
         map: [
             "############",
             "#  _.  #   #",
@@ -2317,7 +2317,7 @@ const levels = [
     // Level 143
     {
         minPushes: 15,
-        score: 123,
+        score: 91,
         map: [
             "###########",
             "#   #     #",
@@ -2333,7 +2333,7 @@ const levels = [
     // Level 144
     {
         minPushes: 16,
-        score: 127,
+        score: 96,
         map: [
             "############",
             "#   .  #   #",
@@ -2348,7 +2348,7 @@ const levels = [
     // Level 145
     {
         minPushes: 20,
-        score: 135,
+        score: 112,
         map: [
             "###########",
             "# .  #  . #",
@@ -2362,7 +2362,7 @@ const levels = [
     // Level 146
     {
         minPushes: 18,
-        score: 136,
+        score: 105,
         map: [
             "############",
             "#. # .     #",
@@ -2376,7 +2376,7 @@ const levels = [
     // Level 147
     {
         minPushes: 20,
-        score: 138,
+        score: 97,
         map: [
             "##########",
             "#   # .$ #",
@@ -2392,7 +2392,7 @@ const levels = [
     // Level 148
     {
         minPushes: 20,
-        score: 140,
+        score: 100,
         map: [
             "############",
             "####    ####",
@@ -2408,7 +2408,7 @@ const levels = [
     // Level 149
     {
         minPushes: 24,
-        score: 143,
+        score: 88,
         map: [
             "###########",
             "# $     . #",
@@ -2423,7 +2423,7 @@ const levels = [
     // Level 150
     {
         minPushes: 23,
-        score: 145,
+        score: 102,
         map: [
             "###########",
             "#   #     #",
@@ -2438,7 +2438,7 @@ const levels = [
     // Level 151
     {
         minPushes: 20,
-        score: 146,
+        score: 87,
         map: [
             "##########",
             "#   .#   #",
@@ -2454,7 +2454,7 @@ const levels = [
     // Level 152
     {
         minPushes: 18,
-        score: 147,
+        score: 105,
         map: [
             "##########",
             "#    .   #",
@@ -2469,7 +2469,7 @@ const levels = [
     // Level 153
     {
         minPushes: 19,
-        score: 149,
+        score: 108,
         map: [
             "############",
             "#          #",
@@ -2485,7 +2485,7 @@ const levels = [
     // Level 154
     {
         minPushes: 20,
-        score: 150,
+        score: 89,
         map: [
             "##########",
             "###  .   #",
@@ -2501,7 +2501,7 @@ const levels = [
     // Level 155 [MULTI-ROOM]
     {
         minPushes: 19,
-        score: 153,
+        score: 97,
         rooms: [
             [
                 "####N####",
@@ -2529,7 +2529,7 @@ const levels = [
     // Level 156 [TELEPORT]
     {
         minPushes: 20,
-        score: 155,
+        score: 101,
         map: [
             "############",
             "#.T   #    #",
@@ -2544,7 +2544,7 @@ const levels = [
     // Level 157
     {
         minPushes: 22,
-        score: 155,
+        score: 112,
         map: [
             "###########",
             "#     #   #",
@@ -2559,7 +2559,7 @@ const levels = [
     // Level 158
     {
         minPushes: 25,
-        score: 159,
+        score: 127,
         map: [
             "##########",
             "#   #   .#",
@@ -2574,7 +2574,7 @@ const levels = [
     // Level 159
     {
         minPushes: 29,
-        score: 166,
+        score: 116,
         map: [
             "##########",
             "# . . $  #",
@@ -2586,27 +2586,38 @@ const levels = [
             "##########"
         ]
     },
-    // Level 160
+    // Level 160 [MULTI-ROOM]
     {
-        minPushes: 32,
-        score: 208,
-        map: [
-            "###########",
-            "#  .#     #",
-            "#   ##$ $ #",
-            "# .##  #  #",
-            "# . #   # #",
-            "#   $  $  #",
-            "#  *# #@. #",
-            "# $ #     #",
-            "#   #.    #",
-            "###########"
+        minPushes: 34,
+        score: 169,
+        rooms: [
+            [
+                "#########",
+                "# .     #",
+                "#  $    E",
+                "# .####$#",
+                "#    .  #",
+                "#########"
+            ],
+            [
+                "########",
+                "#      #",
+                "# ## $ #",
+                "# #@*###",
+                "#  $.# #",
+                "W$   . #",
+                "#      #",
+                "########"
+            ]
+        ],
+        links: [
+            { a: { room: 0, x: 8, y: 2 }, b: { room: 1, x: 0, y: 5 } }
         ]
     },
     // Level 161
     {
         minPushes: 17,
-        score: 119,
+        score: 90,
         map: [
             "############",
             "# .  # _ . #",
@@ -2622,7 +2633,7 @@ const levels = [
     // Level 162
     {
         minPushes: 21,
-        score: 125,
+        score: 95,
         map: [
             "############",
             "#     #..  #",
@@ -2636,7 +2647,7 @@ const levels = [
     // Level 163 [TELEPORT]
     {
         minPushes: 18,
-        score: 132,
+        score: 105,
         map: [
             "############",
             "#    #.    #",
@@ -2651,7 +2662,7 @@ const levels = [
     // Level 164 [TELEPORT]
     {
         minPushes: 16,
-        score: 133,
+        score: 88,
         map: [
             "############",
             "#   .#     #",
@@ -2666,7 +2677,7 @@ const levels = [
     // Level 165
     {
         minPushes: 17,
-        score: 133,
+        score: 96,
         map: [
             "############",
             "#    #   * #",
@@ -2681,7 +2692,7 @@ const levels = [
     // Level 166 [TELEPORT]
     {
         minPushes: 18,
-        score: 136,
+        score: 92,
         map: [
             "###########",
             "#   #  . .#",
@@ -2697,7 +2708,7 @@ const levels = [
     // Level 167
     {
         minPushes: 18,
-        score: 140,
+        score: 99,
         map: [
             "###########",
             "# #    ####",
@@ -2711,7 +2722,7 @@ const levels = [
     // Level 168 [TELEPORT]
     {
         minPushes: 18,
-        score: 142,
+        score: 99,
         map: [
             "############",
             "# T  #  .  #",
@@ -2727,7 +2738,7 @@ const levels = [
     // Level 169
     {
         minPushes: 22,
-        score: 145,
+        score: 95,
         map: [
             "###########",
             "#    #    #",
@@ -2743,7 +2754,7 @@ const levels = [
     // Level 170
     {
         minPushes: 21,
-        score: 147,
+        score: 99,
         map: [
             "###########",
             "#  #   .  #",
@@ -2759,7 +2770,7 @@ const levels = [
     // Level 171
     {
         minPushes: 22,
-        score: 150,
+        score: 123,
         map: [
             "###########",
             "#  .$+#   #",
@@ -2773,7 +2784,7 @@ const levels = [
     // Level 172
     {
         minPushes: 25,
-        score: 154,
+        score: 98,
         map: [
             "###########",
             "#  #. #  @#",
@@ -2788,7 +2799,7 @@ const levels = [
     // Level 173
     {
         minPushes: 26,
-        score: 154,
+        score: 112,
         map: [
             "###########",
             "#   .# #  #",
@@ -2803,7 +2814,7 @@ const levels = [
     // Level 174
     {
         minPushes: 20,
-        score: 156,
+        score: 104,
         map: [
             "############",
             "#. .    # .#",
@@ -2817,7 +2828,7 @@ const levels = [
     // Level 175
     {
         minPushes: 24,
-        score: 172,
+        score: 125,
         map: [
             "###########",
             "#   @   # #",
@@ -2831,7 +2842,7 @@ const levels = [
     // Level 176 [MULTI-ROOM]
     {
         minPushes: 23,
-        score: 173,
+        score: 105,
         rooms: [
             [
                 "#######",
@@ -2860,7 +2871,7 @@ const levels = [
     // Level 177 [MULTI-ROOM]
     {
         minPushes: 22,
-        score: 176,
+        score: 117,
         rooms: [
             [
                 "####N##",
@@ -2887,7 +2898,7 @@ const levels = [
     // Level 178 [MULTI-ROOM]
     {
         minPushes: 30,
-        score: 181,
+        score: 123,
         rooms: [
             [
                 "#######",
@@ -2915,7 +2926,7 @@ const levels = [
     // Level 179
     {
         minPushes: 25,
-        score: 184,
+        score: 89,
         map: [
             "###########",
             "#     #  .#",
@@ -2930,7 +2941,7 @@ const levels = [
     // Level 180 [MULTI-ROOM]
     {
         minPushes: 31,
-        score: 210,
+        score: 153,
         rooms: [
             [
                 "########",
@@ -2956,7 +2967,7 @@ const levels = [
     // Level 181
     {
         minPushes: 15,
-        score: 118,
+        score: 83,
         map: [
             "############",
             "#     #    #",
@@ -2971,7 +2982,7 @@ const levels = [
     // Level 182
     {
         minPushes: 15,
-        score: 119,
+        score: 90,
         map: [
             "############",
             "#     .#   #",
@@ -2986,7 +2997,7 @@ const levels = [
     // Level 183
     {
         minPushes: 17,
-        score: 128,
+        score: 91,
         map: [
             "##########",
             "# @ .#   #",
@@ -3002,7 +3013,7 @@ const levels = [
     // Level 184
     {
         minPushes: 18,
-        score: 132,
+        score: 89,
         map: [
             "###########",
             "#     .@  #",
@@ -3017,7 +3028,7 @@ const levels = [
     // Level 185
     {
         minPushes: 17,
-        score: 135,
+        score: 88,
         map: [
             "############",
             "#   #      #",
@@ -3033,7 +3044,7 @@ const levels = [
     // Level 186
     {
         minPushes: 17,
-        score: 137,
+        score: 94,
         map: [
             "############",
             "#     #    #",
@@ -3048,7 +3059,7 @@ const levels = [
     // Level 187 [TELEPORT]
     {
         minPushes: 21,
-        score: 137,
+        score: 112,
         map: [
             "###########",
             "#    # T  #",
@@ -3064,7 +3075,7 @@ const levels = [
     // Level 188
     {
         minPushes: 24,
-        score: 137,
+        score: 106,
         map: [
             "############",
             "#   # .  $ #",
@@ -3079,7 +3090,7 @@ const levels = [
     // Level 189
     {
         minPushes: 19,
-        score: 139,
+        score: 97,
         map: [
             "##########",
             "# $   . .#",
@@ -3094,7 +3105,7 @@ const levels = [
     // Level 190 [MULTI-ROOM]
     {
         minPushes: 23,
-        score: 145,
+        score: 111,
         rooms: [
             [
                 "########",
@@ -3122,7 +3133,7 @@ const levels = [
     // Level 191
     {
         minPushes: 20,
-        score: 146,
+        score: 98,
         map: [
             "############",
             "#   # #    #",
@@ -3138,7 +3149,7 @@ const levels = [
     // Level 192
     {
         minPushes: 27,
-        score: 146,
+        score: 101,
         map: [
             "##########",
             "# #. #   #",
@@ -3153,7 +3164,7 @@ const levels = [
     // Level 193
     {
         minPushes: 22,
-        score: 148,
+        score: 88,
         map: [
             "############",
             "#  @ ..#   #",
@@ -3168,7 +3179,7 @@ const levels = [
     // Level 194
     {
         minPushes: 19,
-        score: 149,
+        score: 108,
         map: [
             "###########",
             "#   # #   #",
@@ -3184,7 +3195,7 @@ const levels = [
     // Level 195
     {
         minPushes: 22,
-        score: 152,
+        score: 108,
         map: [
             "############",
             "# # #      #",
@@ -3198,7 +3209,7 @@ const levels = [
     // Level 196 [MULTI-ROOM]
     {
         minPushes: 23,
-        score: 155,
+        score: 122,
         rooms: [
             [
                 "#####N##",
@@ -3226,7 +3237,7 @@ const levels = [
     // Level 197 [TELEPORT]
     {
         minPushes: 19,
-        score: 158,
+        score: 110,
         map: [
             "###########",
             "#    #    #",
@@ -3241,7 +3252,7 @@ const levels = [
     // Level 198
     {
         minPushes: 24,
-        score: 158,
+        score: 88,
         map: [
             "############",
             "# .   #   .#",
@@ -3256,7 +3267,7 @@ const levels = [
     // Level 199 [MULTI-ROOM]
     {
         minPushes: 28,
-        score: 165,
+        score: 123,
         rooms: [
             [
                 "#########",
@@ -3283,7 +3294,7 @@ const levels = [
     // Level 200 [MULTI-ROOM]
     {
         minPushes: 27,
-        score: 181,
+        score: 137,
         rooms: [
             [
                 "#######",

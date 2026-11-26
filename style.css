@@ -20,8 +20,6 @@
     --accent-soft: rgba(251, 191, 36, 0.15);
     --accent-border: rgba(251, 191, 36, 0.35);
     --wall-base: #4a3d63;
-    --wall-border: rgba(0, 0, 0, 0.45);
-    --mortar: #2a2140;
     --floor: #2a2443;
     --target-color: #fbbf24;
     --target-bg: rgba(251, 191, 36, 0.12);
@@ -64,8 +62,6 @@ body[data-theme="scifi"] {
     --accent-soft: rgba(56, 189, 248, 0.14);
     --accent-border: rgba(56, 189, 248, 0.45);
     --wall-base: #1b283f;
-    --wall-border: rgba(56, 189, 248, 0.65);
-    --mortar: #38bdf8;
     --floor: #0c1424;
     --target-color: #22d3ee;
     --target-bg: rgba(34, 211, 238, 0.12);
@@ -106,7 +102,6 @@ body[data-theme="arcade"] {
     --accent-border: #facc15;
     --wall-base: #2563eb;
     --wall-border: #0f172a;
-    --mortar: #1e3a8a;
     --floor: #1e293b;
     --target-color: #f43f5e;
     --target-bg: rgba(244, 63, 94, 0.22);
@@ -170,7 +165,7 @@ body[data-theme="monument"] {
 }
 
 /* =========================================================
-   BASE LAYOUT & SHARED BACKGROUNDS
+   BASE LAYOUT & SHARED SCREEN BACKGROUNDS
    ========================================================= */
 * {
     box-sizing: border-box;
@@ -194,7 +189,8 @@ body {
 }
 
 body,
-#start-overlay {
+#start-overlay,
+#dashboard-overlay {
     background:
         linear-gradient(var(--bg-grid) 1px, transparent 1px),
         linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px),
@@ -204,7 +200,8 @@ body,
 }
 
 body[data-theme="arcade"],
-body[data-theme="arcade"] #start-overlay {
+body[data-theme="arcade"] #start-overlay,
+body[data-theme="arcade"] #dashboard-overlay {
     background:
         repeating-linear-gradient(
             0deg,
@@ -218,7 +215,8 @@ body[data-theme="arcade"] #start-overlay {
 }
 
 body[data-theme="monument"],
-body[data-theme="monument"] #start-overlay {
+body[data-theme="monument"] #start-overlay,
+body[data-theme="monument"] #dashboard-overlay {
     background: radial-gradient(circle at 50% 25%, var(--bg-top) 0%, var(--bg-bottom) 100%);
 }
 
@@ -263,21 +261,6 @@ body[data-theme="monument"] .title {
 
 body[data-theme="monument"] .badge-accent {
     color: #b44933;
-}
-
-.code-field {
-    background: var(--panel);
-    color: var(--accent);
-    border: 1px solid var(--panel-border);
-}
-
-.code-field:focus {
-    border-color: var(--accent);
-}
-
-body[data-theme="monument"] .code-field {
-    color: #3d352e;
-    box-shadow: inset 0 2px 4px rgba(84, 68, 52, 0.08);
 }
 
 .pill {
@@ -341,6 +324,17 @@ body[data-theme="monument"] .btn-icon:hover:not(:disabled) {
     background: #ffffff;
     border-color: var(--accent);
     filter: none;
+}
+
+@media (min-width: 640px) {
+    #top-right-controls,
+    #home-btn {
+        width: var(--corner-btn-w, auto);
+    }
+
+    #top-right-controls > button {
+        width: 100%;
+    }
 }
 
 /* =========================================================
@@ -774,7 +768,6 @@ body[data-theme="monument"] .door.door-open {
 body[data-theme="monument"] .door.door-open:not(.player):not(.box):not(.box-on-target)::before {
     border-left-color: #448274;
     border-right-color: #448274;
-    background: linear-gradient(90deg, rgba(68, 130, 116, 0.22), transparent 22%, transparent 78%, rgba(68, 130, 116, 0.22));
 }
 
 /* =========================================================
@@ -1132,31 +1125,13 @@ body[data-theme="monument"] .logo-crate::before {
     }
 }
 
-body[data-theme="arcade"] .star-slot.earned .star-fill {
+body[data-theme="arcade"] .star-slot.earned .star-fill path {
     fill: #facc15;
     stroke: #ca8a04;
+}
+
+body[data-theme="arcade"] .star-slot.earned .star-fill {
     filter: drop-shadow(0 0 6px rgba(250, 204, 21, 0.7));
-}
-
-.modal-stars-stats {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.25rem;
-    font-size: 0.85rem;
-    opacity: 0.85;
-}
-
-.modal-stars-record {
-    font-weight: 700;
-    color: #d97706;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    font-size: 0.75rem;
-}
-
-body[data-theme="arcade"] .modal-stars-record {
-    color: #facc15;
 }
 
 /* =========================================================
@@ -1374,17 +1349,6 @@ body[data-theme="monument"] .wall.portal::after {
 /* =========================================================
    PAUSE OVERLAY & BOARD OBSCURATION (LEVEL 11+)
    ========================================================= */
-@media (min-width: 640px) {
-    #top-right-controls,
-    #home-btn {
-        width: var(--corner-btn-w, auto);
-    }
-
-    #top-right-controls > button {
-        width: 100%;
-    }
-}
-
 #board-wrapper {
     border-radius: 20px;
 }
@@ -1469,32 +1433,6 @@ body[data-theme="monument"] .pause-icon {
 /* =========================================================
    LEVEL SELECTION DASHBOARD
    ========================================================= */
-#dashboard-overlay {
-    background:
-        linear-gradient(var(--bg-grid) 1px, transparent 1px),
-        linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px),
-        radial-gradient(900px 500px at 50% -10%, var(--bg-glow) 0%, transparent 65%),
-        linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
-    background-size: 36px 36px, 36px 36px, 100% 100%, 100% 100%;
-}
-
-body[data-theme="arcade"] #dashboard-overlay {
-    background:
-        repeating-linear-gradient(
-            0deg,
-            rgba(0, 0, 0, 0.22) 0px,
-            rgba(0, 0, 0, 0.22) 2px,
-            transparent 2px,
-            transparent 4px
-        ),
-        linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
-    background-size: 100% 4px, 100% 100%;
-}
-
-body[data-theme="monument"] #dashboard-overlay {
-    background: radial-gradient(circle at 50% 25%, var(--bg-top) 0%, var(--bg-bottom) 100%);
-}
-
 .level-tile {
     position: relative;
     display: flex;
@@ -1537,7 +1475,6 @@ body[data-theme="monument"] #dashboard-overlay {
     box-shadow: none;
 }
 
-/* Next playable level highlight */
 .level-tile.tile-current {
     border: 2px solid var(--accent);
     box-shadow:
@@ -1545,7 +1482,6 @@ body[data-theme="monument"] #dashboard-overlay {
         inset 0 1px 0 rgba(255, 255, 255, 0.14);
 }
 
-/* Boss brick (20, 40, 60, ...) */
 .level-tile.tile-boss:not(:disabled) {
     border-color: rgba(251, 113, 133, 0.65);
     box-shadow:
@@ -1570,10 +1506,6 @@ body[data-theme="arcade"] .level-tile:active:not(:disabled) {
     box-shadow: 0 1px 0 #090d16;
 }
 
-body[data-theme="arcade"] .level-tile.tile-current {
-    border-color: #facc15;
-}
-
 body[data-theme="arcade"] .level-tile.tile-boss:not(:disabled) {
     border-color: #f43f5e;
 }
@@ -1587,10 +1519,6 @@ body[data-theme="monument"] .level-tile:hover:not(:disabled) {
     background: #ffffff;
     border-color: var(--accent);
     filter: none;
-}
-
-body[data-theme="monument"] .level-tile.tile-current {
-    border: 2px solid var(--accent);
 }
 
 body[data-theme="monument"] .level-tile.tile-boss:not(:disabled) {

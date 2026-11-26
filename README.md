@@ -29,7 +29,6 @@ Open `index.html` in any modern browser. An internet connection is required to l
 
 - Procedurally generated and balanced levels along a sawtooth difficulty curve.
 - Boss levels, time limits and a 3-star rating based on how few pushes you need.
-- Checkpoint codes to resume from later milestones.
 - Four visual themes and five languages, switchable at any time.
 - Procedural sound effects tailored to each visual theme, synthesized in the browser.
 

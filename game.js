@@ -98,7 +98,7 @@ function calculateEarnedStars(pushes, levelEntry) {
 
     if (minPushes === null || pushes <= minPushes) return 3;
 
-    const twoStarLimit = minPushes + Math.max(2, Math.ceil(minPushes * 0.2));
+    const twoStarLimit = minPushes + Math.max(2, Math.ceil(minPushes * 0.3));
     if (pushes <= twoStarLimit) return 2;
 
     return 1;
@@ -123,59 +123,6 @@ const TIMER_MAX_SECONDS = 180;  // maximum time limit (3 minutes, reached at sco
 const TIMER_STEP_SECONDS = 10;  // tier increment in seconds
 const TIMER_BASE_SCORE = 50;    // highest score still in the 30s tier (also fallback if a level has no score)
 const TIMER_SCORE_STEP = 15;    // score points per 10s tier
-
-// Fixed 5-letter checkpoint passwords (levels 11, 21, 31, ...)
-const CHECKPOINT_CODES = (typeof LEVEL_CODES !== 'undefined') ? LEVEL_CODES : {
-    11:  'FKRWD',
-    21:  'MZQTN',
-    31:  'BGYPL',
-    41:  'XCVRA',
-    51:  'JHUES',
-    61:  'NKTMF',
-    71:  'PQXLB',
-    81:  'DZWCG',
-    91:  'RYVNH',
-    101: 'SLKJP',
-    111: 'AUTQE',
-    121: 'WFMXB',
-    131: 'CGRZD',
-    141: 'HVKYN',
-    151: 'PJLTC',
-    161: 'XQWSE',
-    171: 'MNBKU',
- // 181: 'TRGFA',
- // 191: 'ZYLHD',
- // 201: 'QVNPR',
- // 211: 'KDXWM',
- // 221: 'HBTGC',
- // 231: 'LSPYF',
- // 241: 'WJRZN',
- // 251: 'GCVKQ',
- // 261: 'NTMXD',
- // 271: 'PFLHB',
- // 281: 'YKWCS',
- // 291: 'RZGJT',
- // 301: 'DXNVP',
- // 311: 'BQMHL',
- // 321: 'KCYWR',
- // 331: 'TGSFN',
- // 341: 'VJPZD',
- // 351: 'WLRXK',
- // 361: 'HMQBT',
- // 371: 'ZFNVC',
- // 381: 'PRGYS',
- // 391: 'CWLKD',
- // 401: 'JBVXN',
- // 411: 'SYTQM',
- // 421: 'KDPFR',
- // 431: 'NZWGH',
- // 441: 'XLCBJ',
- // 451: 'VRTKP',
- // 461: 'GMQWS',
- // 471: 'FHYDN',
- // 481: 'BZKLC',
- // 491: 'QWPXR'
-};
 
 // Localization configuration
 const SUPPORTED_LANGS = ['en', 'it', 'fr', 'es', 'de'];
@@ -244,11 +191,6 @@ function applyLanguage(lang) {
         restartBtn.setAttribute('aria-label', t('restartTitle'));
     }
 
-    const codeInput = document.getElementById('code-input');
-    const codeBtn = document.getElementById('code-btn');
-    if (codeInput) codeInput.placeholder = t('codePlaceholder');
-    if (codeBtn) codeBtn.setAttribute('aria-label', t('sendCodeLabel'));
-
     const startTouchText = document.getElementById('start-touch-text');
     const startKeyboardText = document.getElementById('start-keyboard-text');
     if (startTouchText) startTouchText.innerText = t('swipeToStart');
@@ -271,11 +213,6 @@ function applyLanguage(lang) {
         levelDisplay.innerText = t('levelLabel', { n: levelNumber });
         updateRoomBadge();
         updateLevelHint(currentLevelIndex);
-
-        const levelCode = getActiveLevelCode(levelNumber);
-        if (levelCode && codeBadge) {
-            codeBadge.innerText = t('codeBadge', { code: levelCode });
-        }
     }
 
     if (dashboardOpen) {
@@ -328,7 +265,6 @@ const levelDisplay = document.getElementById('level-display');
 const pushesDisplay = document.getElementById('pushes-display');
 const timerDisplay = document.getElementById('timer-display');
 const bossBadge = document.getElementById('boss-badge');
-const codeBadge = document.getElementById('code-badge');
 const homeBtn = document.getElementById('home-btn');
 const soundBtn = document.getElementById('sound-btn');
 const undoBtn = document.getElementById('undo-btn');
@@ -431,33 +367,6 @@ function timeLimitForLevel(index, levelEntry) {
     );
 
     return TIMER_MIN_SECONDS + tier * TIMER_STEP_SECONDS;
-}
-
-// Returns the checkpoint level number (11, 21, 31, ...) active for a given level, or null for levels 1..10
-function getCheckpointLevel(levelNumber) {
-    if (levelNumber < 11) return null;
-    return Math.floor((levelNumber - 1) / 10) * 10 + 1;
-}
-
-// Returns the persistent 5-letter code shown in the HUD across the whole 10-level block (e.g. 11..20 -> code of 11)
-function getActiveLevelCode(levelNumber) {
-    const checkpoint = getCheckpointLevel(levelNumber);
-    if (!checkpoint) return null;
-    return CHECKPOINT_CODES[checkpoint] || null;
-}
-
-// Returns the 0-based level index matching the given 5-letter code, or -1 if invalid
-function findLevelIndexByCode(rawCode) {
-    const clean = rawCode.trim().toUpperCase();
-    if (clean.length !== 5) return -1;
-
-    for (const [lvlStr, code] of Object.entries(CHECKPOINT_CODES)) {
-        const lvl = parseInt(lvlStr, 10);
-        if (code.toUpperCase() === clean && lvl <= levelsList.length) {
-            return lvl - 1;
-        }
-    }
-    return -1;
 }
 
 // Detects the device type: 'touch' (phone/tablet) or 'keyboard' (PC)
@@ -926,36 +835,6 @@ function init() {
         syncCornerButtonsWidth();
     });
 
-    const codeInput = document.getElementById('code-input');
-    const codeBtn = document.getElementById('code-btn');
-    const codeError = document.getElementById('code-error');
-
-    const submitCode = () => {
-        const targetIndex = findLevelIndexByCode(codeInput.value);
-        if (targetIndex === -1) {
-            codeError.innerText = t('invalidCode');
-            codeInput.value = '';
-            return;
-        }
-        codeError.innerText = '';
-        codeInput.value = '';
-        currentLevelIndex = targetIndex;
-        startLevelDirect(targetIndex);
-    };
-
-    codeBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        submitCode();
-    });
-
-    codeInput.addEventListener('keydown', (e) => {
-        e.stopPropagation();
-        codeError.innerText = '';
-        if (e.key === 'Enter') {
-            submitCode();
-        }
-    });
-
     window.addEventListener('keydown', (e) => {
         if (e.target.tagName === 'INPUT') return;
         if (!gameStarted && !dashboardOpen) {
@@ -978,7 +857,7 @@ function init() {
     });
 
     window.addEventListener('touchstart', (e) => {
-        if (e.target.closest('#password-box, #top-right-controls, #home-btn')) return;
+        if (e.target.closest('#top-right-controls, #home-btn')) return;
         if (!gameStarted && !dashboardOpen) {
             e.preventDefault();
             openDashboard();
@@ -989,7 +868,7 @@ function init() {
 
     // Click on the start screen (useful on PC)
     document.getElementById('start-overlay').addEventListener('click', (e) => {
-        if (e.target.closest('#password-box, #top-right-controls, #home-btn')) return;
+        if (e.target.closest('#top-right-controls, #home-btn')) return;
         if (!gameStarted && !dashboardOpen) {
             openDashboard();
         }
@@ -1343,14 +1222,6 @@ function loadLevel(index) {
     updateRoomBadge();
     updateLevelHint(index);
 
-    const levelCode = getActiveLevelCode(levelNumber);
-    if (levelCode) {
-        codeBadge.innerText = t('codeBadge', { code: levelCode });
-        codeBadge.classList.remove('hidden');
-    } else {
-        codeBadge.classList.add('hidden');
-    }
-
     clearPauseState();
     setupTimer(index, levelEntry);
     updateUndoUI();
@@ -1614,7 +1485,7 @@ function setupSwipeControls() {
             activePointerId = null;
             return;
         }
-        if (e.target.closest('button, input, #password-box, #modal-content')) return;
+        if (e.target.closest('button, input, #modal-content')) return;
 
         activePointerId = e.pointerId;
         lastX = e.clientX;
@@ -1985,14 +1856,8 @@ function checkWinCondition() {
 
         setTimeout(() => {
             const wasBoss = isBossLevel(completedLevel);
-            const nextLevel = completedLevel + 1;
-            const isNewCheckpoint = nextLevel >= 11 && (nextLevel - 1) % 10 === 0;
-            const nextCode = isNewCheckpoint ? getActiveLevelCode(nextLevel) : null;
-
             const title = wasBoss ? t('bossDefeatedTitle') : t('levelCompleteTitle');
-            const msg = nextCode
-                ? t('levelCompleteCodeMsg', { n: nextLevel, code: nextCode })
-                : t('levelCompleteMsg');
+            const msg = t('levelCompleteMsg');
 
             showModal(title, msg, () => {
                 currentLevelIndex++;

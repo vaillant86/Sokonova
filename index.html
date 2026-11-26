@@ -74,7 +74,7 @@
         </button>
 
         <!-- Sound toggle button -->
-<button id="sound-btn" type="button" class="btn-icon px-2.5 py-2 flex items-center justify-center gap-1.5 text-xs sm:text-[11px] font-bold uppercase tracking-wide" title="Sound: ON" aria-label="Toggle sound">
+        <button id="sound-btn" type="button" class="btn-icon px-2.5 py-2 flex items-center justify-center gap-1.5 text-xs sm:text-[11px] font-bold uppercase tracking-wide" title="Sound: ON" aria-label="Toggle sound">
             <svg id="sound-icon-on" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 theme-accent shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M11 5L6 9H3v6h3l5 4V5zm4.54 3.46a5 5 0 010 7.08m2.83-9.91a9 9 0 010 12.74" />
             </svg>
@@ -102,7 +102,6 @@
             <div class="flex items-center justify-center gap-2 mt-1">
                 <p id="level-display" class="text-slate-400 font-semibold">Level 1</p>
                 <span id="boss-badge" class="hidden text-[11px] font-mono font-extrabold tracking-widest uppercase px-2 py-0.5 rounded-md badge-boss">BOSS</span>
-                <span id="code-badge" class="hidden text-xs font-mono font-bold tracking-widest uppercase px-2 py-0.5 rounded-md badge-accent"></span>
             </div>
         </div>
 
@@ -173,19 +172,6 @@
 
     <!-- Welcome screen -->
     <div id="start-overlay" class="fixed inset-0 z-[60] flex flex-col items-center justify-center cursor-pointer transition-opacity duration-500">
-        <!-- Code box (bottom-left) -->
-        <div id="password-box" class="fixed bottom-3 left-3 sm:bottom-5 sm:left-5 flex flex-col items-start gap-1.5 cursor-default" onclick="event.stopPropagation()">
-            <div class="flex items-center gap-2">
-                <input id="code-input" type="text" maxlength="5" placeholder="CODE" autocomplete="off" spellcheck="false" class="code-field w-24 sm:w-[6.5rem] text-center font-mono font-bold uppercase tracking-[0.2em] placeholder-slate-500 rounded-xl px-2.5 py-2 text-sm focus:outline-none"/>
-                <button id="code-btn" type="button" aria-label="Send code" class="btn-icon p-2 flex items-center justify-center theme-accent">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                    </svg>
-                </button>
-            </div>
-            <p id="code-error" class="text-xs text-red-400 h-4 pl-1"></p>
-        </div>
-
         <div class="logo-crate"></div>
         <h1 class="title text-5xl mb-3">Sokonova</h1>
         <p class="text-slate-300 text-lg animate-pulse text-center px-4">
