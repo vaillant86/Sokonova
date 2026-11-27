@@ -1,0 +1,801 @@
+/* =========================================================
+   THEME 1: CLASSIC (DEFAULT VARIABLES)
+   ========================================================= */
+:root {
+    --bg-top: #1f1846;
+    --bg-bottom: #0a0817;
+    --bg-glow: #3a2d7a;
+    --bg-grid: transparent;
+    --text-main: #f1f5f9;
+    --panel: #1c1636;
+    --panel-border: rgba(255, 255, 255, 0.08);
+    --btn-top: #3b3266;
+    --btn-bottom: #2a2350;
+    --board-top: #332a57;
+    --board-bottom: #1d1734;
+    --board-border: rgba(255, 255, 255, 0.06);
+    --title-gradient: linear-gradient(90deg, #fcd34d, #fb923c 45%, #f472b6);
+    --title-shadow: 0 2px 20px rgba(251, 146, 60, 0.25);
+    --accent: #fcd34d;
+    --accent-soft: rgba(251, 191, 36, 0.15);
+    --accent-border: rgba(251, 191, 36, 0.35);
+    --wall-base: #4a3d63;
+    --floor: #2a2443;
+    --target-color: #fbbf24;
+    --target-bg: rgba(251, 191, 36, 0.12);
+    --target-glow: rgba(251, 191, 36, 0.45);
+    --crate-a: #d69a55;
+    --crate-b: #9c6532;
+    --crate-line: #5c3a1c;
+    --crate-done-a: #6ee7a0;
+    --crate-done-b: #16a34a;
+    --crate-done-line: #14532d;
+    --crate-done-glow: rgba(74, 222, 128, 0.55);
+    --player-bg: radial-gradient(circle at 35% 30%, #bfdbfe 0%, #3b82f6 45%, #1e3a8a 100%);
+    --modal-top: #2a2350;
+    --modal-bottom: #1a1534;
+    --modal-btn-bg: linear-gradient(180deg, #fbbf24, #f59e0b);
+    --modal-btn-text: #1c1636;
+    --kbd-bg: #2a2350;
+    --kbd-text: #e2e8f0;
+    --cell: clamp(24px, min(7vw, 6.5vh), 56px);
+}
+
+/* =========================================================
+   SHARED THEME RESETS
+   ========================================================= */
+body[data-theme="scifi"] .box-on-target::before,
+body[data-theme="monument"] .box-on-target::before {
+    width: auto;
+    height: auto;
+    border: none;
+    transform: none;
+    filter: none;
+}
+
+/* =========================================================
+   THEME 2: SCI-FI
+   ========================================================= */
+body[data-theme="scifi"] {
+    --bg-top: #090e1a;
+    --bg-bottom: #03050a;
+    --bg-glow: rgba(6, 182, 212, 0.22);
+    --bg-grid: rgba(56, 189, 248, 0.055);
+    --panel: rgba(15, 23, 42, 0.85);
+    --panel-border: rgba(56, 189, 248, 0.22);
+    --btn-top: #16243d;
+    --btn-bottom: #0c1526;
+    --board-top: #101b30;
+    --board-bottom: #070d19;
+    --board-border: rgba(56, 189, 248, 0.35);
+    --title-gradient: linear-gradient(90deg, #67e8f9, #38bdf8 50%, #a855f7);
+    --title-shadow: 0 0 24px rgba(56, 189, 248, 0.45);
+    --accent: #38bdf8;
+    --accent-soft: rgba(56, 189, 248, 0.14);
+    --accent-border: rgba(56, 189, 248, 0.45);
+    --wall-base: #1b283f;
+    --floor: #0c1424;
+    --target-color: #22d3ee;
+    --target-bg: rgba(34, 211, 238, 0.12);
+    --target-glow: rgba(34, 211, 238, 0.65);
+    --crate-a: #334155;
+    --crate-b: #1e293b;
+    --crate-line: #f59e0b;
+    --crate-done-a: #064e3b;
+    --crate-done-b: #022c22;
+    --crate-done-line: #34d399;
+    --crate-done-glow: rgba(52, 211, 153, 0.7);
+    --player-bg: radial-gradient(circle at 35% 30%, #e0f2fe 0%, #0ea5e9 45%, #1d4ed8 100%);
+    --modal-top: #111c33;
+    --modal-bottom: #080e1c;
+    --modal-btn-bg: linear-gradient(180deg, #38bdf8, #0284c7);
+    --modal-btn-text: #04101f;
+    --kbd-bg: #111c33;
+}
+
+body[data-theme="scifi"] #game-board {
+    box-shadow:
+        0 0 0 1px var(--board-border),
+        0 0 35px -10px rgba(56, 189, 248, 0.35),
+        0 30px 60px -20px rgba(0, 0, 0, 0.85);
+}
+
+body[data-theme="scifi"] .wall {
+    background-color: #16233b;
+    background-image: linear-gradient(135deg, rgba(56, 189, 248, 0.12) 0%, transparent 60%);
+    box-shadow: inset 0 0 12px rgba(56, 189, 248, 0.18);
+}
+
+body[data-theme="scifi"] .box::before {
+    inset: 22%;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fde68a 0%, #f59e0b 55%, transparent 72%);
+    box-shadow: 0 0 10px rgba(245, 158, 11, 0.75);
+}
+
+body[data-theme="scifi"] .box-on-target::before {
+    inset: 22%;
+    border-radius: 50%;
+    background: radial-gradient(circle, #d1fae5 0%, #10b981 55%, transparent 72%);
+    box-shadow: 0 0 12px rgba(52, 211, 153, 0.9);
+}
+
+body[data-theme="scifi"] .plate:not(.player):not(.box):not(.box-on-target)::before {
+    border-color: #38bdf8;
+    background:
+        radial-gradient(circle at 50% 50%, #7dd3fc 0 22%, rgba(56, 189, 248, 0.25) 26% 62%, transparent 65%),
+        rgba(56, 189, 248, 0.14);
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.45);
+}
+
+body[data-theme="scifi"] .plate.plate-active {
+    box-shadow:
+        inset 0 0 0 2px #34d399,
+        0 0 16px rgba(52, 211, 153, 0.65);
+}
+
+body[data-theme="scifi"] .door.door-closed {
+    background: linear-gradient(160deg, #2e1036 0%, #190924 100%);
+    box-shadow:
+        inset 0 0 0 2px #f43f5e,
+        0 0 14px rgba(244, 63, 94, 0.5);
+}
+
+body[data-theme="scifi"] .door.door-closed::before {
+    border-color: #fb7185;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(244, 63, 94, 0.9) 0 2px,
+        rgba(244, 63, 94, 0.15) 2px 7px
+    );
+    box-shadow: 0 0 10px rgba(244, 63, 94, 0.65);
+}
+
+body[data-theme="scifi"] .teleporter {
+    box-shadow: inset 0 0 0 1.5px rgba(34, 211, 238, 0.55);
+}
+
+body[data-theme="scifi"] .teleporter:not(.player):not(.box):not(.box-on-target)::before {
+    border-color: #22d3ee;
+    background: radial-gradient(circle at 50% 50%, #cffafe 0 18%, rgba(6, 182, 212, 0.38) 24% 62%, transparent 68%);
+    box-shadow:
+        0 0 14px rgba(34, 211, 238, 0.7),
+        inset 0 0 8px rgba(103, 232, 249, 0.6);
+}
+
+body[data-theme="scifi"] .player::after {
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.8), 0 0 0 2px rgba(125, 211, 252, 0.5);
+}
+
+body[data-theme="scifi"] .player::before {
+    background: radial-gradient(ellipse 46% 16% at 50% 22%, #ffffff 0%, #67e8f9 60%, transparent 75%);
+    filter: drop-shadow(0 0 4px #22d3ee);
+}
+
+body[data-theme="scifi"] .logo-crate::before {
+    inset: 24%;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fde68a 0%, #f59e0b 55%, transparent 72%);
+    box-shadow: 0 0 14px rgba(245, 158, 11, 0.85);
+}
+
+body[data-theme="scifi"] .badge-boss {
+    background: rgba(168, 85, 247, 0.2);
+    color: #e9d5ff;
+    border-color: rgba(192, 132, 252, 0.65);
+    box-shadow: 0 0 14px rgba(168, 85, 247, 0.45);
+}
+
+body[data-theme="scifi"].boss-level #game-board {
+    box-shadow:
+        0 0 0 2px rgba(192, 132, 252, 0.75),
+        0 0 42px -6px rgba(168, 85, 247, 0.55),
+        0 30px 60px -20px rgba(0, 0, 0, 0.85);
+}
+
+body[data-theme="scifi"].boss-level #undo-btn {
+    border-color: rgba(192, 132, 252, 0.55);
+}
+
+body[data-theme="scifi"] .wall.portal {
+    background: linear-gradient(160deg, #0b3a5e 0%, #072238 100%);
+    box-shadow: inset 0 0 0 2px var(--accent), 0 0 16px var(--accent-soft);
+}
+
+body[data-theme="scifi"] #pause-overlay {
+    background: rgba(6, 12, 24, 0.9);
+    box-shadow: inset 0 0 28px rgba(56, 189, 248, 0.2);
+}
+
+body[data-theme="scifi"] .level-tile.tile-boss:not(:disabled) {
+    border-color: rgba(192, 132, 252, 0.75);
+    box-shadow: 0 0 16px -4px rgba(168, 85, 247, 0.5);
+}
+
+body[data-theme="scifi"] .tile-boss-tag {
+    color: #e9d5ff;
+}
+
+/* =========================================================
+   THEME 3: ARCADE 16-BIT
+   ========================================================= */
+body[data-theme="arcade"] {
+    --bg-top: #151926;
+    --bg-bottom: #0d1018;
+    --bg-glow: transparent;
+    --panel: #1e2436;
+    --panel-border: #475569;
+    --btn-top: #334155;
+    --btn-bottom: #1e293b;
+    --board-top: #1a2030;
+    --board-bottom: #121724;
+    --board-border: #facc15;
+    --title-gradient: linear-gradient(180deg, #fde047 0%, #f97316 55%, #ef4444 100%);
+    --title-shadow: 0 3px 0 #7f1d1d;
+    --accent: #facc15;
+    --accent-soft: rgba(250, 204, 21, 0.18);
+    --accent-border: #facc15;
+    --wall-base: #2563eb;
+    --wall-border: #0f172a;
+    --floor: #1e293b;
+    --target-color: #f43f5e;
+    --target-bg: rgba(244, 63, 94, 0.22);
+    --target-glow: transparent;
+    --crate-a: #f97316;
+    --crate-b: #ea580c;
+    --crate-line: #7c2d12;
+    --crate-done-a: #22c55e;
+    --crate-done-b: #16a34a;
+    --crate-done-line: #14532d;
+    --crate-done-glow: transparent;
+    --player-bg: #38bdf8;
+    --modal-top: #1e2436;
+    --modal-bottom: #141826;
+    --modal-btn-bg: #facc15;
+    --modal-btn-text: #0f172a;
+    --kbd-bg: #1e293b;
+}
+
+body[data-theme="arcade"],
+body[data-theme="arcade"] #start-overlay,
+body[data-theme="arcade"] #dashboard-overlay {
+    background:
+        repeating-linear-gradient(
+            0deg,
+            rgba(0, 0, 0, 0.22) 0px,
+            rgba(0, 0, 0, 0.22) 2px,
+            transparent 2px,
+            transparent 4px
+        ),
+        linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+    background-size: 100% 4px, 100% 100%;
+}
+
+body[data-theme="arcade"] .title {
+    text-shadow: none;
+    filter: drop-shadow(0 3px 0 #7f1d1d);
+}
+
+body[data-theme="arcade"] .pill {
+    border-width: 2px;
+    border-radius: 6px;
+    box-shadow: 0 4px 0 #090d16;
+}
+
+body[data-theme="arcade"] .btn-icon {
+    border-width: 2px;
+    border-radius: 6px;
+    padding: calc(0.5rem - 1px) calc(0.625rem - 1px);
+    box-shadow: 0 3px 0 #090d16;
+    transition: transform 0.06s steps(2);
+}
+
+body[data-theme="arcade"] .btn-icon:active:not(:disabled) {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #090d16;
+}
+
+body[data-theme="arcade"] #game-board,
+body[data-theme="arcade"] #board-wrapper,
+body[data-theme="arcade"] #modal-content {
+    border-radius: 8px;
+}
+
+body[data-theme="arcade"] #game-board {
+    border: 3px solid var(--board-border);
+    box-shadow: 0 8px 0 #090d16;
+}
+
+body[data-theme="arcade"] .cell,
+body[data-theme="arcade"] .box,
+body[data-theme="arcade"] .box-on-target,
+body[data-theme="arcade"] .plate:not(.player):not(.box):not(.box-on-target)::before,
+body[data-theme="arcade"] .door.door-closed {
+    border-radius: 2px;
+}
+
+body[data-theme="arcade"] .wall {
+    background-image: none;
+    box-shadow: inset 0 0 0 2px var(--wall-border);
+}
+
+body[data-theme="arcade"] .floor {
+    box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.08);
+}
+
+body[data-theme="arcade"] .target:not(.player)::before {
+    border-width: 3px;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+body[data-theme="arcade"] .box {
+    background: var(--crate-a);
+    border: 2px solid #090d16;
+    box-shadow:
+        inset 3px 3px 0 #fdba74,
+        inset -3px -3px 0 #9a3412;
+}
+
+body[data-theme="arcade"] .box-on-target {
+    background: var(--crate-done-a);
+    border: 2px solid #090d16;
+    box-shadow:
+        inset 3px 3px 0 #86efac,
+        inset -3px -3px 0 #14532d;
+}
+
+body[data-theme="arcade"] .box-on-target::before {
+    filter: none;
+}
+
+body[data-theme="arcade"] .plate:not(.player):not(.box):not(.box-on-target)::before {
+    border-color: #facc15;
+    box-shadow: none;
+}
+
+body[data-theme="arcade"] .door.door-closed {
+    background: #991b1b;
+    box-shadow: inset 0 0 0 2px #090d16;
+}
+
+body[data-theme="arcade"] .door.door-closed::before {
+    border-radius: 0;
+    border: 2px solid #fca5a5;
+    background: repeating-linear-gradient(
+        90deg,
+        #f87171 0 4px,
+        #7f1d1d 4px 8px
+    );
+    box-shadow: none;
+}
+
+body[data-theme="arcade"] .teleporter {
+    box-shadow: inset 0 0 0 2px #a855f7;
+}
+
+body[data-theme="arcade"] .teleporter:not(.player):not(.box):not(.box-on-target)::before {
+    border-radius: 4px;
+    border: 2px solid #e879f9;
+    background: radial-gradient(circle at 50% 50%, #f5d0fe 0 22%, #9333ea 26% 64%, transparent 68%);
+    box-shadow: none;
+    animation: none;
+}
+
+body[data-theme="arcade"] .player::after {
+    border-radius: 6px;
+    border: 2px solid #090d16;
+    box-shadow:
+        inset 2px 2px 0 #bae6fd,
+        inset -2px -2px 0 #0284c7,
+        0 3px 0 #090d16;
+}
+
+body[data-theme="arcade"] .player::before {
+    transition: transform 0.05s steps(2);
+}
+
+body[data-theme="arcade"] #modal-content {
+    border-width: 3px;
+    box-shadow: 0 8px 0 #090d16;
+}
+
+body[data-theme="arcade"] #modal-btn {
+    border: 2px solid #090d16;
+    border-radius: 6px;
+    box-shadow: 0 4px 0 #854d0e;
+}
+
+body[data-theme="arcade"] .logo-crate {
+    border-radius: 4px;
+    background: var(--crate-a);
+    border: 3px solid #090d16;
+    box-shadow:
+        inset 4px 4px 0 #fdba74,
+        inset -4px -4px 0 #9a3412,
+        0 6px 0 #090d16;
+}
+
+body[data-theme="arcade"] .star-slot.earned .star-fill path {
+    fill: #facc15;
+    stroke: #ca8a04;
+}
+
+body[data-theme="arcade"] .star-slot.earned .star-fill {
+    filter: drop-shadow(0 0 6px rgba(250, 204, 21, 0.7));
+}
+
+body[data-theme="arcade"] .anim-slide {
+    animation-duration: 0.07s;
+    animation-timing-function: steps(3);
+}
+
+body[data-theme="arcade"] .anim-box-lock {
+    animation-duration: 0.18s;
+}
+
+body[data-theme="arcade"] .badge-boss {
+    background: #dc2626;
+    color: #fef08a;
+    border: 2px solid #090d16;
+    box-shadow: 0 2px 0 #090d16;
+}
+
+body[data-theme="arcade"].boss-level #game-board {
+    border-color: #f43f5e;
+    box-shadow: 0 8px 0 #7f1d1d;
+}
+
+body[data-theme="arcade"] .badge-room {
+    background: #1d4ed8;
+    color: #fef08a;
+    border: 2px solid #090d16;
+}
+
+body[data-theme="arcade"] .wall.portal {
+    background: #0284c7;
+    box-shadow: inset 0 0 0 2px #facc15;
+}
+
+body[data-theme="arcade"] #pause-overlay {
+    background: rgba(13, 16, 24, 0.94);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+body[data-theme="arcade"] .pause-icon {
+    border-radius: 10px;
+    border-width: 2px;
+    box-shadow: 0 4px 0 #090d16;
+}
+
+body[data-theme="arcade"] .level-tile {
+    border-width: 2px;
+    border-radius: 6px;
+    box-shadow: 0 3px 0 #090d16;
+    transition: transform 0.06s steps(2);
+}
+
+body[data-theme="arcade"] .level-tile:active:not(:disabled) {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 #090d16;
+}
+
+body[data-theme="arcade"] .level-tile.tile-boss:not(:disabled) {
+    border-color: #f43f5e;
+}
+
+body[data-theme="arcade"] .tile-boss-tag {
+    color: #f43f5e;
+}
+
+/* =========================================================
+   THEME 4: MONUMENT
+   ========================================================= */
+body[data-theme="monument"] {
+    --bg-top: #ebe1d1;
+    --bg-bottom: #ddd0bc;
+    --bg-glow: rgba(255, 255, 255, 0.7);
+    --text-main: #3d352e;
+    --panel: #fffbf4;
+    --panel-border: #dfd2c0;
+    --btn-top: #fffdf9;
+    --btn-bottom: #f7efe2;
+    --board-top: #e8dcc9;
+    --board-bottom: #dfd1bc;
+    --board-border: #cbbba4;
+    --title-gradient: linear-gradient(180deg, #d6654d 0%, #c85a43 100%);
+    --title-shadow: 0 2px 0 rgba(255, 255, 255, 0.85);
+    --accent: #c85a43;
+    --accent-soft: #f5e2da;
+    --accent-border: #e4bfb2;
+    --wall-base: #d7c9b4;
+    --wall-border: #ab9980;
+    --mortar: #b8a78f;
+    --floor: #f5ede0;
+    --target-color: #c85a43;
+    --target-bg: #dfd1bc;
+    --target-glow: transparent;
+    --crate-a: #e57358;
+    --crate-b: #c8543b;
+    --crate-line: #993c28;
+    --crate-done-a: #5da393;
+    --crate-done-b: #448274;
+    --crate-done-line: #2f5e53;
+    --crate-done-glow: transparent;
+    --player-bg: linear-gradient(145deg, #4b5563 0%, #2d333b 100%);
+    --modal-top: #fffdf8;
+    --modal-bottom: #f7efe3;
+    --modal-btn-bg: #c85a43;
+    --modal-btn-text: #fffbf4;
+    --kbd-bg: #fffaf2;
+    --kbd-text: #3d352e;
+}
+
+body[data-theme="monument"],
+body[data-theme="monument"] #start-overlay,
+body[data-theme="monument"] #dashboard-overlay {
+    background: radial-gradient(circle at 50% 25%, var(--bg-top) 0%, var(--bg-bottom) 100%);
+}
+
+body[data-theme="monument"] .text-slate-400 { color: #7c6f63; }
+body[data-theme="monument"] .text-slate-300 { color: #5c5046; }
+body[data-theme="monument"] #timer-display.text-emerald-400 { color: #3d7a6c; }
+body[data-theme="monument"] #timer-display.text-red-400 { color: #c84b31; }
+
+body[data-theme="monument"] .title {
+    text-shadow: none;
+    filter: drop-shadow(0 2px 0 rgba(255, 255, 255, 0.75));
+}
+
+body[data-theme="monument"] .badge-accent {
+    color: #b44933;
+}
+
+body[data-theme="monument"] .pill,
+body[data-theme="monument"] .btn-icon,
+body[data-theme="monument"] .level-tile {
+    box-shadow: 0 4px 10px rgba(84, 68, 52, 0.08), 0 2px 0 #d5c6b2;
+}
+
+body[data-theme="monument"] .btn-icon,
+body[data-theme="monument"] .level-tile {
+    color: #3d352e;
+}
+
+body[data-theme="monument"] .btn-icon:hover:not(:disabled),
+body[data-theme="monument"] .level-tile:hover:not(:disabled) {
+    background: #ffffff;
+    border-color: var(--accent);
+    filter: none;
+}
+
+body[data-theme="monument"] #game-board,
+body[data-theme="monument"] #board-wrapper {
+    border-radius: 14px;
+}
+
+body[data-theme="monument"] #game-board {
+    border: 3px solid var(--board-border);
+    box-shadow:
+        0 18px 35px rgba(74, 58, 42, 0.14),
+        0 4px 0 #bfb09a;
+}
+
+body[data-theme="monument"] .cell {
+    border-radius: 0;
+}
+
+body[data-theme="monument"] .wall {
+    background-image: linear-gradient(160deg, #dfd2bf 0%, #cfc0aa 100%);
+    border-top: 2px solid #f7f1e7;
+    border-left: 2px solid #efe6d8;
+    border-right: 2px solid var(--mortar);
+    border-bottom: 3px solid var(--wall-border);
+    box-shadow: 0 3px 6px rgba(66, 52, 38, 0.12);
+    z-index: 2;
+}
+
+body[data-theme="monument"] .wall.wall-top    { border-top: none; }
+body[data-theme="monument"] .wall.wall-bottom { border-bottom: none; box-shadow: none; }
+body[data-theme="monument"] .wall.wall-left   { border-left: none; }
+body[data-theme="monument"] .wall.wall-right  { border-right: none; }
+
+body[data-theme="monument"] .floor,
+body[data-theme="monument"] .box,
+body[data-theme="monument"] .box-on-target {
+    background: var(--floor);
+    box-shadow: inset 0 0 0 0.5px rgba(176, 158, 134, 0.35);
+}
+
+body[data-theme="monument"] .target,
+body[data-theme="monument"] .plate {
+    background-color: #efe5d5;
+    box-shadow: inset 0 0 0 0.5px rgba(176, 158, 134, 0.35);
+}
+
+body[data-theme="monument"] .target:not(.player)::before {
+    inset: 26%;
+    width: auto;
+    height: auto;
+    transform: none;
+    border: none;
+    border-radius: 50%;
+    box-shadow: inset 0 2px 4px rgba(74, 58, 42, 0.25), 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+body[data-theme="monument"] .box::before,
+body[data-theme="monument"] .box-on-target::before {
+    inset: 11%;
+    border-radius: 7px;
+}
+
+body[data-theme="monument"] .box::before {
+    background: linear-gradient(145deg, var(--crate-a) 0%, var(--crate-b) 100%);
+    border-top: 1.5px solid #f49b85;
+    box-shadow:
+        0 4px 0 var(--crate-line),
+        0 6px 10px rgba(74, 42, 32, 0.22);
+}
+
+body[data-theme="monument"] .box-on-target::before {
+    border-top: 1.5px solid #88c7b8;
+    background: linear-gradient(145deg, var(--crate-done-a) 0%, var(--crate-done-b) 100%);
+    box-shadow:
+        0 3px 0 var(--crate-done-line),
+        0 5px 8px rgba(42, 74, 66, 0.2);
+}
+
+body[data-theme="monument"] .plate:not(.player):not(.box):not(.box-on-target)::before {
+    border-radius: 5px;
+    border-color: #d97706;
+    background:
+        radial-gradient(circle at 50% 50%, #d97706 0 22%, rgba(217, 119, 6, 0.2) 26% 62%, transparent 65%),
+        #e6d7c1;
+    box-shadow: inset 0 1px 3px rgba(74, 58, 42, 0.22);
+}
+
+body[data-theme="monument"] .plate.plate-active {
+    box-shadow:
+        inset 0 0 0 2px #448274,
+        0 0 8px rgba(68, 130, 116, 0.35);
+}
+
+body[data-theme="monument"] .door.door-closed {
+    background: linear-gradient(160deg, #c85a43 0%, #993c28 100%);
+    box-shadow:
+        inset 0 0 0 2px #7c2d12,
+        0 2px 5px rgba(74, 42, 32, 0.25);
+}
+
+body[data-theme="monument"] .door.door-closed::before {
+    border-color: #f4c7bc;
+    background: repeating-linear-gradient(
+        90deg,
+        rgba(255, 245, 238, 0.85) 0 3px,
+        rgba(124, 45, 18, 0.35) 3px 8px
+    );
+    box-shadow: none;
+}
+
+body[data-theme="monument"] .door.door-open {
+    box-shadow:
+        inset 3px 0 0 #448274,
+        inset -3px 0 0 #448274,
+        inset 0 0 8px rgba(68, 130, 116, 0.22);
+}
+
+body[data-theme="monument"] .door.door-open:not(.player):not(.box):not(.box-on-target)::before {
+    border-left-color: #448274;
+    border-right-color: #448274;
+}
+
+body[data-theme="monument"] .teleporter {
+    background-color: #efe5d5;
+    box-shadow: inset 0 0 0 1.5px rgba(124, 93, 153, 0.45);
+}
+
+body[data-theme="monument"] .teleporter:not(.player):not(.box):not(.box-on-target)::before {
+    border-color: #7c5d99;
+    background: radial-gradient(circle at 50% 50%, #7c5d99 0 20%, rgba(124, 93, 153, 0.22) 25% 62%, #e6d7c1 66%);
+    box-shadow: inset 0 1px 3px rgba(74, 58, 42, 0.2);
+}
+
+body[data-theme="monument"] .player::after,
+body[data-theme="monument"] .player::before {
+    width: 72%;
+    height: 72%;
+}
+
+body[data-theme="monument"] .player::after {
+    box-shadow:
+        0 3px 0 #1b1f24,
+        0 5px 8px rgba(30, 35, 42, 0.25);
+}
+
+body[data-theme="monument"] .player::before {
+    background:
+        radial-gradient(circle at 36% 26%, #faf6ef 0 11%, transparent 12%),
+        radial-gradient(circle at 64% 26%, #faf6ef 0 11%, transparent 12%);
+}
+
+body[data-theme="monument"] #modal-overlay {
+    background: rgba(61, 53, 46, 0.45);
+}
+
+body[data-theme="monument"] #modal-content {
+    border-color: var(--panel-border);
+    box-shadow: 0 20px 40px rgba(61, 53, 46, 0.22), 0 4px 0 #d5c6b2;
+}
+
+body[data-theme="monument"] #modal-title { color: #3d352e; }
+body[data-theme="monument"] #modal-message { color: #6b5e52; }
+
+body[data-theme="monument"] #modal-btn {
+    box-shadow: 0 4px 0 var(--crate-line);
+}
+
+body[data-theme="monument"] .logo-crate {
+    background: linear-gradient(145deg, var(--crate-a) 0%, var(--crate-b) 100%);
+    border: 2px solid #f49b85;
+    box-shadow: 0 8px 0 var(--crate-line), 0 14px 24px rgba(74, 42, 32, 0.2);
+}
+
+body[data-theme="monument"] .logo-crate::before {
+    content: none;
+}
+
+body[data-theme="monument"] .badge-boss {
+    background: #c85a43;
+    color: #fffbf4;
+    border: 1px solid #993c28;
+    box-shadow: 0 2px 0 #993c28;
+}
+
+body[data-theme="monument"].boss-level #game-board {
+    border-color: #c85a43;
+    box-shadow:
+        0 18px 35px rgba(200, 90, 67, 0.2),
+        0 4px 0 #993c28;
+}
+
+body[data-theme="arcade"].boss-level #undo-btn,
+body[data-theme="monument"].boss-level #undo-btn,
+body[data-theme="monument"] .level-tile.tile-boss:not(:disabled) {
+    border-color: #c85a43;
+}
+
+body[data-theme="monument"] .badge-room {
+    background: #e3ece9;
+    color: #2f5e53;
+    border-color: #9ec2b9;
+}
+
+body[data-theme="monument"] .wall.portal {
+    background: linear-gradient(160deg, #5da393 0%, #448274 100%);
+    box-shadow: inset 0 0 0 2px #2f5e53;
+}
+
+body[data-theme="monument"] .wall.portal::before {
+    background: rgba(255, 251, 244, 0.22);
+    border-color: #fffbf4;
+}
+
+body[data-theme="monument"] .wall.portal::after {
+    color: #fffbf4;
+    text-shadow: none;
+}
+
+body[data-theme="monument"] #pause-overlay {
+    background: rgba(235, 225, 209, 0.92);
+}
+
+body[data-theme="monument"] .pause-icon {
+    background: var(--panel);
+    border-color: var(--accent-border);
+    box-shadow: 0 6px 14px rgba(61, 53, 46, 0.14), 0 3px 0 #d5c6b2;
+}
+
+body[data-theme="monument"] .tile-boss-tag {
+    color: #c85a43;
+}

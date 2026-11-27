@@ -1,8 +1,10 @@
-# Rust generator
+# Level generators
 /src/
 /target/
 Cargo.toml
 Cargo.lock
+level_pool.json
+assemble.py
 
 # Backup
 *.bak

@@ -1019,6 +1019,10 @@ function updateLevelHint(index) {
         hintBox.classList.remove('hidden');
         hintKb.innerHTML = t('hintTeleport4Keyboard');
         hintTouch.innerHTML = t('hintTeleport4Touch');
+    } else if (index === 4) {
+        hintBox.classList.remove('hidden');
+        hintKb.innerHTML = t('hintMultiRoom5Keyboard');
+        hintTouch.innerHTML = t('hintMultiRoom5Touch');
     } else if (index === 19) {
         hintBox.classList.remove('hidden');
         hintKb.innerHTML = t('hintBoss20');

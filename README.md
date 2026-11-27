@@ -37,7 +37,8 @@ Open `index.html` in any modern browser. An internet connection is required to l
 | Path | Contents |
 | --- | --- |
 | `index.html` | Page structure and HUD |
-| `style.css` | Styling, themes and animations |
+| `style.css` | Styling and animations |
+| `themes.css` | Themes |
 | `game.js` | Game engine, input and audio |
 | `levels.js` | Level data, optimal push counts and difficulty scores |
 | `locales/` | Translations |
