@@ -548,10 +548,6 @@ body[data-theme="monument"] .title {
     filter: drop-shadow(0 2px 0 rgba(255, 255, 255, 0.75));
 }
 
-body[data-theme="monument"] .badge-accent {
-    color: #b44933;
-}
-
 body[data-theme="monument"] .pill,
 body[data-theme="monument"] .btn-icon,
 body[data-theme="monument"] .level-tile {

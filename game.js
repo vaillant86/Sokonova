@@ -2035,7 +2035,7 @@ function renderDashboard() {
     const pageCapacity = (endLevel - startLevel + 1) * 3;
     let pageStars = 0;
 
-    if (rangeEl) rangeEl.innerText = `${startLevel} — ${endLevel}`;
+    if (rangeEl) rangeEl.innerText = `${startLevel} / ${endLevel}`;
     if (prevBtn) prevBtn.disabled = dashboardPage <= 0;
     if (nextBtn) nextBtn.disabled = dashboardPage >= totalPages - 1;
 

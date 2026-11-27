@@ -50,12 +50,6 @@ body,
     color: var(--accent);
 }
 
-.badge-accent {
-    background: var(--accent-soft);
-    color: var(--accent);
-    border: 1px solid var(--accent-border);
-}
-
 .pill {
     background: var(--panel);
     border: 1px solid var(--panel-border);
@@ -85,7 +79,7 @@ body,
     cursor: not-allowed;
 }
 
-@media (min-width: 640px) {
+@media (min-width: 768px) {
     #top-right-controls,
     #home-btn {
         width: var(--corner-btn-w, auto);
@@ -694,7 +688,7 @@ body.boss-level #undo-btn {
     cursor: pointer;
 }
 
-@media (min-width: 640px) {
+@media (min-width: 768px) {
     .level-tile {
         min-height: 64px;
         padding: 0.65rem 0.35rem;
@@ -738,7 +732,7 @@ body.boss-level #undo-btn {
     line-height: 1;
 }
 
-@media (min-width: 640px) {
+@media (min-width: 768px) {
     .tile-number {
         font-size: 1.05rem;
     }
@@ -767,7 +761,7 @@ body.boss-level #undo-btn {
     height: 12px;
 }
 
-@media (min-width: 640px) {
+@media (min-width: 768px) {
     .tile-star {
         width: 14px;
         height: 14px;
