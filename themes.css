@@ -795,3 +795,8 @@ body[data-theme="monument"] .pause-icon {
 body[data-theme="monument"] .tile-boss-tag {
     color: #c85a43;
 }
+
+body[data-theme="monument"] #dash-total-completed,
+body[data-theme="monument"] #dash-range-label {
+    color: #7c6f63;
+}
